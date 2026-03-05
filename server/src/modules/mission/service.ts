@@ -1,6 +1,7 @@
 import { MissionStatus, MissionType, Priority, Role } from "@prisma/client";
 import { prisma } from "../../infra/database";
 import { NotFoundError, ForbiddenError, ValidationError } from "../../shared/errors";
+import { versionService } from "./version-service";
 
 const VALID_TRANSITIONS: Record<MissionStatus, MissionStatus[]> = {
   DRAFT: [MissionStatus.PLANNED],
@@ -36,7 +37,7 @@ interface CreateMissionInput {
 
 export const missionService = {
   async create(input: CreateMissionInput, userId: string) {
-    return prisma.mission.create({
+    const mission = await prisma.mission.create({
       data: {
         name: input.name,
         type: input.type as MissionType,
@@ -48,6 +49,12 @@ export const missionService = {
       },
       include: missionIncludes,
     });
+    try {
+      await versionService.createSnapshot(mission.id, userId, "created");
+    } catch {
+      // Version tracking is best-effort, don't fail the operation
+    }
+    return mission;
   },
 
   async list(filters?: { status?: MissionStatus; createdById?: string }) {
@@ -77,7 +84,7 @@ export const missionService = {
       throw new ValidationError("Can only edit missions in DRAFT status");
     }
 
-    return prisma.mission.update({
+    const updated = await prisma.mission.update({
       where: { id },
       data: {
         ...(data.name && { name: data.name }),
@@ -88,6 +95,12 @@ export const missionService = {
       },
       include: missionIncludes,
     });
+    try {
+      await versionService.createSnapshot(id, userId, "updated");
+    } catch {
+      // Version tracking is best-effort, don't fail the operation
+    }
+    return updated;
   },
 
   async delete(id: string, userId: string) {
@@ -133,10 +146,16 @@ export const missionService = {
       updateData.commanderComments = comments;
     }
 
-    return prisma.mission.update({
+    const transitioned = await prisma.mission.update({
       where: { id },
       data: updateData,
       include: missionIncludes,
     });
+    try {
+      await versionService.createSnapshot(id, userId, `transition:${target}`);
+    } catch {
+      // Version tracking is best-effort, don't fail the operation
+    }
+    return transitioned;
   },
 };

@@ -1,5 +1,7 @@
 import { Router, Response, NextFunction } from "express";
 import { missionService } from "./service";
+import { briefingService } from "./briefing-service";
+import { versionService } from "./version-service";
 import { createMissionSchema, updateMissionSchema, transitionSchema } from "./validation";
 import { authenticate, authorize } from "../../shared/middleware/auth";
 import { AuthenticatedRequest } from "../../shared/types";
@@ -77,3 +79,28 @@ missionRouter.post(
     }
   },
 );
+
+// Briefing PDF download
+missionRouter.get("/:id/briefing", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  try {
+    const pdf = await briefingService.generatePdf(req.params.id);
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="mission-briefing-${req.params.id}.pdf"`);
+    res.send(pdf);
+  } catch (err) { next(err); }
+});
+
+// Version history
+missionRouter.get("/:id/versions", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  try {
+    const versions = await versionService.listVersions(req.params.id);
+    res.json(versions);
+  } catch (err) { next(err); }
+});
+
+missionRouter.get("/:id/versions/:version", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  try {
+    const version = await versionService.getVersion(req.params.id, parseInt(req.params.version, 10));
+    res.json(version);
+  } catch (err) { next(err); }
+});

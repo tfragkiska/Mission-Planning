@@ -107,3 +107,12 @@ export interface DeconflictionResult {
   resolvedAt: string | null;
   details: Record<string, unknown> | null;
 }
+
+export interface MissionVersion {
+  id: string;
+  version: number;
+  changedBy: string;
+  changeType: string;
+  createdAt: string;
+  snapshot?: Mission;
+}

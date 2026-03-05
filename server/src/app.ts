@@ -8,6 +8,7 @@ import { waypointRouter } from "./modules/route/routes";
 import { threatRouter, missionThreatRouter } from "./modules/threat/routes";
 import { weatherRouter } from "./modules/weather/routes";
 import { deconflictionRouter } from "./modules/deconfliction/routes";
+import { aircraftRouter } from "./modules/mission/aircraft-routes";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/threats", threatRouter);
 app.use("/api/missions", missionThreatRouter);
 app.use("/api/missions", weatherRouter);
 app.use("/api/missions", deconflictionRouter);
+app.use("/api/missions", aircraftRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {

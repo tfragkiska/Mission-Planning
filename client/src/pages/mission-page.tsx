@@ -7,11 +7,12 @@ import AircraftCrewPanel from "../components/aircraft-crew-panel";
 import ThreatPanel from "../components/threat-panel";
 import WeatherPanel from "../components/weather-panel";
 import DeconflictionPanel from "../components/deconfliction-panel";
+import VersionHistoryPanel from "../components/version-history-panel";
 import { useMissionStore } from "../stores/mission-store";
 import { useWaypointStore } from "../stores/waypoint-store";
 import { useAuthStore } from "../stores/auth-store";
 import { api } from "../lib/api";
-import type { MissionStatus, Threat, WeatherReport, DeconflictionResult } from "../lib/types";
+import type { MissionStatus, Threat, WeatherReport, DeconflictionResult, Aircraft, CrewMember } from "../lib/types";
 
 const NEXT_STATUS: Partial<Record<MissionStatus, { label: string; status: MissionStatus; roles: string[] }>> = {
   DRAFT: { label: "Mark as Planned", status: "PLANNED", roles: ["PLANNER"] },
@@ -29,6 +30,8 @@ export default function MissionPage() {
     useWaypointStore();
   const user = useAuthStore((s) => s.user);
 
+  const [missionAircraft, setMissionAircraft] = useState<Aircraft[]>([]);
+  const [missionCrew, setMissionCrew] = useState<CrewMember[]>([]);
   const [missionThreats, setMissionThreats] = useState<Threat[]>([]);
   const [weatherReports, setWeatherReports] = useState<WeatherReport[]>([]);
   const [deconflictionResults, setDeconflictionResults] = useState<DeconflictionResult[]>([]);
@@ -43,6 +46,13 @@ export default function MissionPage() {
       api.deconfliction.list(id).then(setDeconflictionResults).catch(() => {});
     }
   }, [id, fetchMission, fetchWaypoints]);
+
+  useEffect(() => {
+    if (currentMission) {
+      setMissionAircraft(currentMission.aircraft || []);
+      setMissionCrew(currentMission.crewMembers || []);
+    }
+  }, [currentMission]);
 
   const handleMapClick = useCallback(
     (lat: number, lon: number) => {
@@ -107,11 +117,29 @@ export default function MissionPage() {
     setDeconflictionResults((prev) => prev.map((r) => (r.id === conflictId ? updated : r)));
   }, [id]);
 
-  // No-op handlers for aircraft/crew (backend endpoints not yet available)
-  const noopAddAircraft = useCallback(() => {}, []);
-  const noopAddCrew = useCallback(() => {}, []);
-  const noopRemoveAircraft = useCallback(() => {}, []);
-  const noopRemoveCrew = useCallback(() => {}, []);
+  const handleAddAircraft = useCallback(async (data: { type: string; tailNumber: string; callsign: string }) => {
+    if (!id) return;
+    const ac = await api.aircraft.add(id, data);
+    setMissionAircraft((prev) => [...prev, ac]);
+  }, [id]);
+
+  const handleRemoveAircraft = useCallback(async (acId: string) => {
+    if (!id) return;
+    await api.aircraft.remove(id, acId);
+    setMissionAircraft((prev) => prev.filter((a) => a.id !== acId));
+  }, [id]);
+
+  const handleAddCrew = useCallback(async (data: { name: string; role: string; aircraftId?: string }) => {
+    if (!id) return;
+    const crew = await api.crew.add(id, data);
+    setMissionCrew((prev) => [...prev, crew]);
+  }, [id]);
+
+  const handleRemoveCrew = useCallback(async (crewId: string) => {
+    if (!id) return;
+    await api.crew.remove(id, crewId);
+    setMissionCrew((prev) => prev.filter((c) => c.id !== crewId));
+  }, [id]);
 
   if (!currentMission) {
     return (
@@ -125,6 +153,24 @@ export default function MissionPage() {
   const nextAction = NEXT_STATUS[currentMission.status];
   const canTransition = nextAction && user && nextAction.roles.includes(user.role);
 
+  function handleDownloadBriefing() {
+    if (!id) return;
+    const token = useAuthStore.getState().token;
+    fetch(`/api/missions/${id}/briefing`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `mission-briefing-${id}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+      })
+      .catch(() => {});
+  }
+
   return (
     <Layout>
       <div className="max-w-7xl mx-auto">
@@ -136,6 +182,12 @@ export default function MissionPage() {
             </p>
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={handleDownloadBriefing}
+              className="px-4 py-2 bg-military-600 hover:bg-military-500 rounded font-medium"
+            >
+              Download Briefing
+            </button>
             {currentMission.status === "UNDER_REVIEW" && user?.role === "COMMANDER" && (
               <button
                 onClick={() => {
@@ -183,13 +235,13 @@ export default function MissionPage() {
             />
             <AircraftCrewPanel
               missionId={id || ""}
-              aircraft={currentMission.aircraft || []}
-              crewMembers={currentMission.crewMembers || []}
-              editable={false}
-              onAddAircraft={noopAddAircraft}
-              onAddCrew={noopAddCrew}
-              onRemoveAircraft={noopRemoveAircraft}
-              onRemoveCrew={noopRemoveCrew}
+              aircraft={missionAircraft}
+              crewMembers={missionCrew}
+              editable={editable}
+              onAddAircraft={handleAddAircraft}
+              onAddCrew={handleAddCrew}
+              onRemoveAircraft={handleRemoveAircraft}
+              onRemoveCrew={handleRemoveCrew}
             />
             <ThreatPanel
               missionId={id || ""}
@@ -212,6 +264,7 @@ export default function MissionPage() {
               onResolve={handleResolveConflict}
               loading={deconflictionLoading}
             />
+            <VersionHistoryPanel missionId={id!} />
           </div>
         </div>
       </div>

@@ -84,6 +84,7 @@ model Mission {
   missionThreats       MissionThreat[]
   weatherReports       WeatherReport[]
   deconflictionResults DeconflictionResult[]
+  versions             MissionVersion[]
 
   @@map("missions")
 }
@@ -238,4 +239,19 @@ model DeconflictionResult {
   mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
 
   @@map("deconfliction_results")
+}
+
+model MissionVersion {
+  id        String   @id @default(uuid())
+  missionId String   @map("mission_id")
+  version   Int
+  snapshot  Json
+  changedBy String   @map("changed_by")
+  changeType String  @map("change_type")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@unique([missionId, version])
+  @@map("mission_versions")
 }

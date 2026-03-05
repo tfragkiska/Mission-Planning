@@ -1,5 +1,5 @@
 import { useAuthStore } from "../stores/auth-store";
-import type { User, Mission, Waypoint, Threat, WeatherReport, DeconflictionResult } from "./types";
+import type { User, Mission, Waypoint, Threat, WeatherReport, DeconflictionResult, Aircraft, CrewMember, MissionVersion } from "./types";
 
 const BASE_URL = "/api";
 
@@ -58,6 +58,8 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ status, comments }),
       }),
+    listVersions: (id: string) => request<MissionVersion[]>(`/missions/${id}/versions`),
+    getVersion: (id: string, version: number) => request<MissionVersion>(`/missions/${id}/versions/${version}`),
   },
   waypoints: {
     list: (missionId: string) =>
@@ -110,6 +112,20 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ raw }),
       }),
+  },
+  aircraft: {
+    list: (missionId: string) => request<Aircraft[]>(`/missions/${missionId}/aircraft`),
+    add: (missionId: string, data: { type: string; tailNumber: string; callsign: string }) =>
+      request<Aircraft>(`/missions/${missionId}/aircraft`, { method: "POST", body: JSON.stringify(data) }),
+    remove: (missionId: string, id: string) =>
+      request<void>(`/missions/${missionId}/aircraft/${id}`, { method: "DELETE" }),
+  },
+  crew: {
+    list: (missionId: string) => request<CrewMember[]>(`/missions/${missionId}/crew`),
+    add: (missionId: string, data: { name: string; role: string; aircraftId?: string }) =>
+      request<CrewMember>(`/missions/${missionId}/crew`, { method: "POST", body: JSON.stringify(data) }),
+    remove: (missionId: string, id: string) =>
+      request<void>(`/missions/${missionId}/crew/${id}`, { method: "DELETE" }),
   },
   deconfliction: {
     run: (missionId: string) =>
