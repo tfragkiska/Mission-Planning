@@ -40,7 +40,7 @@ export default function CreateMissionModal({ onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" role="dialog" aria-modal="true">
       <form
         onSubmit={handleSubmit}
         className="bg-military-800 p-6 rounded-lg w-full max-w-md"
@@ -72,8 +72,9 @@ export default function CreateMissionModal({ onClose }: Props) {
           </div>
         )}
         <div className="mb-3">
-          <label className="block text-sm text-military-300 mb-1">Mission Name</label>
+          <label htmlFor="mission-name" className="block text-sm text-military-300 mb-1">Mission Name</label>
           <input
+            id="mission-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full px-3 py-2 bg-military-700 border border-military-600 rounded text-gray-100 focus:outline-none focus:border-blue-500"
@@ -81,8 +82,9 @@ export default function CreateMissionModal({ onClose }: Props) {
           />
         </div>
         <div className="mb-3">
-          <label className="block text-sm text-military-300 mb-1">Type</label>
+          <label htmlFor="mission-type" className="block text-sm text-military-300 mb-1">Type</label>
           <select
+            id="mission-type"
             value={type}
             onChange={(e) => setType(e.target.value)}
             className="w-full px-3 py-2 bg-military-700 border border-military-600 rounded text-gray-100"

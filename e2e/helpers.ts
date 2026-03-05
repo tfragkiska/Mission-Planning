@@ -14,28 +14,27 @@ export const users: Record<string, TestUser> = {
 
 /**
  * Logs in as the given user via the /login page.
- * Waits until redirected away from /login before returning.
  */
 export async function login(page: Page, user: TestUser): Promise<void> {
   await page.goto('/login');
   await page.getByLabel(/email/i).fill(user.email);
   await page.getByLabel(/password/i).fill(user.password);
-  await page.getByRole('button', { name: /sign in|log in/i }).click();
+  await page.getByRole('button', { name: /sign in/i }).click();
   await page.waitForURL('**/dashboard**');
 }
 
 /**
  * Logs out the current user via the UI.
- * Waits until redirected back to /login.
  */
 export async function logout(page: Page): Promise<void> {
-  await page.getByRole('button', { name: /sign out|log out/i }).click();
+  await page.getByRole('button', { name: /sign out/i }).click();
   await page.waitForURL('**/login**');
 }
 
 /**
  * Creates a new mission from the dashboard and returns its name.
- * Assumes the user is already logged in and on the dashboard.
+ * After creation, the app navigates to the mission detail page.
+ * We wait for the mission name to appear on that page.
  */
 export async function createMission(
   page: Page,
@@ -43,21 +42,30 @@ export async function createMission(
 ): Promise<string> {
   const missionName = overrides.name ?? `Test Mission ${Date.now()}`;
 
-  await page.getByRole('button', { name: /new mission/i }).click();
-
-  const dialog = page.getByRole('dialog').or(page.locator('[data-testid="mission-form"]'));
-  await dialog.waitFor({ state: 'visible' });
-
-  await dialog.getByLabel(/mission name|name/i).fill(missionName);
-
-  if (overrides.type) {
-    await dialog.getByLabel(/type|platform/i).selectOption(overrides.type);
+  // Make sure we're on the dashboard
+  if (!page.url().includes('/dashboard')) {
+    await page.goto('/dashboard');
+    await page.waitForURL('**/dashboard**');
   }
 
-  await dialog.getByRole('button', { name: /create|submit|save/i }).click();
+  await page.getByRole('button', { name: /new mission/i }).click();
 
-  // Wait for the dialog to close and the mission to appear
-  await dialog.waitFor({ state: 'hidden' });
+  const dialog = page.getByRole('dialog');
+  await dialog.waitFor({ state: 'visible' });
+
+  await dialog.getByLabel(/mission name/i).fill(missionName);
+
+  if (overrides.type) {
+    await dialog.getByLabel(/type/i).selectOption(overrides.type);
+  }
+
+  await dialog.getByRole('button', { name: /create/i }).click();
+
+  // After creation, app navigates to /missions/:id
+  await page.waitForURL(/\/missions\//, { timeout: 10000 });
+
+  // Wait for the mission page to actually render with the mission name
+  await page.getByRole('heading', { name: missionName }).waitFor({ state: 'visible', timeout: 10000 });
 
   return missionName;
 }
@@ -66,6 +74,20 @@ export async function createMission(
  * Navigates to a specific mission by clicking its card on the dashboard.
  */
 export async function navigateToMission(page: Page, missionName: string): Promise<void> {
+  await page.goto('/dashboard');
   await page.getByText(missionName).click();
-  await page.waitForURL(/\/mission\//);
+  await page.waitForURL(/\/missions\//);
+  // Wait for mission page to load
+  await page.getByRole('heading', { name: missionName }).waitFor({ state: 'visible', timeout: 10000 });
+}
+
+/**
+ * Wait for the map to be ready on the mission page.
+ */
+export async function waitForMap(page: Page): Promise<void> {
+  // MapLibre adds the canvas after initialization
+  const mapCanvas = page.locator('canvas.maplibregl-canvas');
+  await mapCanvas.waitFor({ state: 'visible', timeout: 15000 });
+  // Give the map tiles a moment to start loading
+  await page.waitForTimeout(1500);
 }

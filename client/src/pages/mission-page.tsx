@@ -2,6 +2,7 @@ import { useEffect, useCallback, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../components/layout";
 import MissionMap from "../map/mission-map";
+import { MapErrorBoundary } from "../map/map-error-boundary";
 import WaypointPanel from "../components/waypoint-panel";
 import AircraftCrewPanel from "../components/aircraft-crew-panel";
 import ThreatPanel from "../components/threat-panel";
@@ -310,14 +311,16 @@ export default function MissionPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 h-[600px]">
-            <MissionMap
-              waypoints={waypoints}
-              threats={missionThreats}
-              editable={editable}
-              onMapClick={handleMapClick}
-              onWaypointDrag={handleWaypointDrag}
-              onMapReady={setMapInstance}
-            />
+            <MapErrorBoundary>
+              <MissionMap
+                waypoints={waypoints}
+                threats={missionThreats}
+                editable={editable}
+                onMapClick={handleMapClick}
+                onWaypointDrag={handleWaypointDrag}
+                onMapReady={setMapInstance}
+              />
+            </MapErrorBoundary>
           </div>
           <div className="lg:col-span-1 space-y-4 max-h-[600px] overflow-y-auto">
             <WaypointPanel
