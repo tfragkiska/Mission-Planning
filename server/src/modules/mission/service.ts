@@ -2,6 +2,7 @@ import { MissionStatus, MissionType, Priority, Role } from "@prisma/client";
 import { prisma } from "../../infra/database";
 import { NotFoundError, ForbiddenError, ValidationError } from "../../shared/errors";
 import { versionService } from "./version-service";
+import { emitMissionUpdate } from "../../infra/socket";
 
 const VALID_TRANSITIONS: Record<MissionStatus, MissionStatus[]> = {
   DRAFT: [MissionStatus.PLANNED],
@@ -156,6 +157,7 @@ export const missionService = {
     } catch {
       // Version tracking is best-effort, don't fail the operation
     }
+    try { emitMissionUpdate(id, "mission:updated", transitioned); } catch {}
     return transitioned;
   },
 };

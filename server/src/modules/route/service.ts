@@ -1,6 +1,7 @@
 import { WaypointType } from "@prisma/client";
 import { prisma } from "../../infra/database";
 import { NotFoundError, ValidationError } from "../../shared/errors";
+import { emitMissionUpdate } from "../../infra/socket";
 
 interface CreateWaypointInput {
   name?: string;
@@ -26,7 +27,7 @@ export const waypointService = {
 
     const count = await prisma.waypoint.count({ where: { missionId } });
 
-    return prisma.waypoint.create({
+    const waypoint = await prisma.waypoint.create({
       data: {
         missionId,
         sequenceOrder: count + 1,
@@ -39,6 +40,8 @@ export const waypointService = {
         type: (input.type as WaypointType) || WaypointType.WAYPOINT,
       },
     });
+    try { emitMissionUpdate(missionId, "waypoints:changed", { missionId }); } catch {}
+    return waypoint;
   },
 
   async listByMission(missionId: string) {
@@ -52,7 +55,7 @@ export const waypointService = {
     const waypoint = await prisma.waypoint.findUnique({ where: { id } });
     if (!waypoint) throw new NotFoundError("Waypoint");
 
-    return prisma.waypoint.update({
+    const updated = await prisma.waypoint.update({
       where: { id },
       data: {
         ...(input.name !== undefined && { name: input.name }),
@@ -64,12 +67,15 @@ export const waypointService = {
         ...(input.sequenceOrder !== undefined && { sequenceOrder: input.sequenceOrder }),
       },
     });
+    try { emitMissionUpdate(waypoint.missionId, "waypoints:changed", { missionId: waypoint.missionId }); } catch {}
+    return updated;
   },
 
   async delete(id: string) {
     const waypoint = await prisma.waypoint.findUnique({ where: { id } });
     if (!waypoint) throw new NotFoundError("Waypoint");
     await prisma.waypoint.delete({ where: { id } });
+    try { emitMissionUpdate(waypoint.missionId, "waypoints:changed", { missionId: waypoint.missionId }); } catch {}
   },
 
   async reorder(missionId: string, waypointIds: string[]) {

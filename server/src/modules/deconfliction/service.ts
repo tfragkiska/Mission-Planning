@@ -1,6 +1,7 @@
 import { ConflictType, ConflictSeverity, ConflictResolution, MissionStatus, Prisma } from "@prisma/client";
 import { prisma } from "../../infra/database";
 import { NotFoundError, ValidationError } from "../../shared/errors";
+import { emitMissionUpdate } from "../../infra/socket";
 
 export const deconflictionService = {
   async runCheck(missionId: string) {
@@ -156,6 +157,7 @@ export const deconflictionService = {
       results.push(result);
     }
 
+    try { emitMissionUpdate(missionId, "deconfliction:changed", { missionId }); } catch {}
     return results;
   },
 
@@ -169,7 +171,8 @@ export const deconflictionService = {
   async resolve(id: string, userId: string) {
     const result = await prisma.deconflictionResult.findUnique({ where: { id } });
     if (!result) throw new NotFoundError("Deconfliction result");
-    return prisma.deconflictionResult.update({
+    const missionId = result.missionId;
+    const updated = await prisma.deconflictionResult.update({
       where: { id },
       data: {
         resolution: ConflictResolution.RESOLVED,
@@ -177,6 +180,8 @@ export const deconflictionService = {
         resolvedAt: new Date(),
       },
     });
+    try { emitMissionUpdate(missionId, "deconfliction:changed", { missionId }); } catch {}
+    return updated;
   },
 
   async hasUnresolvedCritical(missionId: string): Promise<boolean> {

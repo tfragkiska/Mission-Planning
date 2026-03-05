@@ -73,6 +73,9 @@ model Mission {
   commanderComments String?       @map("commander_comments")
   createdById       String        @map("created_by_id")
   approvedById      String?       @map("approved_by_id")
+  isTemplate          Boolean       @default(false) @map("is_template")
+  templateName        String?       @map("template_name")
+  templateDescription String?       @map("template_description")
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")
 

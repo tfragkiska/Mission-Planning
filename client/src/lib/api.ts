@@ -60,6 +60,14 @@ export const api = {
       }),
     listVersions: (id: string) => request<MissionVersion[]>(`/missions/${id}/versions`),
     getVersion: (id: string, version: number) => request<MissionVersion>(`/missions/${id}/versions/${version}`),
+    clone: (id: string, name?: string) =>
+      request<Mission>(`/missions/${id}/clone`, { method: "POST", body: JSON.stringify({ name }) }),
+    saveAsTemplate: (id: string, templateName: string, description?: string) =>
+      request<Mission>(`/missions/${id}/save-template`, { method: "POST", body: JSON.stringify({ templateName, description }) }),
+    listTemplates: () =>
+      request<Array<{ id: string; name: string; templateName: string; templateDescription: string | null; type: string; priority: string; _count: { waypoints: number; aircraft: number } }>>("/missions/templates/list"),
+    createFromTemplate: (templateId: string, name: string) =>
+      request<Mission>("/missions/templates/create", { method: "POST", body: JSON.stringify({ templateId, name }) }),
   },
   waypoints: {
     list: (missionId: string) =>

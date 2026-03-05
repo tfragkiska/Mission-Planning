@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../components/layout";
 import MissionMap from "../map/mission-map";
 import WaypointPanel from "../components/waypoint-panel";
@@ -12,6 +12,7 @@ import { useMissionStore } from "../stores/mission-store";
 import { useWaypointStore } from "../stores/waypoint-store";
 import { useAuthStore } from "../stores/auth-store";
 import { api } from "../lib/api";
+import { useMissionSocket } from "../hooks/use-mission-socket";
 import type { MissionStatus, Threat, WeatherReport, DeconflictionResult, Aircraft, CrewMember } from "../lib/types";
 
 const NEXT_STATUS: Partial<Record<MissionStatus, { label: string; status: MissionStatus; roles: string[] }>> = {
@@ -29,6 +30,7 @@ export default function MissionPage() {
   const { waypoints, fetchWaypoints, addWaypoint, updateWaypoint, deleteWaypoint } =
     useWaypointStore();
   const user = useAuthStore((s) => s.user);
+  const navigate = useNavigate();
 
   const [missionAircraft, setMissionAircraft] = useState<Aircraft[]>([]);
   const [missionCrew, setMissionCrew] = useState<CrewMember[]>([]);
@@ -36,6 +38,34 @@ export default function MissionPage() {
   const [weatherReports, setWeatherReports] = useState<WeatherReport[]>([]);
   const [deconflictionResults, setDeconflictionResults] = useState<DeconflictionResult[]>([]);
   const [deconflictionLoading, setDeconflictionLoading] = useState(false);
+
+  const refetchMission = useCallback(() => { if (id) fetchMission(id); }, [id, fetchMission]);
+  const refetchWaypoints = useCallback(() => { if (id) fetchWaypoints(id); }, [id, fetchWaypoints]);
+  const refetchThreats = useCallback(() => {
+    if (id) api.threats.listByMission(id).then(setMissionThreats).catch(() => {});
+  }, [id]);
+  const refetchWeather = useCallback(() => {
+    if (id) api.weather.list(id).then(setWeatherReports).catch(() => {});
+  }, [id]);
+  const refetchDeconfliction = useCallback(() => {
+    if (id) api.deconfliction.list(id).then(setDeconflictionResults).catch(() => {});
+  }, [id]);
+  const refetchAircraft = useCallback(() => {
+    if (id) {
+      api.aircraft.list(id).then(setMissionAircraft).catch(() => {});
+      api.crew.list(id).then(setMissionCrew).catch(() => {});
+    }
+  }, [id]);
+
+  useMissionSocket({
+    missionId: id,
+    onMissionUpdated: refetchMission,
+    onWaypointsChanged: refetchWaypoints,
+    onThreatsChanged: refetchThreats,
+    onAircraftChanged: refetchAircraft,
+    onWeatherChanged: refetchWeather,
+    onDeconflictionChanged: refetchDeconfliction,
+  });
 
   useEffect(() => {
     if (id) {
@@ -141,6 +171,27 @@ export default function MissionPage() {
     setMissionCrew((prev) => prev.filter((c) => c.id !== crewId));
   }, [id]);
 
+  const handleClone = async () => {
+    if (!id) return;
+    const name = prompt("Name for cloned mission:", `${currentMission?.name} (Copy)`);
+    if (!name) return;
+    try {
+      const cloned = await api.missions.clone(id, name);
+      navigate(`/missions/${cloned.id}`);
+    } catch {}
+  };
+
+  const handleSaveTemplate = async () => {
+    if (!id) return;
+    const templateName = prompt("Template name:");
+    if (!templateName) return;
+    const description = prompt("Template description (optional):") || undefined;
+    try {
+      await api.missions.saveAsTemplate(id, templateName, description);
+      alert("Saved as template!");
+    } catch {}
+  };
+
   if (!currentMission) {
     return (
       <Layout>
@@ -182,6 +233,20 @@ export default function MissionPage() {
             </p>
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={handleClone}
+              className="px-4 py-2 bg-military-600 hover:bg-military-500 rounded font-medium"
+            >
+              Clone
+            </button>
+            {user?.role === "PLANNER" && (
+              <button
+                onClick={handleSaveTemplate}
+                className="px-4 py-2 bg-military-600 hover:bg-military-500 rounded font-medium"
+              >
+                Save as Template
+              </button>
+            )}
             <button
               onClick={handleDownloadBriefing}
               className="px-4 py-2 bg-military-600 hover:bg-military-500 rounded font-medium"

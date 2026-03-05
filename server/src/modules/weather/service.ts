@@ -1,5 +1,6 @@
 import { prisma } from "../../infra/database";
 import { NotFoundError } from "../../shared/errors";
+import { emitMissionUpdate } from "../../infra/socket";
 
 interface CreateWeatherInput {
   stationId: string;
@@ -17,7 +18,7 @@ interface CreateWeatherInput {
 
 export const weatherService = {
   async addReport(missionId: string, input: CreateWeatherInput) {
-    return prisma.weatherReport.create({
+    const report = await prisma.weatherReport.create({
       data: {
         missionId,
         stationId: input.stationId,
@@ -33,6 +34,8 @@ export const weatherService = {
         observedAt: new Date(input.observedAt),
       },
     });
+    try { emitMissionUpdate(missionId, "weather:changed", { missionId }); } catch {}
+    return report;
   },
 
   async listByMission(missionId: string) {
@@ -45,7 +48,9 @@ export const weatherService = {
   async deleteReport(id: string) {
     const report = await prisma.weatherReport.findUnique({ where: { id } });
     if (!report) throw new NotFoundError("Weather report");
+    const missionId = report.missionId;
     await prisma.weatherReport.delete({ where: { id } });
+    try { emitMissionUpdate(missionId, "weather:changed", { missionId }); } catch {}
   },
 
   // Parse a raw METAR string into structured data

@@ -8,6 +8,26 @@ export const waypointRouter = Router();
 
 waypointRouter.use(authenticate);
 
+/**
+ * @swagger
+ * /missions/{missionId}/waypoints:
+ *   get:
+ *     summary: List waypoints for a mission
+ *     tags: [Waypoints]
+ *     parameters:
+ *       - in: path
+ *         name: missionId
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Waypoint'
+ */
 waypointRouter.get(
   "/:missionId/waypoints",
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -20,6 +40,38 @@ waypointRouter.get(
   },
 );
 
+/**
+ * @swagger
+ * /missions/{missionId}/waypoints:
+ *   post:
+ *     summary: Add waypoint to mission
+ *     tags: [Waypoints]
+ *     parameters:
+ *       - in: path
+ *         name: missionId
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [lat, lon]
+ *             properties:
+ *               lat: { type: number, minimum: -90, maximum: 90 }
+ *               lon: { type: number, minimum: -180, maximum: 180 }
+ *               name: { type: string }
+ *               altitude: { type: number }
+ *               speed: { type: number }
+ *               type: { type: string, enum: [INITIAL_POINT, WAYPOINT, TARGET, EGRESS_POINT, LANDING, RALLY_POINT] }
+ *     responses:
+ *       201:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Waypoint'
+ */
 waypointRouter.post(
   "/:missionId/waypoints",
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -33,6 +85,43 @@ waypointRouter.post(
   },
 );
 
+/**
+ * @swagger
+ * /missions/{missionId}/waypoints/{id}:
+ *   put:
+ *     summary: Update a waypoint
+ *     tags: [Waypoints]
+ *     parameters:
+ *       - in: path
+ *         name: missionId
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               lat: { type: number }
+ *               lon: { type: number }
+ *               name: { type: string }
+ *               altitude: { type: number }
+ *               speed: { type: number }
+ *               type: { type: string, enum: [INITIAL_POINT, WAYPOINT, TARGET, EGRESS_POINT, LANDING, RALLY_POINT] }
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Waypoint'
+ *       404:
+ *         description: Waypoint not found
+ */
 waypointRouter.put(
   "/:missionId/waypoints/:id",
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -46,6 +135,27 @@ waypointRouter.put(
   },
 );
 
+/**
+ * @swagger
+ * /missions/{missionId}/waypoints/{id}:
+ *   delete:
+ *     summary: Delete a waypoint
+ *     tags: [Waypoints]
+ *     parameters:
+ *       - in: path
+ *         name: missionId
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     responses:
+ *       204:
+ *         description: Waypoint deleted
+ *       404:
+ *         description: Waypoint not found
+ */
 waypointRouter.delete(
   "/:missionId/waypoints/:id",
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -58,6 +168,37 @@ waypointRouter.delete(
   },
 );
 
+/**
+ * @swagger
+ * /missions/{missionId}/waypoints/reorder:
+ *   put:
+ *     summary: Reorder waypoints
+ *     tags: [Waypoints]
+ *     parameters:
+ *       - in: path
+ *         name: missionId
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [waypointIds]
+ *             properties:
+ *               waypointIds:
+ *                 type: array
+ *                 items: { type: string, format: uuid }
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Waypoint'
+ */
 waypointRouter.put(
   "/:missionId/waypoints/reorder",
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {

@@ -1,5 +1,6 @@
 import { prisma } from "../../infra/database";
 import { NotFoundError, ValidationError } from "../../shared/errors";
+import { emitMissionUpdate } from "../../infra/socket";
 
 interface CreateAircraftInput {
   type: string;
@@ -20,15 +21,19 @@ export const aircraftService = {
     if (mission.status !== "DRAFT") {
       throw new ValidationError("Can only modify aircraft in DRAFT missions");
     }
-    return prisma.aircraft.create({
+    const aircraft = await prisma.aircraft.create({
       data: { missionId, type: input.type, tailNumber: input.tailNumber, callsign: input.callsign },
     });
+    try { emitMissionUpdate(missionId, "aircraft:changed", { missionId }); } catch {}
+    return aircraft;
   },
 
   async removeAircraft(id: string) {
     const aircraft = await prisma.aircraft.findUnique({ where: { id } });
     if (!aircraft) throw new NotFoundError("Aircraft");
+    const missionId = aircraft.missionId;
     await prisma.aircraft.delete({ where: { id } });
+    try { emitMissionUpdate(missionId, "aircraft:changed", { missionId }); } catch {}
   },
 
   async listAircraft(missionId: string) {
@@ -41,15 +46,19 @@ export const aircraftService = {
     if (mission.status !== "DRAFT") {
       throw new ValidationError("Can only modify crew in DRAFT missions");
     }
-    return prisma.crewMember.create({
+    const crew = await prisma.crewMember.create({
       data: { missionId, name: input.name, role: input.role, aircraftId: input.aircraftId || null },
     });
+    try { emitMissionUpdate(missionId, "aircraft:changed", { missionId }); } catch {}
+    return crew;
   },
 
   async removeCrew(id: string) {
     const crew = await prisma.crewMember.findUnique({ where: { id } });
     if (!crew) throw new NotFoundError("Crew member");
+    const missionId = crew.missionId;
     await prisma.crewMember.delete({ where: { id } });
+    try { emitMissionUpdate(missionId, "aircraft:changed", { missionId }); } catch {}
   },
 
   async listCrew(missionId: string) {

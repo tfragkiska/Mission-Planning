@@ -7,6 +7,21 @@ import { AuthenticatedRequest } from "../../shared/types";
 export const threatRouter = Router();
 threatRouter.use(authenticate);
 
+/**
+ * @swagger
+ * /threats:
+ *   get:
+ *     summary: List all threats
+ *     tags: [Threats]
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Threat'
+ */
 // Global threat CRUD
 threatRouter.get("/", async (_req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
@@ -15,6 +30,26 @@ threatRouter.get("/", async (_req: AuthenticatedRequest, res: Response, next: Ne
   } catch (err) { next(err); }
 });
 
+/**
+ * @swagger
+ * /threats/{id}:
+ *   get:
+ *     summary: Get threat by ID
+ *     tags: [Threats]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Threat'
+ *       404:
+ *         description: Threat not found
+ */
 threatRouter.get("/:id", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const threat = await threatService.getById(req.params.id);
@@ -22,6 +57,34 @@ threatRouter.get("/:id", async (req: AuthenticatedRequest, res: Response, next: 
   } catch (err) { next(err); }
 });
 
+/**
+ * @swagger
+ * /threats:
+ *   post:
+ *     summary: Create a threat
+ *     tags: [Threats]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, category, lat, lon, rangeNm, lethality]
+ *             properties:
+ *               name: { type: string }
+ *               category: { type: string, enum: [SAM, AAA, MANPAD, RADAR, FIGHTER, OTHER] }
+ *               lat: { type: number }
+ *               lon: { type: number }
+ *               rangeNm: { type: number }
+ *               lethality: { type: string, enum: [LOW, MEDIUM, HIGH, CRITICAL] }
+ *               active: { type: boolean }
+ *     responses:
+ *       201:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Threat'
+ */
 threatRouter.post("/", authorize("PLANNER"), async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const data = createThreatSchema.parse(req.body);
@@ -30,6 +93,40 @@ threatRouter.post("/", authorize("PLANNER"), async (req: AuthenticatedRequest, r
   } catch (err) { next(err); }
 });
 
+/**
+ * @swagger
+ * /threats/{id}:
+ *   put:
+ *     summary: Update a threat
+ *     tags: [Threats]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name: { type: string }
+ *               category: { type: string, enum: [SAM, AAA, MANPAD, RADAR, FIGHTER, OTHER] }
+ *               lat: { type: number }
+ *               lon: { type: number }
+ *               rangeNm: { type: number }
+ *               lethality: { type: string, enum: [LOW, MEDIUM, HIGH, CRITICAL] }
+ *               active: { type: boolean }
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Threat'
+ *       404:
+ *         description: Threat not found
+ */
 threatRouter.put("/:id", authorize("PLANNER"), async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const data = updateThreatSchema.parse(req.body);
@@ -38,6 +135,23 @@ threatRouter.put("/:id", authorize("PLANNER"), async (req: AuthenticatedRequest,
   } catch (err) { next(err); }
 });
 
+/**
+ * @swagger
+ * /threats/{id}:
+ *   delete:
+ *     summary: Delete a threat
+ *     tags: [Threats]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     responses:
+ *       204:
+ *         description: Threat deleted
+ *       404:
+ *         description: Threat not found
+ */
 threatRouter.delete("/:id", authorize("PLANNER"), async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     await threatService.delete(req.params.id);
@@ -48,6 +162,26 @@ threatRouter.delete("/:id", authorize("PLANNER"), async (req: AuthenticatedReque
 export const missionThreatRouter = Router();
 missionThreatRouter.use(authenticate);
 
+/**
+ * @swagger
+ * /missions/{missionId}/threats:
+ *   get:
+ *     summary: List threats for a mission
+ *     tags: [Threats]
+ *     parameters:
+ *       - in: path
+ *         name: missionId
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Threat'
+ */
 // Mission-specific threat operations (mounted under /api/missions)
 missionThreatRouter.get("/:missionId/threats", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
@@ -56,6 +190,34 @@ missionThreatRouter.get("/:missionId/threats", async (req: AuthenticatedRequest,
   } catch (err) { next(err); }
 });
 
+/**
+ * @swagger
+ * /missions/{missionId}/threats:
+ *   post:
+ *     summary: Add threat to mission
+ *     tags: [Threats]
+ *     parameters:
+ *       - in: path
+ *         name: missionId
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [threatId]
+ *             properties:
+ *               threatId: { type: string, format: uuid }
+ *               notes: { type: string }
+ *     responses:
+ *       201:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ */
 missionThreatRouter.post("/:missionId/threats", authorize("PLANNER"), async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const { threatId, notes } = addThreatToMissionSchema.parse(req.body);
@@ -64,6 +226,25 @@ missionThreatRouter.post("/:missionId/threats", authorize("PLANNER"), async (req
   } catch (err) { next(err); }
 });
 
+/**
+ * @swagger
+ * /missions/{missionId}/threats/{threatId}:
+ *   delete:
+ *     summary: Remove threat from mission
+ *     tags: [Threats]
+ *     parameters:
+ *       - in: path
+ *         name: missionId
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *       - in: path
+ *         name: threatId
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *     responses:
+ *       204:
+ *         description: Threat removed from mission
+ */
 missionThreatRouter.delete("/:missionId/threats/:threatId", authorize("PLANNER"), async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     await threatService.removeFromMission(req.params.missionId, req.params.threatId);
@@ -71,6 +252,30 @@ missionThreatRouter.delete("/:missionId/threats/:threatId", authorize("PLANNER")
   } catch (err) { next(err); }
 });
 
+/**
+ * @swagger
+ * /missions/{missionId}/threats/nearby:
+ *   get:
+ *     summary: Find threats near mission route
+ *     tags: [Threats]
+ *     parameters:
+ *       - in: path
+ *         name: missionId
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *       - in: query
+ *         name: buffer
+ *         schema: { type: number }
+ *         description: Buffer distance in nautical miles (default 5)
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Threat'
+ */
 missionThreatRouter.get("/:missionId/threats/nearby", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const bufferNm = req.query.buffer ? parseFloat(req.query.buffer as string) : 5;
