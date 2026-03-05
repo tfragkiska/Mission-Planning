@@ -8,10 +8,15 @@ import ThreatPanel from "../components/threat-panel";
 import WeatherPanel from "../components/weather-panel";
 import DeconflictionPanel from "../components/deconfliction-panel";
 import VersionHistoryPanel from "../components/version-history-panel";
+import AltitudeProfile from "../components/altitude-profile";
+import AirspacePanel from "../components/airspace-panel";
+import { updateAirspaceLayers } from "../map/airspace-layer";
+import type { Airspace } from "../lib/airspace-types";
 import { useMissionStore } from "../stores/mission-store";
 import { useWaypointStore } from "../stores/waypoint-store";
 import { useAuthStore } from "../stores/auth-store";
 import { api } from "../lib/api";
+import { exportMapAsPng } from "../map/map-export";
 import { useMissionSocket } from "../hooks/use-mission-socket";
 import type { MissionStatus, Threat, WeatherReport, DeconflictionResult, Aircraft, CrewMember } from "../lib/types";
 
@@ -38,6 +43,9 @@ export default function MissionPage() {
   const [weatherReports, setWeatherReports] = useState<WeatherReport[]>([]);
   const [deconflictionResults, setDeconflictionResults] = useState<DeconflictionResult[]>([]);
   const [deconflictionLoading, setDeconflictionLoading] = useState(false);
+  const [mapInstance, setMapInstance] = useState<any>(null);
+  const [airspaces, setAirspaces] = useState<Airspace[]>([]);
+  const [visibleAirspaceIds, setVisibleAirspaceIds] = useState<Set<string>>(new Set());
 
   const refetchMission = useCallback(() => { if (id) fetchMission(id); }, [id, fetchMission]);
   const refetchWaypoints = useCallback(() => { if (id) fetchWaypoints(id); }, [id, fetchWaypoints]);
@@ -75,7 +83,19 @@ export default function MissionPage() {
       api.weather.list(id).then(setWeatherReports).catch(() => {});
       api.deconfliction.list(id).then(setDeconflictionResults).catch(() => {});
     }
+    // Load airspaces globally
+    api.airspaces.list({ active: true }).then((data: any) => {
+      setAirspaces(data);
+      setVisibleAirspaceIds(new Set((data as Airspace[]).map((a: Airspace) => a.id)));
+    }).catch(() => {});
   }, [id, fetchMission, fetchWaypoints]);
+
+  // Update airspace layers on map when airspaces or visibility changes
+  useEffect(() => {
+    if (mapInstance && airspaces.length > 0) {
+      updateAirspaceLayers(mapInstance, airspaces, visibleAirspaceIds);
+    }
+  }, [mapInstance, airspaces, visibleAirspaceIds]);
 
   useEffect(() => {
     if (currentMission) {
@@ -253,6 +273,12 @@ export default function MissionPage() {
             >
               Download Briefing
             </button>
+            <button
+              onClick={() => mapInstance && exportMapAsPng(mapInstance, currentMission.name)}
+              className="px-4 py-2 bg-military-600 hover:bg-military-500 rounded font-medium"
+            >
+              Export Map
+            </button>
             {currentMission.status === "UNDER_REVIEW" && user?.role === "COMMANDER" && (
               <button
                 onClick={() => {
@@ -290,6 +316,7 @@ export default function MissionPage() {
               editable={editable}
               onMapClick={handleMapClick}
               onWaypointDrag={handleWaypointDrag}
+              onMapReady={setMapInstance}
             />
           </div>
           <div className="lg:col-span-1 space-y-4 max-h-[600px] overflow-y-auto">
@@ -329,6 +356,27 @@ export default function MissionPage() {
               onResolve={handleResolveConflict}
               loading={deconflictionLoading}
             />
+            <AirspacePanel
+              airspaces={airspaces}
+              editable={editable}
+              onToggleVisibility={(airspaceId, visible) => {
+                setVisibleAirspaceIds((prev) => {
+                  const next = new Set(prev);
+                  if (visible) next.add(airspaceId);
+                  else next.delete(airspaceId);
+                  return next;
+                });
+              }}
+              onCreateAirspace={async (data) => {
+                const created = await api.airspaces.create(data);
+                setAirspaces((prev) => [...prev, created as Airspace]);
+              }}
+              onDeleteAirspace={async (airspaceId) => {
+                await api.airspaces.delete(airspaceId);
+                setAirspaces((prev) => prev.filter((a) => a.id !== airspaceId));
+              }}
+            />
+            <AltitudeProfile waypoints={waypoints} />
             <VersionHistoryPanel missionId={id!} />
           </div>
         </div>

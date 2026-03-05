@@ -9,9 +9,10 @@ interface Props {
   editable: boolean;
   onMapClick?: (lat: number, lon: number) => void;
   onWaypointDrag?: (id: string, lat: number, lon: number) => void;
+  onMapReady?: (map: maplibregl.Map) => void;
 }
 
-export default function MissionMap({ waypoints, threats, editable, onMapClick, onWaypointDrag }: Props) {
+export default function MissionMap({ waypoints, threats, editable, onMapClick, onWaypointDrag, onMapReady }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
@@ -49,6 +50,7 @@ export default function MissionMap({ waypoints, threats, editable, onMapClick, o
       },
       center: [0, 30],
       zoom: 3,
+      preserveDrawingBuffer: true,
     });
 
     map.addControl(new maplibregl.NavigationControl(), "top-right");
@@ -60,6 +62,7 @@ export default function MissionMap({ waypoints, threats, editable, onMapClick, o
     });
 
     mapRef.current = map;
+    onMapReady?.(map);
 
     return () => {
       map.remove();

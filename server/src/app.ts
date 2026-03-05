@@ -13,6 +13,8 @@ import { threatRouter, missionThreatRouter } from "./modules/threat/routes";
 import { weatherRouter } from "./modules/weather/routes";
 import { deconflictionRouter } from "./modules/deconfliction/routes";
 import { aircraftRouter } from "./modules/mission/aircraft-routes";
+import { airspaceRouter } from "./modules/airspace/routes";
+import { threatFeedRouter } from "./modules/threat/feed-routes";
 
 const app = express();
 const httpServer = createServer(app);
@@ -34,11 +36,13 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 app.use("/api/auth", authRouter);
 app.use("/api/missions", missionRouter);
 app.use("/api/missions", waypointRouter);
+app.use("/api/threats", threatFeedRouter);  // Must be before threatRouter (/:id catches "feeds")
 app.use("/api/threats", threatRouter);
 app.use("/api/missions", missionThreatRouter);
 app.use("/api/missions", weatherRouter);
 app.use("/api/missions", deconflictionRouter);
 app.use("/api/missions", aircraftRouter);
+app.use("/api/airspaces", airspaceRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {

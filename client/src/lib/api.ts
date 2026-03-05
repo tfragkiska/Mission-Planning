@@ -135,6 +135,19 @@ export const api = {
     remove: (missionId: string, id: string) =>
       request<void>(`/missions/${missionId}/crew/${id}`, { method: "DELETE" }),
   },
+  airspaces: {
+    list: async (filters?: { active?: boolean; type?: string }) => {
+      const params = new URLSearchParams();
+      if (filters?.active !== undefined) params.set("active", String(filters.active));
+      if (filters?.type) params.set("type", filters.type);
+      const query = params.toString();
+      return request(`/airspaces${query ? `?${query}` : ""}`);
+    },
+    create: async (data: any) => request("/airspaces", { method: "POST", body: JSON.stringify(data) }),
+    getById: async (id: string) => request(`/airspaces/${id}`),
+    update: async (id: string, data: any) => request(`/airspaces/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+    delete: async (id: string) => request<void>(`/airspaces/${id}`, { method: "DELETE" }),
+  },
   deconfliction: {
     run: (missionId: string) =>
       request<DeconflictionResult[]>(`/missions/${missionId}/deconfliction/run`, { method: "POST" }),

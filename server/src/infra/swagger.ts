@@ -115,6 +115,19 @@ const options: swaggerJsdoc.Options = {
             resolution: { type: "string", enum: ["UNRESOLVED", "RESOLVED", "ACCEPTED"] },
           },
         },
+        Airspace: {
+          type: "object",
+          properties: {
+            id: { type: "string", format: "uuid" },
+            name: { type: "string" },
+            type: { type: "string", enum: ["RESTRICTED", "PROHIBITED", "MOA", "WARNING", "ALERT", "TFR"] },
+            minAltitude: { type: "number", nullable: true },
+            maxAltitude: { type: "number", nullable: true },
+            active: { type: "boolean" },
+            coordinates: { type: "array", items: { type: "array", items: { type: "number" } } },
+            notes: { type: "string", nullable: true },
+          },
+        },
         Error: {
           type: "object",
           properties: {
@@ -125,7 +138,7 @@ const options: swaggerJsdoc.Options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: ["./src/modules/*/routes.ts", "./src/modules/*/aircraft-routes.ts"],
+  apis: ["./src/modules/*/routes.ts", "./src/modules/*/aircraft-routes.ts", "./src/modules/*/feed-routes.ts"],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

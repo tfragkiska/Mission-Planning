@@ -1,0 +1,50 @@
+{
+  "threats": [
+    {
+      "id": "feed-sa11",
+      "name": "SA-11 Buk Battery",
+      "category": "SAM",
+      "lat": 34.5,
+      "lon": 36.2,
+      "rangeNm": 20,
+      "lethality": "HIGH",
+      "minAltitude": 100,
+      "maxAltitude": 72000,
+      "notes": "Mobile battery, last confirmed position 2026-03-05"
+    },
+    {
+      "id": "feed-aaa-1",
+      "name": "AAA Emplacement North",
+      "category": "AAA",
+      "lat": 35.1,
+      "lon": 36.8,
+      "rangeNm": 3,
+      "lethality": "MEDIUM",
+      "minAltitude": 0,
+      "maxAltitude": 12000,
+      "notes": "Fixed position, 23mm and 57mm guns"
+    },
+    {
+      "id": "feed-radar-1",
+      "name": "P-18 Spoon Rest Radar",
+      "category": "RADAR",
+      "lat": 34.8,
+      "lon": 37.0,
+      "rangeNm": 100,
+      "lethality": "LOW",
+      "notes": "VHF early warning radar"
+    },
+    {
+      "id": "feed-manpad-1",
+      "name": "MANPAD Team Alpha",
+      "category": "MANPAD",
+      "lat": 35.3,
+      "lon": 36.5,
+      "rangeNm": 3,
+      "lethality": "MEDIUM",
+      "minAltitude": 0,
+      "maxAltitude": 15000,
+      "notes": "Mobile infantry team with SA-24 Grinch"
+    }
+  ]
+}

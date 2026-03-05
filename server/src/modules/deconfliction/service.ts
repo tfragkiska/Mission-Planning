@@ -124,7 +124,33 @@ export const deconflictionService = {
       }
     }
 
-    // Check 4: No waypoints warning
+    // Check 4: Restricted airspace violations
+    if (mission.waypoints.length >= 2) {
+      const airspaceViolations = await prisma.$queryRaw<Array<{ name: string; type: string }>>`
+        SELECT a.name, a.type
+        FROM airspaces a
+        WHERE a.active = true
+        AND a.type IN ('RESTRICTED', 'PROHIBITED', 'TFR')
+        AND ST_Intersects(
+          a.geom,
+          ST_Buffer(
+            ST_MakeLine(ARRAY(SELECT geom FROM waypoints WHERE mission_id = ${missionId} ORDER BY sequence_order))::geography,
+            1000
+          )::geometry
+        )
+      `;
+
+      for (const zone of airspaceViolations) {
+        conflicts.push({
+          conflictType: ConflictType.RESTRICTED_AIRSPACE,
+          severity: zone.type === "PROHIBITED" ? ConflictSeverity.CRITICAL : ConflictSeverity.WARNING,
+          description: `Route enters ${zone.type} airspace: ${zone.name}`,
+          details: { airspaceName: zone.name, airspaceType: zone.type },
+        });
+      }
+    }
+
+    // Check 5: No waypoints warning
     if (mission.waypoints.length === 0) {
       conflicts.push({
         conflictType: ConflictType.AIRSPACE,
@@ -133,7 +159,7 @@ export const deconflictionService = {
       });
     }
 
-    // Check 5: No scheduled time warning
+    // Check 6: No scheduled time warning
     if (!mission.scheduledStart || !mission.scheduledEnd) {
       conflicts.push({
         conflictType: ConflictType.TIMING,

@@ -244,6 +244,30 @@ model DeconflictionResult {
   @@map("deconfliction_results")
 }
 
+enum AirspaceType {
+  RESTRICTED
+  PROHIBITED
+  MOA
+  WARNING
+  ALERT
+  TFR
+}
+
+model Airspace {
+  id          String       @id @default(uuid())
+  name        String
+  type        AirspaceType
+  minAltitude Float?       @map("min_altitude")
+  maxAltitude Float?       @map("max_altitude")
+  active      Boolean      @default(true)
+  coordinates Json         // Array of [lon, lat] pairs forming polygon
+  notes       String?
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  @@map("airspaces")
+}
+
 model MissionVersion {
   id        String   @id @default(uuid())
   missionId String   @map("mission_id")
