@@ -1,19 +1,21 @@
 import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import type { Waypoint } from "../lib/types";
+import type { Waypoint, Threat } from "../lib/types";
 
 interface Props {
   waypoints: Waypoint[];
+  threats: Threat[];
   editable: boolean;
   onMapClick?: (lat: number, lon: number) => void;
   onWaypointDrag?: (id: string, lat: number, lon: number) => void;
 }
 
-export default function MissionMap({ waypoints, editable, onMapClick, onWaypointDrag }: Props) {
+export default function MissionMap({ waypoints, threats, editable, onMapClick, onWaypointDrag }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
+  const threatMarkersRef = useRef<maplibregl.Marker[]>([]);
   const onMapClickRef = useRef(onMapClick);
   const onWaypointDragRef = useRef(onWaypointDrag);
 
@@ -154,6 +156,46 @@ export default function MissionMap({ waypoints, editable, onMapClick, onWaypoint
       map.fitBounds(bounds, { padding: 80, maxZoom: 12 });
     }
   }, [waypoints, editable]);
+
+  // Update threat markers when threats change
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    // Clear existing threat markers
+    threatMarkersRef.current.forEach((m) => m.remove());
+    threatMarkersRef.current = [];
+
+    // Add markers for each threat
+    threats.forEach((t) => {
+      const color = t.lethality === "CRITICAL" ? "#dc2626" :
+                    t.lethality === "HIGH" ? "#ea580c" :
+                    t.lethality === "MEDIUM" ? "#ca8a04" : "#2563eb";
+
+      const el = document.createElement("div");
+      el.style.cssText = `
+        width: 20px; height: 20px; border-radius: 50%;
+        background: ${color}40; border: 2px solid ${color};
+        cursor: pointer;
+      `;
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([t.lon, t.lat])
+        .setPopup(
+          new maplibregl.Popup({ offset: 15 }).setHTML(
+            `<div style="color:#000">
+              <strong>${t.name}</strong><br/>
+              Category: ${t.category}<br/>
+              Range: ${t.rangeNm} NM<br/>
+              Lethality: ${t.lethality}
+            </div>`
+          )
+        )
+        .addTo(map);
+
+      threatMarkersRef.current.push(marker);
+    });
+  }, [threats]);
 
   return <div ref={containerRef} className="w-full h-full rounded-lg" />;
 }

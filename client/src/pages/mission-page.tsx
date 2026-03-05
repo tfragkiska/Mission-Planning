@@ -1,12 +1,17 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import Layout from "../components/layout";
 import MissionMap from "../map/mission-map";
 import WaypointPanel from "../components/waypoint-panel";
+import AircraftCrewPanel from "../components/aircraft-crew-panel";
+import ThreatPanel from "../components/threat-panel";
+import WeatherPanel from "../components/weather-panel";
+import DeconflictionPanel from "../components/deconfliction-panel";
 import { useMissionStore } from "../stores/mission-store";
 import { useWaypointStore } from "../stores/waypoint-store";
 import { useAuthStore } from "../stores/auth-store";
-import type { MissionStatus } from "../lib/types";
+import { api } from "../lib/api";
+import type { MissionStatus, Threat, WeatherReport, DeconflictionResult } from "../lib/types";
 
 const NEXT_STATUS: Partial<Record<MissionStatus, { label: string; status: MissionStatus; roles: string[] }>> = {
   DRAFT: { label: "Mark as Planned", status: "PLANNED", roles: ["PLANNER"] },
@@ -24,10 +29,18 @@ export default function MissionPage() {
     useWaypointStore();
   const user = useAuthStore((s) => s.user);
 
+  const [missionThreats, setMissionThreats] = useState<Threat[]>([]);
+  const [weatherReports, setWeatherReports] = useState<WeatherReport[]>([]);
+  const [deconflictionResults, setDeconflictionResults] = useState<DeconflictionResult[]>([]);
+  const [deconflictionLoading, setDeconflictionLoading] = useState(false);
+
   useEffect(() => {
     if (id) {
       fetchMission(id);
       fetchWaypoints(id);
+      api.threats.listByMission(id).then(setMissionThreats).catch(() => {});
+      api.weather.list(id).then(setWeatherReports).catch(() => {});
+      api.deconfliction.list(id).then(setDeconflictionResults).catch(() => {});
     }
   }, [id, fetchMission, fetchWaypoints]);
 
@@ -53,6 +66,52 @@ export default function MissionPage() {
     },
     [id, deleteWaypoint],
   );
+
+  const handleAddThreat = useCallback(async (threatId: string) => {
+    if (!id) return;
+    await api.threats.addToMission(id, threatId);
+    const threats = await api.threats.listByMission(id);
+    setMissionThreats(threats);
+  }, [id]);
+
+  const handleRemoveThreat = useCallback(async (threatId: string) => {
+    if (!id) return;
+    await api.threats.removeFromMission(id, threatId);
+    setMissionThreats((prev) => prev.filter((t) => t.id !== threatId));
+  }, [id]);
+
+  const handleAddWeather = useCallback((report: WeatherReport) => {
+    setWeatherReports((prev) => [...prev, report]);
+  }, []);
+
+  const handleDeleteWeather = useCallback(async (reportId: string) => {
+    if (!id) return;
+    await api.weather.delete(id, reportId);
+    setWeatherReports((prev) => prev.filter((r) => r.id !== reportId));
+  }, [id]);
+
+  const handleRunDeconfliction = useCallback(async () => {
+    if (!id) return;
+    setDeconflictionLoading(true);
+    try {
+      const results = await api.deconfliction.run(id);
+      setDeconflictionResults(results);
+    } finally {
+      setDeconflictionLoading(false);
+    }
+  }, [id]);
+
+  const handleResolveConflict = useCallback(async (conflictId: string) => {
+    if (!id) return;
+    const updated = await api.deconfliction.resolve(id, conflictId);
+    setDeconflictionResults((prev) => prev.map((r) => (r.id === conflictId ? updated : r)));
+  }, [id]);
+
+  // No-op handlers for aircraft/crew (backend endpoints not yet available)
+  const noopAddAircraft = useCallback(() => {}, []);
+  const noopAddCrew = useCallback(() => {}, []);
+  const noopRemoveAircraft = useCallback(() => {}, []);
+  const noopRemoveCrew = useCallback(() => {}, []);
 
   if (!currentMission) {
     return (
@@ -106,20 +165,52 @@ export default function MissionPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <div className="lg:col-span-3 h-[600px]">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 h-[600px]">
             <MissionMap
               waypoints={waypoints}
+              threats={missionThreats}
               editable={editable}
               onMapClick={handleMapClick}
               onWaypointDrag={handleWaypointDrag}
             />
           </div>
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-4 max-h-[600px] overflow-y-auto">
             <WaypointPanel
               waypoints={waypoints}
               editable={editable}
               onDelete={handleDelete}
+            />
+            <AircraftCrewPanel
+              missionId={id || ""}
+              aircraft={currentMission.aircraft || []}
+              crewMembers={currentMission.crewMembers || []}
+              editable={false}
+              onAddAircraft={noopAddAircraft}
+              onAddCrew={noopAddCrew}
+              onRemoveAircraft={noopRemoveAircraft}
+              onRemoveCrew={noopRemoveCrew}
+            />
+            <ThreatPanel
+              missionId={id || ""}
+              missionThreats={missionThreats}
+              editable={editable}
+              onAdd={handleAddThreat}
+              onRemove={handleRemoveThreat}
+            />
+            <WeatherPanel
+              missionId={id || ""}
+              reports={weatherReports}
+              editable={editable}
+              onAdd={handleAddWeather}
+              onDelete={handleDeleteWeather}
+            />
+            <DeconflictionPanel
+              results={deconflictionResults}
+              editable={editable}
+              onRunCheck={handleRunDeconfliction}
+              onResolve={handleResolveConflict}
+              loading={deconflictionLoading}
             />
           </div>
         </div>

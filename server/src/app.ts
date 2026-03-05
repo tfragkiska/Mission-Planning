@@ -5,6 +5,9 @@ import { errorHandler } from "./shared/middleware/error-handler";
 import { authRouter } from "./modules/users/routes";
 import { missionRouter } from "./modules/mission/routes";
 import { waypointRouter } from "./modules/route/routes";
+import { threatRouter, missionThreatRouter } from "./modules/threat/routes";
+import { weatherRouter } from "./modules/weather/routes";
+import { deconflictionRouter } from "./modules/deconfliction/routes";
 
 const app = express();
 
@@ -15,6 +18,10 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/missions", missionRouter);
 app.use("/api/missions", waypointRouter);
+app.use("/api/threats", threatRouter);
+app.use("/api/missions", missionThreatRouter);
+app.use("/api/missions", weatherRouter);
+app.use("/api/missions", deconflictionRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {

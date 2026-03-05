@@ -76,11 +76,14 @@ model Mission {
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")
 
-  createdBy   User         @relation("CreatedBy", fields: [createdById], references: [id])
-  approvedBy  User?        @relation("ApprovedBy", fields: [approvedById], references: [id])
-  aircraft    Aircraft[]
-  crewMembers CrewMember[]
-  waypoints   Waypoint[]
+  createdBy            User                  @relation("CreatedBy", fields: [createdById], references: [id])
+  approvedBy           User?                 @relation("ApprovedBy", fields: [approvedById], references: [id])
+  aircraft             Aircraft[]
+  crewMembers          CrewMember[]
+  waypoints            Waypoint[]
+  missionThreats       MissionThreat[]
+  weatherReports       WeatherReport[]
+  deconflictionResults DeconflictionResult[]
 
   @@map("missions")
 }
@@ -127,4 +130,112 @@ model Waypoint {
 
   @@unique([missionId, sequenceOrder])
   @@map("waypoints")
+}
+
+enum ThreatCategory {
+  SAM
+  AAA
+  MANPAD
+  RADAR
+  FIGHTER
+  OTHER
+}
+
+enum Lethality {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ConflictType {
+  AIRSPACE
+  TIMING
+  RESOURCE
+  RESTRICTED_AIRSPACE
+}
+
+enum ConflictSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum ConflictResolution {
+  UNRESOLVED
+  RESOLVED
+  ACCEPTED
+}
+
+model Threat {
+  id          String          @id @default(uuid())
+  name        String
+  category    ThreatCategory
+  lat         Float
+  lon         Float
+  rangeNm     Float           @map("range_nm")
+  lethality   Lethality
+  minAltitude Float?          @map("min_altitude")
+  maxAltitude Float?          @map("max_altitude")
+  active      Boolean         @default(true)
+  source      String          @default("manual")
+  notes       String?
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  missionThreats MissionThreat[]
+
+  @@map("threats")
+}
+
+model MissionThreat {
+  id        String  @id @default(uuid())
+  missionId String  @map("mission_id")
+  threatId  String  @map("threat_id")
+  notes     String?
+
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  threat  Threat  @relation(fields: [threatId], references: [id], onDelete: Cascade)
+
+  @@unique([missionId, threatId])
+  @@map("mission_threats")
+}
+
+model WeatherReport {
+  id          String   @id @default(uuid())
+  missionId   String   @map("mission_id")
+  stationId   String   @map("station_id")
+  type        String
+  rawReport   String   @map("raw_report")
+  temperature Float?
+  windSpeed   Float?   @map("wind_speed")
+  windDir     Float?   @map("wind_dir")
+  visibility  Float?
+  ceiling     Float?
+  conditions  String?
+  isManual    Boolean  @default(false) @map("is_manual")
+  observedAt  DateTime @map("observed_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@map("weather_reports")
+}
+
+model DeconflictionResult {
+  id           String             @id @default(uuid())
+  missionId    String             @map("mission_id")
+  conflictType ConflictType       @map("conflict_type")
+  severity     ConflictSeverity
+  description  String
+  resolution   ConflictResolution @default(UNRESOLVED)
+  resolvedBy   String?            @map("resolved_by")
+  resolvedAt   DateTime?          @map("resolved_at")
+  details      Json?
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime           @updatedAt @map("updated_at")
+
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@map("deconfliction_results")
 }

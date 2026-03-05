@@ -59,3 +59,51 @@ export interface Waypoint {
   timeOnTarget: string | null;
   type: WaypointType;
 }
+
+export type ThreatCategory = "SAM" | "AAA" | "MANPAD" | "RADAR" | "FIGHTER" | "OTHER";
+export type ThreatLethality = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+export type ConflictType = "AIRSPACE" | "TIMING" | "RESOURCE" | "RESTRICTED_AIRSPACE";
+export type ConflictSeverity = "INFO" | "WARNING" | "CRITICAL";
+export type ConflictResolution = "UNRESOLVED" | "RESOLVED" | "ACCEPTED";
+
+export interface Threat {
+  id: string;
+  name: string;
+  category: ThreatCategory;
+  lat: number;
+  lon: number;
+  rangeNm: number;
+  lethality: ThreatLethality;
+  minAltitude: number | null;
+  maxAltitude: number | null;
+  active: boolean;
+  notes: string | null;
+}
+
+export interface WeatherReport {
+  id: string;
+  missionId: string;
+  stationId: string;
+  type: string;
+  rawReport: string;
+  temperature: number | null;
+  windSpeed: number | null;
+  windDir: number | null;
+  visibility: number | null;
+  ceiling: number | null;
+  conditions: string | null;
+  isManual: boolean;
+  observedAt: string;
+}
+
+export interface DeconflictionResult {
+  id: string;
+  missionId: string;
+  conflictType: ConflictType;
+  severity: ConflictSeverity;
+  description: string;
+  resolution: ConflictResolution;
+  resolvedBy: string | null;
+  resolvedAt: string | null;
+  details: Record<string, unknown> | null;
+}
