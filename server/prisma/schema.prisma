@@ -1,0 +1,130 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [postgis]
+}
+
+enum Role {
+  PLANNER
+  PILOT
+  COMMANDER
+}
+
+enum MissionType {
+  TRAINING
+  OPERATIONAL
+}
+
+enum MissionStatus {
+  DRAFT
+  PLANNED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  BRIEFED
+  EXECUTING
+  DEBRIEFED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum WaypointType {
+  INITIAL_POINT
+  WAYPOINT
+  TARGET
+  EGRESS_POINT
+  LANDING
+  RALLY_POINT
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  role         Role
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  createdMissions  Mission[] @relation("CreatedBy")
+  approvedMissions Mission[] @relation("ApprovedBy")
+
+  @@map("users")
+}
+
+model Mission {
+  id                String        @id @default(uuid())
+  name              String
+  type              MissionType
+  status            MissionStatus @default(DRAFT)
+  priority          Priority      @default(MEDIUM)
+  scheduledStart    DateTime?     @map("scheduled_start")
+  scheduledEnd      DateTime?     @map("scheduled_end")
+  commanderComments String?       @map("commander_comments")
+  createdById       String        @map("created_by_id")
+  approvedById      String?       @map("approved_by_id")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  createdBy   User         @relation("CreatedBy", fields: [createdById], references: [id])
+  approvedBy  User?        @relation("ApprovedBy", fields: [approvedById], references: [id])
+  aircraft    Aircraft[]
+  crewMembers CrewMember[]
+  waypoints   Waypoint[]
+
+  @@map("missions")
+}
+
+model Aircraft {
+  id         String @id @default(uuid())
+  missionId  String @map("mission_id")
+  type       String
+  tailNumber String @map("tail_number")
+  callsign   String
+
+  mission     Mission      @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  crewMembers CrewMember[]
+
+  @@map("aircraft")
+}
+
+model CrewMember {
+  id         String  @id @default(uuid())
+  missionId  String  @map("mission_id")
+  aircraftId String? @map("aircraft_id")
+  role       String
+  name       String
+
+  mission  Mission   @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  aircraft Aircraft? @relation(fields: [aircraftId], references: [id], onDelete: SetNull)
+
+  @@map("crew_members")
+}
+
+model Waypoint {
+  id            String       @id @default(uuid())
+  missionId     String       @map("mission_id")
+  sequenceOrder Int          @map("sequence_order")
+  name          String?
+  lat           Float
+  lon           Float
+  altitude      Float?
+  speed         Float?
+  timeOnTarget  DateTime?    @map("time_on_target")
+  type          WaypointType @default(WAYPOINT)
+
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@unique([missionId, sequenceOrder])
+  @@map("waypoints")
+}

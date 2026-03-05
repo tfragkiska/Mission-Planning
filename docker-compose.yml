@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: mission-planning-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-mission_planner}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-mission_secret}
+      POSTGRES_DB: ${DB_NAME:-mission_planning}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
