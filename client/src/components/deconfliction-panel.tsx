@@ -8,10 +8,25 @@ interface Props {
   loading: boolean;
 }
 
-const severityStyles: Record<ConflictSeverity, { bg: string; border: string; text: string }> = {
-  CRITICAL: { bg: "bg-red-900/30", border: "border-red-700", text: "text-red-400" },
-  WARNING: { bg: "bg-yellow-900/30", border: "border-yellow-700", text: "text-yellow-400" },
-  INFO: { bg: "bg-blue-900/30", border: "border-blue-700", text: "text-blue-400" },
+const severityStyles: Record<ConflictSeverity, { bg: string; border: string; text: string; badge: string }> = {
+  CRITICAL: {
+    bg: "bg-danger-600/10",
+    border: "border-danger-600/40",
+    text: "text-danger-500",
+    badge: "bg-danger-600/20 text-danger-500 border-danger-600/30",
+  },
+  WARNING: {
+    bg: "bg-accent-600/10",
+    border: "border-accent-600/40",
+    text: "text-accent-400",
+    badge: "bg-accent-600/20 text-accent-400 border-accent-600/30",
+  },
+  INFO: {
+    bg: "bg-command-600/10",
+    border: "border-command-600/40",
+    text: "text-command-400",
+    badge: "bg-command-600/20 text-command-400 border-command-600/30",
+  },
 };
 
 export default function DeconflictionPanel({ results, editable, onRunCheck, onResolve, loading }: Props) {
@@ -19,16 +34,24 @@ export default function DeconflictionPanel({ results, editable, onRunCheck, onRe
   const warningCount = results.filter((r) => r.severity === "WARNING" && r.resolution === "UNRESOLVED").length;
 
   return (
-    <div className="bg-military-800 border border-military-700 rounded-lg p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold">Deconfliction</h3>
+    <div className="glass-panel border border-military-700/50 rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3 pb-2 border-b border-military-700/50">
+        <div className="flex items-center gap-2">
+          <span className="text-accent-400 text-sm font-bold">{"//"}</span>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Deconfliction</h3>
+        </div>
         {editable && (
           <button
             onClick={onRunCheck}
             disabled={loading}
-            className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 rounded"
+            className="px-4 py-1.5 text-xs font-bold uppercase tracking-wide bg-command-500 hover:bg-command-400 disabled:bg-command-600/30 disabled:text-command-400/50 rounded-lg text-white transition-all duration-200 shadow-glow-blue"
           >
-            {loading ? "Running..." : "Run Check"}
+            {loading ? (
+              <span className="flex items-center gap-1.5">
+                <span className="w-3 h-3 border border-white/50 border-t-transparent rounded-full animate-spin" />
+                Running...
+              </span>
+            ) : "Run Check"}
           </button>
         )}
       </div>
@@ -36,37 +59,53 @@ export default function DeconflictionPanel({ results, editable, onRunCheck, onRe
       {results.length > 0 && (
         <div className="flex gap-3 mb-3 text-xs">
           {criticalCount > 0 && (
-            <span className="text-red-400 font-medium">{criticalCount} Critical</span>
+            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-danger-600/20 text-danger-500 font-bold border border-danger-600/30 animate-pulse-slow">
+              {criticalCount} Critical
+            </span>
           )}
           {warningCount > 0 && (
-            <span className="text-yellow-400 font-medium">{warningCount} Warning</span>
+            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-accent-600/20 text-accent-400 font-bold border border-accent-600/30">
+              {warningCount} Warning
+            </span>
           )}
           {criticalCount === 0 && warningCount === 0 && (
-            <span className="text-green-400 font-medium">All Clear</span>
+            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-tactical-700/30 text-tactical-500 font-bold border border-tactical-600/30 shadow-glow-green">
+              All Clear
+            </span>
           )}
         </div>
       )}
 
       {results.length === 0 ? (
-        <p className="text-sm text-military-400">No deconfliction results. Run a check to detect conflicts.</p>
+        <p className="text-sm text-military-500 italic">No deconfliction results. Run a check to detect conflicts.</p>
       ) : (
         <div className="space-y-2 max-h-60 overflow-y-auto">
           {results.map((r) => {
             const style = severityStyles[r.severity] || severityStyles.INFO;
+            const isResolved = r.resolution === "RESOLVED";
+            const isUnresolvedCritical = r.severity === "CRITICAL" && r.resolution === "UNRESOLVED";
             return (
-              <div key={r.id} className={`${style.bg} ${style.border} border rounded px-3 py-2 text-sm`}>
+              <div
+                key={r.id}
+                className={`${isResolved ? "bg-military-800/40 border-military-700/30 opacity-60" : `${style.bg} ${style.border}`} border rounded-lg px-3 py-2.5 text-sm transition-all duration-200 ${isUnresolvedCritical ? "animate-pulse-slow" : ""}`}
+              >
                 <div className="flex items-center justify-between">
-                  <span className={`text-xs font-medium ${style.text}`}>{r.severity} — {r.conflictType}</span>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-1.5 py-0 rounded text-xs font-bold border ${isResolved ? "bg-military-700 text-military-500 border-military-600" : style.badge}`}>
+                      {r.severity}
+                    </span>
+                    <span className={`text-xs ${isResolved ? "text-military-500" : "text-military-300"}`}>{r.conflictType}</span>
+                  </div>
                   {r.resolution === "UNRESOLVED" && editable && (
-                    <button onClick={() => onResolve(r.id)} className="text-xs text-green-400 hover:text-green-300">
+                    <button onClick={() => onResolve(r.id)} className="text-xs text-tactical-500 hover:text-tactical-500 font-semibold transition-colors">
                       Resolve
                     </button>
                   )}
                   {r.resolution === "RESOLVED" && (
-                    <span className="text-xs text-green-400">Resolved</span>
+                    <span className="text-xs text-tactical-500/60 font-mono">RESOLVED</span>
                   )}
                 </div>
-                <p className="text-sm mt-1">{r.description}</p>
+                <p className={`text-sm mt-1.5 ${isResolved ? "text-military-500" : "text-military-300"}`}>{r.description}</p>
               </div>
             );
           })}

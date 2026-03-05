@@ -7,20 +7,20 @@ test.describe('Authentication', () => {
 
     await expect(page.getByLabel(/email/i)).toBeVisible();
     await expect(page.getByLabel(/password/i)).toBeVisible();
-    await expect(page.getByRole('button', { name: /sign in/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /authenticate|sign in/i })).toBeVisible();
   });
 
   test('planner can log in and is redirected to dashboard', async ({ page }) => {
     await login(page, users.planner);
 
     await expect(page).toHaveURL(/\/dashboard/);
-    await expect(page.getByText(/planner/i)).toBeVisible();
+    await expect(page.getByText('Alex Planner')).toBeVisible();
   });
 
   test('nav displays user name after login', async ({ page }) => {
     await login(page, users.planner);
 
-    await expect(page.locator('nav').getByText(/planner/i)).toBeVisible();
+    await expect(page.locator('nav').getByText('Alex Planner')).toBeVisible();
   });
 
   test('user can sign out and is redirected to login', async ({ page }) => {
@@ -36,7 +36,7 @@ test.describe('Authentication', () => {
 
     await page.getByLabel(/email/i).fill('wrong@mission.mil');
     await page.getByLabel(/password/i).fill('wrongpassword');
-    await page.getByRole('button', { name: /sign in/i }).click();
+    await page.getByRole('button', { name: /authenticate|sign in/i }).click();
 
     const errorMessage = page.getByText(/invalid|incorrect|unauthorized|failed/i);
     await errorMessage.waitFor({ state: 'visible', timeout: 10000 });

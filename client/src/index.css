@@ -1,3 +1,321 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ============================================================
+   OPORD Mission Planning System - Global Styles
+   Military Command Center Aesthetic
+   ============================================================ */
+
+/* --- Base Layer Overrides --- */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    scrollbar-width: thin;
+    scrollbar-color: #3d4349 #1a1c1e;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #1a1c1e;
+    border-radius: 0;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: #3d4349;
+    border-radius: 1px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #4d555c;
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: #1a1c1e;
+  }
+
+  /* Selection styling - military green tint */
+  ::selection {
+    background-color: rgba(45, 90, 45, 0.5);
+    color: #d1d5db;
+  }
+
+  ::-moz-selection {
+    background-color: rgba(45, 90, 45, 0.5);
+    color: #d1d5db;
+  }
+
+  /* Smooth transitions on interactive elements */
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"] {
+    transition: all 0.15s ease-out;
+  }
+
+  /* Default body background */
+  body {
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #0d1117;
+    color: #d1d5db;
+  }
+
+  /* Focus ring - command blue */
+  *:focus-visible {
+    outline: 1px solid rgba(52, 112, 204, 0.6);
+    outline-offset: 1px;
+  }
+}
+
+/* --- Component Layer --- */
+@layer components {
+  /* Glass Panel - frosted glass effect for cards and overlays */
+  .glass-panel {
+    background: rgba(30, 35, 40, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(61, 67, 73, 0.5);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.03),
+      0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .glass-panel-dark {
+    background: rgba(13, 17, 23, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(45, 49, 54, 0.6);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.02),
+      0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .glass-panel-light {
+    background: rgba(61, 67, 73, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+  }
+
+  /* Tactical Grid Background Pattern */
+  .tactical-grid {
+    background-image:
+      linear-gradient(
+        rgba(52, 112, 204, 0.03) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(52, 112, 204, 0.03) 1px,
+        transparent 1px
+      );
+    background-size: 24px 24px;
+  }
+
+  .tactical-grid-dense {
+    background-image:
+      linear-gradient(
+        rgba(52, 112, 204, 0.04) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(52, 112, 204, 0.04) 1px,
+        transparent 1px
+      );
+    background-size: 12px 12px;
+  }
+
+  /* Scan Line Effect - subtle CRT overlay */
+  .scan-line {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scan-line::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(74, 154, 74, 0.08),
+      transparent
+    );
+    animation: scan-line 4s linear infinite;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  /* Status Badges with Glow */
+  .badge-active {
+    background: rgba(45, 90, 45, 0.25);
+    color: #8fd68f;
+    border: 1px solid rgba(74, 154, 74, 0.35);
+    box-shadow: 0 0 6px rgba(74, 154, 74, 0.2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.125rem 0.5rem;
+    border-radius: 2px;
+  }
+
+  .badge-warning {
+    background: rgba(107, 54, 0, 0.25);
+    color: #f5c964;
+    border: 1px solid rgba(212, 148, 46, 0.35);
+    box-shadow: 0 0 6px rgba(212, 148, 46, 0.2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.125rem 0.5rem;
+    border-radius: 2px;
+  }
+
+  .badge-danger {
+    background: rgba(74, 18, 18, 0.25);
+    color: #e87070;
+    border: 1px solid rgba(184, 50, 50, 0.35);
+    box-shadow: 0 0 6px rgba(184, 50, 50, 0.2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.125rem 0.5rem;
+    border-radius: 2px;
+  }
+
+  .badge-info {
+    background: rgba(24, 48, 96, 0.25);
+    color: #78b0f0;
+    border: 1px solid rgba(52, 112, 204, 0.35);
+    box-shadow: 0 0 6px rgba(52, 112, 204, 0.2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.125rem 0.5rem;
+    border-radius: 2px;
+  }
+
+  .badge-neutral {
+    background: rgba(45, 49, 54, 0.5);
+    color: #9ca3af;
+    border: 1px solid rgba(61, 67, 73, 0.5);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.125rem 0.5rem;
+    border-radius: 2px;
+  }
+
+  /* Command Center Section Divider */
+  .divider-tactical {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(52, 112, 204, 0.3),
+      transparent
+    );
+  }
+
+  /* Tactical Data Display - monospace readout style */
+  .data-readout {
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-size: 0.8125rem;
+    letter-spacing: 0.025em;
+    color: #8fd68f;
+  }
+
+  /* Military-style card */
+  .card-military {
+    background: rgba(30, 35, 40, 0.6);
+    border: 1px solid rgba(61, 67, 73, 0.4);
+    border-radius: 2px;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out;
+  }
+
+  .card-military:hover {
+    border-color: rgba(52, 112, 204, 0.3);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 0 8px rgba(52, 112, 204, 0.1);
+  }
+
+  /* Input field styling */
+  .input-tactical {
+    background: rgba(13, 17, 23, 0.6);
+    border: 1px solid rgba(61, 67, 73, 0.5);
+    border-radius: 2px;
+    color: #d1d5db;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out;
+  }
+
+  .input-tactical:focus {
+    border-color: rgba(52, 112, 204, 0.5);
+    box-shadow: 0 0 0 1px rgba(52, 112, 204, 0.2);
+    outline: none;
+  }
+
+  .input-tactical::placeholder {
+    color: #4d555c;
+  }
+}
+
+/* --- Utility Layer --- */
+@layer utilities {
+  /* Text glow effects */
+  .text-glow-green {
+    text-shadow: 0 0 8px rgba(74, 154, 74, 0.5);
+  }
+
+  .text-glow-amber {
+    text-shadow: 0 0 8px rgba(212, 148, 46, 0.5);
+  }
+
+  .text-glow-blue {
+    text-shadow: 0 0 8px rgba(52, 112, 204, 0.5);
+  }
+
+  .text-glow-red {
+    text-shadow: 0 0 8px rgba(184, 50, 50, 0.5);
+  }
+
+  /* Border glow on hover */
+  .hover-glow-green:hover {
+    box-shadow: 0 0 8px rgba(74, 154, 74, 0.3);
+    border-color: rgba(74, 154, 74, 0.4);
+  }
+
+  .hover-glow-blue:hover {
+    box-shadow: 0 0 8px rgba(52, 112, 204, 0.3);
+    border-color: rgba(52, 112, 204, 0.4);
+  }
+
+  .hover-glow-amber:hover {
+    box-shadow: 0 0 8px rgba(212, 148, 46, 0.3);
+    border-color: rgba(212, 148, 46, 0.4);
+  }
+}

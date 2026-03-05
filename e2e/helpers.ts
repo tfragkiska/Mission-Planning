@@ -19,7 +19,7 @@ export async function login(page: Page, user: TestUser): Promise<void> {
   await page.goto('/login');
   await page.getByLabel(/email/i).fill(user.email);
   await page.getByLabel(/password/i).fill(user.password);
-  await page.getByRole('button', { name: /sign in/i }).click();
+  await page.getByRole('button', { name: /authenticate|sign in/i }).click();
   await page.waitForURL('**/dashboard**');
 }
 

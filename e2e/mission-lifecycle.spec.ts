@@ -9,15 +9,15 @@ test.describe('Mission Lifecycle', () => {
     await login(page, users.planner);
     await createMission(page);
 
-    await expect(page.getByText(/Status:.*DRAFT/)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('DRAFT').first()).toBeVisible({ timeout: 10000 });
 
     // Transition: Draft -> Planned
     await page.getByRole('button', { name: /mark as planned/i }).click();
-    await expect(page.getByText(/Status:.*PLANNED/)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('PLANNED').first()).toBeVisible({ timeout: 10000 });
 
     // Transition: Planned -> Under Review
     await page.getByRole('button', { name: /submit for review/i }).click();
-    await expect(page.getByText(/Status:.*UNDER REVIEW/)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('UNDER REVIEW').first()).toBeVisible({ timeout: 10000 });
 
     const missionUrl = page.url();
 
@@ -26,9 +26,9 @@ test.describe('Mission Lifecycle', () => {
     await login(page, users.commander);
 
     await page.goto(missionUrl);
-    await expect(page.getByText(/Status:.*UNDER REVIEW/)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('UNDER REVIEW').first()).toBeVisible({ timeout: 10000 });
 
     await page.getByRole('button', { name: /approve/i }).click();
-    await expect(page.getByText(/Status:.*APPROVED/)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('APPROVED').first()).toBeVisible({ timeout: 10000 });
   });
 });

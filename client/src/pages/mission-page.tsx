@@ -30,6 +30,30 @@ const NEXT_STATUS: Partial<Record<MissionStatus, { label: string; status: Missio
   EXECUTING: { label: "Complete Debrief", status: "DEBRIEFED", roles: ["PLANNER"] },
 };
 
+const STATUS_BADGE: Record<string, string> = {
+  DRAFT: "bg-military-600 text-military-300 shadow-glow-green",
+  PLANNED: "bg-tactical-700 text-tactical-500 shadow-glow-green",
+  UNDER_REVIEW: "bg-accent-600/20 text-accent-400 shadow-glow-amber",
+  APPROVED: "bg-command-600/20 text-command-400 shadow-glow-blue",
+  BRIEFED: "bg-command-500/20 text-command-400 shadow-glow-blue",
+  EXECUTING: "bg-tactical-600/20 text-tactical-500 shadow-glow-green animate-pulse-slow",
+  DEBRIEFED: "bg-military-700 text-military-400",
+  REJECTED: "bg-danger-600/20 text-danger-500",
+};
+
+const TYPE_PILL: Record<string, string> = {
+  TRAINING: "bg-command-600/20 text-command-400 border border-command-600/30",
+  COMBAT: "bg-danger-600/20 text-danger-500 border border-danger-600/30",
+  OPERATIONAL: "bg-tactical-600/20 text-tactical-500 border border-tactical-600/30",
+};
+
+const PRIORITY_PILL: Record<string, string> = {
+  LOW: "bg-military-700 text-military-400 border border-military-600",
+  MEDIUM: "bg-accent-600/15 text-accent-400 border border-accent-600/30",
+  HIGH: "bg-danger-600/15 text-danger-500 border border-danger-600/30",
+  CRITICAL: "bg-danger-600/25 text-danger-500 border border-danger-500/40 animate-pulse-slow",
+};
+
 export default function MissionPage() {
   const { id } = useParams<{ id: string }>();
   const { currentMission, fetchMission, transitionMission } = useMissionStore();
@@ -216,7 +240,12 @@ export default function MissionPage() {
   if (!currentMission) {
     return (
       <Layout>
-        <p className="text-military-400">Loading mission...</p>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="w-8 h-8 border-2 border-command-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-military-400 font-mono text-sm tracking-wide">LOADING MISSION DATA...</p>
+          </div>
+        </div>
       </Layout>
     );
   }
@@ -245,48 +274,68 @@ export default function MissionPage() {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-2xl font-bold">{currentMission.name}</h2>
-            <p className="text-military-400 text-sm">
-              {currentMission.type} | {currentMission.priority} | Status: {currentMission.status.replace(/_/g, " ")}
-            </p>
+      <div className="max-w-7xl mx-auto animate-fade-in">
+        {/* Mission Header */}
+        <div className="glass-panel rounded-xl p-5 mb-5 border border-military-700/50">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <div className="flex items-center gap-4 mb-2">
+                <h2 className="text-3xl font-bold text-gray-100 tracking-tight">{currentMission.name}</h2>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${STATUS_BADGE[currentMission.status] || "bg-military-700 text-military-400"}`}>
+                  {currentMission.status.replace(/_/g, " ")}
+                </span>
+              </div>
+              <div className="flex items-center gap-3 mt-2">
+                <span className={`px-2.5 py-0.5 rounded text-xs font-semibold uppercase tracking-wide ${TYPE_PILL[currentMission.type] || "bg-military-700 text-military-400"}`}>
+                  {currentMission.type}
+                </span>
+                <span className={`px-2.5 py-0.5 rounded text-xs font-semibold uppercase tracking-wide ${PRIORITY_PILL[currentMission.priority] || "bg-military-700 text-military-400"}`}>
+                  {currentMission.priority} PRIORITY
+                </span>
+                <span className="w-px h-4 bg-military-600" />
+                <span className="text-military-400 text-xs font-mono">ID: {id?.slice(0, 8)}</span>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-2">
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-2 pt-3 border-t border-military-700/50">
             <button
               onClick={handleClone}
-              className="px-4 py-2 bg-military-600 hover:bg-military-500 rounded font-medium"
+              className="glass-panel px-4 py-2 rounded-lg text-sm font-medium text-military-300 hover:text-gray-100 hover:border-military-500 border border-military-700/50 transition-all duration-200"
             >
               Clone
             </button>
             {user?.role === "PLANNER" && (
               <button
                 onClick={handleSaveTemplate}
-                className="px-4 py-2 bg-military-600 hover:bg-military-500 rounded font-medium"
+                className="glass-panel px-4 py-2 rounded-lg text-sm font-medium text-military-300 hover:text-gray-100 hover:border-military-500 border border-military-700/50 transition-all duration-200"
               >
                 Save as Template
               </button>
             )}
             <button
               onClick={handleDownloadBriefing}
-              className="px-4 py-2 bg-military-600 hover:bg-military-500 rounded font-medium"
+              className="glass-panel px-4 py-2 rounded-lg text-sm font-medium text-military-300 hover:text-gray-100 hover:border-military-500 border border-military-700/50 transition-all duration-200"
             >
               Download Briefing
             </button>
             <button
               onClick={() => mapInstance && exportMapAsPng(mapInstance, currentMission.name)}
-              className="px-4 py-2 bg-military-600 hover:bg-military-500 rounded font-medium"
+              className="glass-panel px-4 py-2 rounded-lg text-sm font-medium text-military-300 hover:text-gray-100 hover:border-military-500 border border-military-700/50 transition-all duration-200"
             >
               Export Map
             </button>
+
+            <span className="flex-1" />
+
             {currentMission.status === "UNDER_REVIEW" && user?.role === "COMMANDER" && (
               <button
                 onClick={() => {
                   const comments = prompt("Rejection reason:");
                   if (comments && id) transitionMission(id, "REJECTED", comments);
                 }}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded font-medium"
+                className="px-5 py-2 bg-danger-600 hover:bg-danger-500 rounded-lg text-sm font-bold uppercase tracking-wide text-white transition-all duration-200 shadow-lg hover:shadow-danger-500/25"
               >
                 Reject
               </button>
@@ -294,7 +343,7 @@ export default function MissionPage() {
             {canTransition && (
               <button
                 onClick={() => id && transitionMission(id, nextAction.status)}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded font-medium"
+                className="px-5 py-2 bg-command-500 hover:bg-command-400 rounded-lg text-sm font-bold uppercase tracking-wide text-white transition-all duration-200 shadow-lg shadow-glow-blue"
               >
                 {nextAction.label}
               </button>
@@ -302,15 +351,24 @@ export default function MissionPage() {
           </div>
         </div>
 
+        {/* Commander Feedback */}
         {currentMission.commanderComments && (
-          <div className="bg-red-900/30 border border-red-700 rounded px-4 py-3 mb-4">
-            <p className="text-sm font-medium text-red-300">Commander feedback:</p>
-            <p className="text-sm text-red-200">{currentMission.commanderComments}</p>
+          <div className="glass-panel bg-danger-600/10 border border-danger-600/40 rounded-xl px-5 py-4 mb-5 animate-fade-in">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-danger-600/20 flex items-center justify-center mt-0.5">
+                <span className="text-danger-500 text-lg font-bold">!</span>
+              </div>
+              <div>
+                <p className="text-sm font-bold uppercase tracking-wide text-danger-500 mb-1">Commander Feedback</p>
+                <p className="text-sm text-red-200 leading-relaxed">{currentMission.commanderComments}</p>
+              </div>
+            </div>
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 h-[600px]">
+        {/* Map + Sidebar Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="lg:col-span-2 h-[600px] rounded-xl overflow-hidden border border-military-700/50 shadow-lg">
             <MapErrorBoundary>
               <MissionMap
                 waypoints={waypoints}
@@ -322,7 +380,7 @@ export default function MissionPage() {
               />
             </MapErrorBoundary>
           </div>
-          <div className="lg:col-span-1 space-y-4 max-h-[600px] overflow-y-auto">
+          <div className="lg:col-span-1 space-y-4 max-h-[600px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-military-700 scrollbar-track-transparent">
             <WaypointPanel
               waypoints={waypoints}
               editable={editable}

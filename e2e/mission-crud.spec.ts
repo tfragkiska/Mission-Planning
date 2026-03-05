@@ -28,6 +28,6 @@ test.describe('Mission CRUD', () => {
   test('new mission has DRAFT status', async ({ page }) => {
     await createMission(page);
 
-    await expect(page.getByText(/Status:.*DRAFT/)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('DRAFT').first()).toBeVisible({ timeout: 10000 });
   });
 });

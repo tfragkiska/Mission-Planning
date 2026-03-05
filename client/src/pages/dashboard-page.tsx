@@ -74,39 +74,73 @@ export default function DashboardPage() {
 
   return (
     <Layout>
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Missions</h2>
-          <div className="flex items-center gap-3">
-            <DashboardViewToggle view={view} onChange={setView} />
-            {user?.role === "PLANNER" && (
-              <button
-                onClick={() => setShowCreate(true)}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded font-medium transition-colors"
-              >
-                + New Mission
-              </button>
-            )}
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header Section */}
+        <div className="relative mb-8">
+          <div className="absolute inset-0 tactical-grid opacity-20 rounded-xl" />
+          <div className="relative glass-panel rounded-xl border border-military-700/50 px-8 py-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <div className="w-2 h-2 rounded-full bg-tactical-500 animate-pulse-slow shadow-glow-green" />
+                  <span className="text-xs font-mono uppercase tracking-[0.3em] text-tactical-500">
+                    System Active
+                  </span>
+                </div>
+                <h1 className="text-3xl font-bold tracking-tight text-white">
+                  Mission Operations Center
+                </h1>
+                <p className="text-sm text-military-400 mt-1 font-mono">
+                  {missions.length} missions registered // {filtered.length} displayed
+                </p>
+              </div>
+              <div className="flex items-center gap-4">
+                <DashboardViewToggle view={view} onChange={setView} />
+                {user?.role === "PLANNER" && (
+                  <button
+                    onClick={() => setShowCreate(true)}
+                    className="group relative px-5 py-2.5 bg-command-500 hover:bg-command-600 rounded-lg font-semibold text-sm transition-all duration-200 hover:shadow-glow-blue flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    New Mission
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
         <MissionStats missions={missions} />
         <MissionFiltersBar filters={filters} onChange={setFilters} />
 
-        {loading && <p className="text-military-400">Loading missions...</p>}
+        {loading && (
+          <div className="flex items-center justify-center py-16">
+            <div className="flex items-center gap-3 text-military-400">
+              <div className="w-2 h-2 rounded-full bg-command-500 animate-pulse-slow" />
+              <span className="font-mono text-sm tracking-wide">Loading missions...</span>
+            </div>
+          </div>
+        )}
 
         {!loading && filtered.length === 0 && (
-          <p className="text-military-400">No missions match your filters.</p>
+          <div className="glass-panel rounded-xl border border-military-700/30 py-16 text-center">
+            <div className="text-military-500 text-4xl mb-3">--</div>
+            <p className="text-military-400 font-mono text-sm">No missions match current filters</p>
+          </div>
         )}
 
         {view === "grid" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
             {filtered.map((mission) => (
               <MissionCard key={mission.id} mission={mission} />
             ))}
           </div>
         ) : (
-          <MissionTimeline missions={filtered} />
+          <div className="animate-fade-in">
+            <MissionTimeline missions={filtered} />
+          </div>
         )}
 
         {showCreate && <CreateMissionModal onClose={() => setShowCreate(false)} />}

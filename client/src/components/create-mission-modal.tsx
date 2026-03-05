@@ -7,6 +7,13 @@ interface Props {
   onClose: () => void;
 }
 
+const priorityIndicators: Record<string, string> = {
+  LOW: "bg-tactical-500",
+  MEDIUM: "bg-accent-500",
+  HIGH: "bg-orange-500",
+  CRITICAL: "bg-danger-500",
+};
+
 export default function CreateMissionModal({ onClose }: Props) {
   const [name, setName] = useState("");
   const [type, setType] = useState("TRAINING");
@@ -40,85 +47,157 @@ export default function CreateMissionModal({ onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" role="dialog" aria-modal="true">
+    <div
+      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50"
+      role="dialog"
+      aria-modal="true"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <form
         onSubmit={handleSubmit}
-        className="bg-military-800 p-6 rounded-lg w-full max-w-md"
+        className="glass-panel bg-military-900/90 border border-military-700/50 p-8 rounded-xl w-full max-w-md shadow-2xl animate-fade-in"
       >
-        <h2 className="text-xl font-bold mb-4">New Mission</h2>
+        {/* Header */}
+        <div className="mb-6">
+          <div className="h-px w-12 bg-accent-400 mb-4" />
+          <h2 className="text-lg font-bold uppercase tracking-wide text-military-300">
+            New Mission
+          </h2>
+        </div>
+
+        {/* Error */}
         {error && (
-          <div className="bg-red-900/50 text-red-200 px-3 py-2 rounded mb-3 text-sm">{error}</div>
+          <div className="bg-danger-500/10 border border-danger-500/30 text-red-200 px-4 py-2.5 rounded-lg mb-4 text-sm flex items-center gap-2">
+            <span className="text-danger-500 font-bold text-xs uppercase tracking-wider">Warning</span>
+            <span className="text-military-300">|</span>
+            {error}
+          </div>
         )}
-        <div className="flex gap-2 mb-3">
-          <button type="button" onClick={() => setUseTemplate(false)}
-            className={`px-3 py-1 text-sm rounded ${!useTemplate ? "bg-blue-600" : "bg-military-700"}`}>
+
+        {/* Blank / Template Toggle */}
+        <div className="flex gap-2 mb-5">
+          <button
+            type="button"
+            onClick={() => setUseTemplate(false)}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md border transition-all duration-200 ${
+              !useTemplate
+                ? "bg-command-500 border-command-400 text-white shadow-glow-blue"
+                : "bg-military-800 border-military-600 text-military-400 hover:border-military-500 hover:text-military-300"
+            }`}
+          >
             Blank
           </button>
-          <button type="button" onClick={() => setUseTemplate(true)}
-            className={`px-3 py-1 text-sm rounded ${useTemplate ? "bg-blue-600" : "bg-military-700"}`}>
+          <button
+            type="button"
+            onClick={() => setUseTemplate(true)}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md border transition-all duration-200 ${
+              useTemplate
+                ? "bg-command-500 border-command-400 text-white shadow-glow-blue"
+                : "bg-military-800 border-military-600 text-military-400 hover:border-military-500 hover:text-military-300"
+            }`}
+          >
             From Template
           </button>
         </div>
+
+        {/* Template Select */}
         {useTemplate && (
-          <div className="mb-3">
-            <label className="block text-sm text-military-300 mb-1">Template</label>
-            <select value={selectedTemplate} onChange={(e) => setSelectedTemplate(e.target.value)}
-              className="w-full px-3 py-2 bg-military-700 border border-military-600 rounded text-gray-100" required>
+          <div className="mb-4">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-military-400 mb-1.5">
+              Template
+            </label>
+            <select
+              value={selectedTemplate}
+              onChange={(e) => setSelectedTemplate(e.target.value)}
+              className="w-full px-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors"
+              required
+            >
               <option value="">Select a template...</option>
               {templates.map((t) => (
-                <option key={t.id} value={t.id}>{t.templateName} ({t._count.waypoints} waypoints, {t._count.aircraft} aircraft)</option>
+                <option key={t.id} value={t.id}>
+                  {t.templateName} ({t._count.waypoints} waypoints, {t._count.aircraft} aircraft)
+                </option>
               ))}
             </select>
           </div>
         )}
-        <div className="mb-3">
-          <label htmlFor="mission-name" className="block text-sm text-military-300 mb-1">Mission Name</label>
+
+        {/* Mission Name */}
+        <div className="mb-4">
+          <label
+            htmlFor="mission-name"
+            className="block text-xs font-semibold uppercase tracking-wider text-military-400 mb-1.5"
+          >
+            Mission Name
+          </label>
           <input
             id="mission-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 bg-military-700 border border-military-600 rounded text-gray-100 focus:outline-none focus:border-blue-500"
+            placeholder="e.g. OPERATION NIGHTHAWK"
+            className="w-full px-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 placeholder:text-military-600 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors"
             required
           />
         </div>
-        <div className="mb-3">
-          <label htmlFor="mission-type" className="block text-sm text-military-300 mb-1">Type</label>
+
+        {/* Type */}
+        <div className="mb-4">
+          <label
+            htmlFor="mission-type"
+            className="block text-xs font-semibold uppercase tracking-wider text-military-400 mb-1.5"
+          >
+            Type
+          </label>
           <select
             id="mission-type"
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full px-3 py-2 bg-military-700 border border-military-600 rounded text-gray-100"
+            className="w-full px-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors"
           >
             <option value="TRAINING">Training</option>
             <option value="OPERATIONAL">Operational</option>
           </select>
         </div>
-        <div className="mb-4">
-          <label className="block text-sm text-military-300 mb-1">Priority</label>
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            className="w-full px-3 py-2 bg-military-700 border border-military-600 rounded text-gray-100"
-          >
-            <option value="LOW">Low</option>
-            <option value="MEDIUM">Medium</option>
-            <option value="HIGH">High</option>
-            <option value="CRITICAL">Critical</option>
-          </select>
+
+        {/* Priority */}
+        <div className="mb-6">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-military-400 mb-1.5">
+            Priority
+          </label>
+          <div className="relative">
+            <span
+              className={`absolute left-3 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full ${priorityIndicators[priority]}`}
+            />
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
+              className="w-full pl-8 pr-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors"
+            >
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
+              <option value="CRITICAL">Critical</option>
+            </select>
+          </div>
         </div>
+
+        {/* Divider */}
+        <div className="h-px bg-military-700/50 mb-5" />
+
+        {/* Actions */}
         <div className="flex gap-3 justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-military-400 hover:text-gray-100"
+            className="px-5 py-2.5 text-sm font-medium text-military-400 hover:text-military-300 border border-transparent hover:border-military-600 rounded-lg transition-all duration-200"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded font-medium"
+            className="px-6 py-2.5 bg-command-500 hover:bg-command-600 hover:shadow-glow-blue text-white rounded-lg font-semibold text-sm uppercase tracking-wider transition-all duration-200"
           >
-            Create
+            Create Mission
           </button>
         </div>
       </form>

@@ -10,11 +10,20 @@ interface Props {
   onRemove: (threatId: string) => void;
 }
 
-const lethalityColors: Record<ThreatLethality, string> = {
-  LOW: "text-blue-400",
-  MEDIUM: "text-yellow-400",
-  HIGH: "text-orange-400",
-  CRITICAL: "text-red-400",
+const lethalityBadge: Record<ThreatLethality, string> = {
+  LOW: "bg-command-600/20 text-command-400 border-command-600/30",
+  MEDIUM: "bg-accent-600/20 text-accent-400 border-accent-600/30",
+  HIGH: "bg-orange-900/30 text-orange-400 border-orange-600/30",
+  CRITICAL: "bg-danger-600/20 text-danger-500 border-danger-600/30 shadow-glow-amber",
+};
+
+const categoryBg: Record<ThreatCategory, string> = {
+  SAM: "bg-danger-600/20 text-danger-500",
+  AAA: "bg-orange-900/30 text-orange-400",
+  MANPAD: "bg-accent-600/20 text-accent-400",
+  RADAR: "bg-command-600/20 text-command-400",
+  FIGHTER: "bg-danger-600/25 text-danger-500",
+  OTHER: "bg-military-600 text-military-300",
 };
 
 const categoryIcons: Record<ThreatCategory, string> = {
@@ -41,29 +50,38 @@ export default function ThreatPanel({ missionThreats, editable, onAdd, onRemove 
   );
 
   return (
-    <div className="bg-military-800 border border-military-700 rounded-lg p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold">Threats ({missionThreats.length})</h3>
+    <div className="glass-panel border border-military-700/50 rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3 pb-2 border-b border-military-700/50">
+        <div className="flex items-center gap-2">
+          <span className="text-danger-500 text-sm font-bold">{"//"}</span>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Threats</h3>
+          <span className="bg-danger-600/20 text-danger-500 text-xs font-bold px-2 py-0.5 rounded-full min-w-[1.5rem] text-center">
+            {missionThreats.length}
+          </span>
+        </div>
         {editable && (
-          <button onClick={() => setShowAdd(!showAdd)} className="text-xs text-blue-400 hover:text-blue-300">
+          <button onClick={() => setShowAdd(!showAdd)} className="text-xs text-command-400 hover:text-command-300 font-semibold transition-colors">
             {showAdd ? "Cancel" : "+ Add Threat"}
           </button>
         )}
       </div>
 
       {showAdd && (
-        <div className="mb-3 max-h-40 overflow-y-auto space-y-1">
+        <div className="mb-3 max-h-40 overflow-y-auto space-y-1.5 bg-military-800/40 rounded-lg p-2 border border-military-700/30">
           {availableThreats.length === 0 ? (
-            <p className="text-xs text-military-400">No threats available</p>
+            <p className="text-xs text-military-500 italic py-1">No threats available</p>
           ) : (
             availableThreats.map((t) => (
-              <div key={t.id} className="flex items-center justify-between bg-military-700 rounded px-2 py-1 text-sm">
-                <span>
-                  <span className={`font-mono mr-1 ${lethalityColors[t.lethality]}`}>[{categoryIcons[t.category]}]</span>
-                  {t.name} — {t.rangeNm}NM
-                </span>
+              <div key={t.id} className="flex items-center justify-between bg-military-800/60 hover:bg-military-700/60 rounded-lg px-3 py-2 text-sm transition-colors duration-150">
+                <div className="flex items-center gap-2">
+                  <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold font-mono ${categoryBg[t.category]}`}>
+                    {categoryIcons[t.category]}
+                  </span>
+                  <span className="text-gray-200">{t.name}</span>
+                  <span className="text-military-400 font-mono text-xs">{t.rangeNm}NM</span>
+                </div>
                 <button onClick={() => { onAdd(t.id); setShowAdd(false); }}
-                  className="text-green-400 hover:text-green-300 text-xs">+ Add</button>
+                  className="text-tactical-500 hover:text-tactical-500 text-xs font-semibold transition-colors">+ Add</button>
               </div>
             ))
           )}
@@ -71,18 +89,27 @@ export default function ThreatPanel({ missionThreats, editable, onAdd, onRemove 
       )}
 
       {missionThreats.length === 0 ? (
-        <p className="text-sm text-military-400">No threats assigned</p>
+        <p className="text-sm text-military-500 italic">No threats assigned</p>
       ) : (
-        <div className="space-y-1 max-h-60 overflow-y-auto">
+        <div className="space-y-1.5 max-h-60 overflow-y-auto">
           {missionThreats.map((t) => (
-            <div key={t.id} className="flex items-center justify-between bg-military-700 rounded px-2 py-1 text-sm">
-              <div>
-                <span className={`font-mono mr-1 ${lethalityColors[t.lethality]}`}>[{categoryIcons[t.category]}]</span>
-                <span>{t.name}</span>
-                <span className="text-military-400 ml-1">— {t.rangeNm}NM, {t.lethality}</span>
+            <div key={t.id} className="flex items-center justify-between bg-military-800/60 hover:bg-military-700/60 rounded-lg px-3 py-2 text-sm transition-colors duration-150 group">
+              <div className="flex items-center gap-2.5">
+                <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold font-mono ${categoryBg[t.category]}`}>
+                  {categoryIcons[t.category]}
+                </span>
+                <div>
+                  <span className="text-gray-200 font-medium">{t.name}</span>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-military-400 font-mono text-xs">{t.rangeNm}NM</span>
+                    <span className={`px-1.5 py-0 rounded text-xs font-semibold border ${lethalityBadge[t.lethality]}`}>
+                      {t.lethality}
+                    </span>
+                  </div>
+                </div>
               </div>
               {editable && (
-                <button onClick={() => onRemove(t.id)} className="text-red-400 hover:text-red-300 text-xs ml-2">x</button>
+                <button onClick={() => onRemove(t.id)} className="text-danger-500 hover:text-red-300 hover:scale-110 text-xs ml-2 opacity-0 group-hover:opacity-100 transition-all duration-150 font-bold">x</button>
               )}
             </div>
           ))}

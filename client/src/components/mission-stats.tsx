@@ -18,19 +18,29 @@ export default function MissionStats({ missions }: Props) {
   const completed = byStatus["DEBRIEFED"] || 0;
 
   const stats = [
-    { label: "Total", value: total, color: "text-white" },
-    { label: "Active", value: active, color: "text-green-400" },
-    { label: "Drafts", value: drafts, color: "text-yellow-400" },
-    { label: "Under Review", value: underReview, color: "text-orange-400" },
-    { label: "Completed", value: completed, color: "text-blue-400" },
+    { label: "Total Missions", value: total, color: "text-white", borderColor: "border-t-military-400", indicator: "bg-military-400" },
+    { label: "Active", value: active, color: "text-tactical-500", borderColor: "border-t-tactical-500", indicator: "bg-tactical-500" },
+    { label: "Drafts", value: drafts, color: "text-accent-400", borderColor: "border-t-accent-500", indicator: "bg-accent-500" },
+    { label: "Under Review", value: underReview, color: "text-accent-600", borderColor: "border-t-accent-600", indicator: "bg-accent-600" },
+    { label: "Completed", value: completed, color: "text-command-400", borderColor: "border-t-command-500", indicator: "bg-command-500" },
   ];
 
   return (
-    <div className="grid grid-cols-5 gap-3 mb-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
       {stats.map((stat) => (
-        <div key={stat.label} className="bg-military-800 rounded-lg px-4 py-3 text-center">
-          <div className={`text-2xl font-bold ${stat.color}`}>{stat.value}</div>
-          <div className="text-xs text-military-400 mt-1">{stat.label}</div>
+        <div
+          key={stat.label}
+          className={`glass-panel rounded-xl border border-military-700/30 border-t-2 ${stat.borderColor} px-4 py-4 text-center transition-all duration-200 hover:border-military-600/50`}
+        >
+          <div className="flex justify-center mb-2">
+            <div className={`w-1.5 h-1.5 rounded-full ${stat.indicator} animate-pulse-slow`} />
+          </div>
+          <div className={`text-3xl font-bold font-mono tracking-tight ${stat.color}`}>
+            {stat.value}
+          </div>
+          <div className="text-[10px] uppercase tracking-[0.15em] text-military-400 mt-1.5 font-medium">
+            {stat.label}
+          </div>
         </div>
       ))}
     </div>

@@ -42,51 +42,77 @@ export default function WeatherPanel({ missionId, reports, editable, onAdd, onDe
   }
 
   return (
-    <div className="bg-military-800 border border-military-700 rounded-lg p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold">Weather ({reports.length})</h3>
+    <div className="glass-panel border border-military-700/50 rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3 pb-2 border-b border-military-700/50">
+        <div className="flex items-center gap-2">
+          <span className="text-accent-400 text-sm font-bold">{"//"}</span>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Weather</h3>
+          <span className="bg-accent-600/20 text-accent-400 text-xs font-bold px-2 py-0.5 rounded-full min-w-[1.5rem] text-center">
+            {reports.length}
+          </span>
+        </div>
         {editable && (
-          <button onClick={() => setShowAdd(!showAdd)} className="text-xs text-blue-400 hover:text-blue-300">
+          <button onClick={() => setShowAdd(!showAdd)} className="text-xs text-command-400 hover:text-command-300 font-semibold transition-colors">
             {showAdd ? "Cancel" : "+ Add METAR"}
           </button>
         )}
       </div>
 
       {showAdd && (
-        <form onSubmit={handleAddMetar} className="mb-3">
-          {error && <p className="text-xs text-red-400 mb-1">{error}</p>}
+        <form onSubmit={handleAddMetar} className="mb-3 bg-military-800/40 rounded-lg p-3 border border-military-700/30">
+          {error && <p className="text-xs text-danger-500 mb-1 font-semibold">{error}</p>}
           <input
             value={rawMetar}
             onChange={(e) => setRawMetar(e.target.value)}
             placeholder="Paste METAR string..."
-            className="w-full px-2 py-1 text-sm bg-military-700 border border-military-600 rounded text-gray-100 mb-2 font-mono"
+            className="w-full px-3 py-1.5 text-sm bg-military-700 border border-military-600 rounded-lg text-tactical-500 mb-2 font-mono focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
             required
           />
-          <button type="submit" className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 rounded">Parse & Add</button>
+          <button type="submit" className="px-4 py-1.5 text-xs font-bold uppercase tracking-wide bg-command-500 hover:bg-command-400 rounded-lg text-white transition-colors">Parse & Add</button>
         </form>
       )}
 
       {reports.length === 0 ? (
-        <p className="text-sm text-military-400">No weather data</p>
+        <p className="text-sm text-military-500 italic">No weather data</p>
       ) : (
         <div className="space-y-2 max-h-60 overflow-y-auto">
           {reports.map((r) => (
-            <div key={r.id} className="bg-military-700 rounded px-3 py-2 text-sm">
+            <div key={r.id} className="bg-military-800/60 hover:bg-military-700/60 rounded-lg px-3 py-2.5 text-sm transition-colors duration-150 group">
               <div className="flex items-center justify-between">
-                <span className="font-medium text-blue-400">{r.stationId}</span>
+                <span className="font-bold text-accent-400 text-base tracking-wide">{r.stationId}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-military-400">{r.type}</span>
+                  <span className="text-xs text-military-500 font-mono uppercase">{r.type}</span>
                   {editable && (
-                    <button onClick={() => onDelete(r.id)} className="text-red-400 hover:text-red-300 text-xs">x</button>
+                    <button onClick={() => onDelete(r.id)} className="text-danger-500 hover:text-red-300 hover:scale-110 text-xs opacity-0 group-hover:opacity-100 transition-all duration-150 font-bold">x</button>
                   )}
                 </div>
               </div>
-              <p className="text-xs font-mono text-military-400 mt-1">{r.rawReport}</p>
-              <div className="flex gap-4 mt-1 text-xs text-military-300">
-                {r.temperature !== null && <span>Temp: {r.temperature}C</span>}
-                {r.windSpeed !== null && <span>Wind: {windArrow(r.windDir)} {r.windSpeed}kt</span>}
-                {r.visibility !== null && <span>Vis: {r.visibility}SM</span>}
-                {r.ceiling !== null && <span>Ceil: {r.ceiling}ft</span>}
+              <p className="text-xs font-mono text-tactical-500 mt-1.5 bg-military-900/50 rounded px-2 py-1 leading-relaxed">{r.rawReport}</p>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-2 text-xs">
+                {r.temperature !== null && (
+                  <div className="flex justify-between">
+                    <span className="text-military-500">Temp</span>
+                    <span className="text-military-300 font-mono">{r.temperature}C</span>
+                  </div>
+                )}
+                {r.windSpeed !== null && (
+                  <div className="flex justify-between">
+                    <span className="text-military-500">Wind</span>
+                    <span className="text-military-300 font-mono">{windArrow(r.windDir)} {r.windSpeed}kt</span>
+                  </div>
+                )}
+                {r.visibility !== null && (
+                  <div className="flex justify-between">
+                    <span className="text-military-500">Vis</span>
+                    <span className="text-military-300 font-mono">{r.visibility}SM</span>
+                  </div>
+                )}
+                {r.ceiling !== null && (
+                  <div className="flex justify-between">
+                    <span className="text-military-500">Ceil</span>
+                    <span className="text-military-300 font-mono">{r.ceiling}ft</span>
+                  </div>
+                )}
               </div>
             </div>
           ))}

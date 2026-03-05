@@ -153,19 +153,25 @@ export default function AltitudeProfile({ waypoints }: Props) {
 
   if (waypoints.length < 2) {
     return (
-      <div className="bg-military-800 rounded-lg p-4">
-        <h3 className="font-semibold text-lg mb-2">Altitude Profile</h3>
-        <p className="text-military-400 text-sm">Add at least 2 waypoints to see altitude profile.</p>
+      <div className="glass-panel border border-military-700/50 rounded-xl p-4">
+        <div className="flex items-center gap-2 mb-2 pb-2 border-b border-military-700/50">
+          <span className="text-command-400 text-sm font-bold">{"//"}</span>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Altitude Profile</h3>
+        </div>
+        <p className="text-military-500 text-sm italic">Add at least 2 waypoints to see altitude profile.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-military-800 rounded-lg p-4">
-      <h3 className="font-semibold text-lg mb-2">Altitude Profile</h3>
+    <div className="glass-panel border border-military-700/50 rounded-xl p-4">
+      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-military-700/50">
+        <span className="text-command-400 text-sm font-bold">{"//"}</span>
+        <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Altitude Profile</h3>
+      </div>
       <canvas
         ref={canvasRef}
-        className="w-full rounded"
+        className="w-full rounded-lg"
         style={{ height: "200px" }}
       />
     </div>
