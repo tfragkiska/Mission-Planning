@@ -1,9 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>OPORD | Mission Planning System</title>
+    <meta name="theme-color" content="#0d1117" />
+    <meta name="description" content="Military flight mission planning system" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
+    <link rel="apple-touch-icon" href="/icon-192.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -12,6 +17,9 @@
     />
   </head>
   <body class="bg-military-900 text-gray-100">
+    <script>
+      (function(){var t=localStorage.getItem('opord-theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})()
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

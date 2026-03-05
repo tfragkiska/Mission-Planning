@@ -128,6 +128,33 @@ const options: swaggerJsdoc.Options = {
             notes: { type: "string", nullable: true },
           },
         },
+        Notification: {
+          type: "object",
+          properties: {
+            id: { type: "string", format: "uuid" },
+            userId: { type: "string", format: "uuid" },
+            type: { type: "string", enum: ["MISSION_STATUS", "MISSION_ASSIGNED", "REVIEW_REQUESTED", "APPROVAL", "REJECTION", "DECONFLICTION_ALERT"] },
+            title: { type: "string" },
+            message: { type: "string" },
+            missionId: { type: "string", format: "uuid", nullable: true },
+            read: { type: "boolean" },
+            createdAt: { type: "string", format: "date-time" },
+          },
+        },
+        AuditLog: {
+          type: "object",
+          properties: {
+            id: { type: "string", format: "uuid" },
+            userId: { type: "string", format: "uuid" },
+            user: { $ref: "#/components/schemas/User" },
+            action: { type: "string", enum: ["CREATE_MISSION", "UPDATE_MISSION", "TRANSITION_STATUS", "ADD_WAYPOINT", "DELETE_WAYPOINT", "ADD_THREAT", "REMOVE_THREAT", "ADD_AIRCRAFT", "REMOVE_AIRCRAFT", "LOGIN", "LOGOUT"] },
+            entityType: { type: "string", enum: ["MISSION", "WAYPOINT", "THREAT", "AIRCRAFT", "CREW", "USER"] },
+            entityId: { type: "string", format: "uuid", nullable: true },
+            details: { type: "object", nullable: true },
+            ipAddress: { type: "string", nullable: true },
+            createdAt: { type: "string", format: "date-time" },
+          },
+        },
         Error: {
           type: "object",
           properties: {

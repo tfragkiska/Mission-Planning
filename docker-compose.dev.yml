@@ -1,0 +1,48 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    container_name: mission-planning-app-dev
+    command: npm run dev
+    ports:
+      - "3001:3001"
+      - "5173:5173"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://${DB_USER:-mission_planner}:${DB_PASSWORD:-mission_secret}@db:5432/${DB_NAME:-mission_planning}
+      JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-change-in-production}
+    volumes:
+      - ./server/src:/app/server/src
+      - ./server/prisma:/app/server/prisma
+      - ./client/src:/app/client/src
+      - ./client/public:/app/client/public
+      - ./client/index.html:/app/client/index.html
+      - ./client/vite.config.ts:/app/client/vite.config.ts
+      - ./client/tailwind.config.js:/app/client/tailwind.config.js
+      - ./client/postcss.config.js:/app/client/postcss.config.js
+      - ./tsconfig.base.json:/app/tsconfig.base.json
+      - ./server/tsconfig.json:/app/server/tsconfig.json
+      - ./client/tsconfig.json:/app/client/tsconfig.json
+      - server_node_modules:/app/server/node_modules
+      - client_node_modules:/app/client/node_modules
+      - root_node_modules:/app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  db:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+volumes:
+  server_node_modules:
+  client_node_modules:
+  root_node_modules:

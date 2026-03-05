@@ -26,19 +26,19 @@ export default function MissionStats({ missions }: Props) {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 mb-6">
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className={`glass-panel rounded-xl border border-military-700/30 border-t-2 ${stat.borderColor} px-4 py-4 text-center transition-all duration-200 hover:border-military-600/50`}
+          className={`glass-panel rounded-xl border border-military-700/30 border-t-2 ${stat.borderColor} px-3 sm:px-4 py-3 sm:py-4 text-center transition-all duration-200 hover:border-military-600/50`}
         >
           <div className="flex justify-center mb-2">
             <div className={`w-1.5 h-1.5 rounded-full ${stat.indicator} animate-pulse-slow`} />
           </div>
-          <div className={`text-3xl font-bold font-mono tracking-tight ${stat.color}`}>
+          <div className={`text-2xl sm:text-3xl font-bold font-mono tracking-tight ${stat.color}`}>
             {stat.value}
           </div>
-          <div className="text-[10px] uppercase tracking-[0.15em] text-military-400 mt-1.5 font-medium">
+          <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-military-400 mt-1.5 font-medium">
             {stat.label}
           </div>
         </div>

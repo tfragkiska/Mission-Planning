@@ -3,6 +3,7 @@ import { useAuthStore } from "./stores/auth-store";
 import LoginPage from "./pages/login-page";
 import DashboardPage from "./pages/dashboard-page";
 import MissionPage from "./pages/mission-page";
+import AuditPage from "./pages/audit-page";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = useAuthStore((s) => s.token);
@@ -27,6 +28,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <MissionPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/audit"
+        element={
+          <ProtectedRoute>
+            <AuditPage />
           </ProtectedRoute>
         }
       />

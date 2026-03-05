@@ -2,7 +2,9 @@ import { MissionStatus, MissionType, Priority, Role } from "@prisma/client";
 import { prisma } from "../../infra/database";
 import { NotFoundError, ForbiddenError, ValidationError } from "../../shared/errors";
 import { versionService } from "./version-service";
-import { emitMissionUpdate } from "../../infra/socket";
+import { emitMissionUpdate, emitActivity } from "../../infra/socket";
+import { auditService } from "../audit/service";
+import { notificationService } from "../notification/service";
 
 const VALID_TRANSITIONS: Record<MissionStatus, MissionStatus[]> = {
   DRAFT: [MissionStatus.PLANNED],
@@ -36,6 +38,78 @@ interface CreateMissionInput {
   scheduledEnd?: string;
 }
 
+// Fire-and-forget notification helper
+async function notifyTransition(
+  missionName: string,
+  missionId: string,
+  fromStatus: MissionStatus,
+  toStatus: MissionStatus,
+  actorId: string,
+  createdById: string,
+  comments?: string,
+) {
+  try {
+    const statusLabel = toStatus.replace(/_/g, " ");
+
+    // Notify the mission creator about status changes (unless they triggered it)
+    if (createdById !== actorId) {
+      const typeMap: Partial<Record<MissionStatus, string>> = {
+        APPROVED: "APPROVAL",
+        REJECTED: "REJECTION",
+        UNDER_REVIEW: "REVIEW_REQUESTED",
+      };
+      const notifType = typeMap[toStatus] || "MISSION_STATUS";
+      const message =
+        toStatus === MissionStatus.REJECTED && comments
+          ? `Mission "${missionName}" was rejected: ${comments}`
+          : `Mission "${missionName}" status changed to ${statusLabel}`;
+
+      await notificationService.createNotification({
+        userId: createdById,
+        type: notifType,
+        title: `Mission ${statusLabel}`,
+        message,
+        missionId,
+      });
+    }
+
+    // When submitted for review, notify all commanders
+    if (toStatus === MissionStatus.UNDER_REVIEW) {
+      const commanders = await prisma.user.findMany({ where: { role: Role.COMMANDER } });
+      for (const commander of commanders) {
+        if (commander.id === actorId) continue;
+        await notificationService.createNotification({
+          userId: commander.id,
+          type: "REVIEW_REQUESTED",
+          title: "Review Requested",
+          message: `Mission "${missionName}" has been submitted for review`,
+          missionId,
+        });
+      }
+    }
+
+    // When approved/briefed, notify assigned crew (pilots)
+    if (toStatus === MissionStatus.APPROVED || toStatus === MissionStatus.BRIEFED) {
+      const crew = await prisma.crewMember.findMany({ where: { missionId } });
+      const pilots = await prisma.user.findMany({ where: { role: Role.PILOT } });
+      const crewNames = new Set(crew.map((c) => c.name.toLowerCase()));
+      for (const pilot of pilots) {
+        if (crewNames.has(pilot.name.toLowerCase()) && pilot.id !== actorId) {
+          await notificationService.createNotification({
+            userId: pilot.id,
+            type: "MISSION_STATUS",
+            title: `Mission ${statusLabel}`,
+            message: `Mission "${missionName}" you are assigned to is now ${statusLabel}`,
+            missionId,
+          });
+        }
+      }
+    }
+  } catch {
+    // Notifications are best-effort
+  }
+}
+
 export const missionService = {
   async create(input: CreateMissionInput, userId: string) {
     const mission = await prisma.mission.create({
@@ -55,6 +129,13 @@ export const missionService = {
     } catch {
       // Version tracking is best-effort, don't fail the operation
     }
+    auditService.logAction({
+      userId,
+      action: "CREATE_MISSION",
+      entityType: "MISSION",
+      entityId: mission.id,
+      details: { name: input.name, type: input.type },
+    });
     return mission;
   },
 
@@ -101,6 +182,13 @@ export const missionService = {
     } catch {
       // Version tracking is best-effort, don't fail the operation
     }
+    auditService.logAction({
+      userId,
+      action: "UPDATE_MISSION",
+      entityType: "MISSION",
+      entityId: id,
+      details: { changes: data },
+    });
     return updated;
   },
 
@@ -158,6 +246,16 @@ export const missionService = {
       // Version tracking is best-effort, don't fail the operation
     }
     try { emitMissionUpdate(id, "mission:updated", transitioned); } catch {}
+    try { emitActivity(id, { type: "status_changed", message: `changed status from ${mission.status} to ${target}`, userId }); } catch {}
+    auditService.logAction({
+      userId,
+      action: "TRANSITION_STATUS",
+      entityType: "MISSION",
+      entityId: id,
+      details: { from: mission.status, to: target, comments },
+    });
+    // Fire-and-forget notifications for the transition
+    notifyTransition(mission.name, id, mission.status, target, userId, mission.createdById, comments);
     return transitioned;
   },
 };

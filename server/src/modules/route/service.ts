@@ -1,7 +1,8 @@
 import { WaypointType } from "@prisma/client";
 import { prisma } from "../../infra/database";
 import { NotFoundError, ValidationError } from "../../shared/errors";
-import { emitMissionUpdate } from "../../infra/socket";
+import { emitMissionUpdate, emitActivity } from "../../infra/socket";
+import { auditService } from "../audit/service";
 
 interface CreateWaypointInput {
   name?: string;
@@ -18,7 +19,7 @@ interface UpdateWaypointInput extends Partial<CreateWaypointInput> {
 }
 
 export const waypointService = {
-  async create(missionId: string, input: CreateWaypointInput) {
+  async create(missionId: string, input: CreateWaypointInput, userId?: string) {
     const mission = await prisma.mission.findUnique({ where: { id: missionId } });
     if (!mission) throw new NotFoundError("Mission");
     if (mission.status !== "DRAFT") {
@@ -41,6 +42,16 @@ export const waypointService = {
       },
     });
     try { emitMissionUpdate(missionId, "waypoints:changed", { missionId }); } catch {}
+    try { emitActivity(missionId, { type: "waypoint_added", message: `added waypoint ${input.name || `#${count + 1}`}`, userId }); } catch {}
+    if (userId) {
+      auditService.logAction({
+        userId,
+        action: "ADD_WAYPOINT",
+        entityType: "WAYPOINT",
+        entityId: waypoint.id,
+        details: { missionId, name: input.name, lat: input.lat, lon: input.lon },
+      });
+    }
     return waypoint;
   },
 
@@ -68,14 +79,25 @@ export const waypointService = {
       },
     });
     try { emitMissionUpdate(waypoint.missionId, "waypoints:changed", { missionId: waypoint.missionId }); } catch {}
+    try { emitActivity(waypoint.missionId, { type: "waypoint_updated", message: `updated waypoint ${updated.name || `#${updated.sequenceOrder}`}` }); } catch {}
     return updated;
   },
 
-  async delete(id: string) {
+  async delete(id: string, userId?: string) {
     const waypoint = await prisma.waypoint.findUnique({ where: { id } });
     if (!waypoint) throw new NotFoundError("Waypoint");
     await prisma.waypoint.delete({ where: { id } });
     try { emitMissionUpdate(waypoint.missionId, "waypoints:changed", { missionId: waypoint.missionId }); } catch {}
+    try { emitActivity(waypoint.missionId, { type: "waypoint_deleted", message: `deleted waypoint ${waypoint.name || `#${waypoint.sequenceOrder}`}`, userId }); } catch {}
+    if (userId) {
+      auditService.logAction({
+        userId,
+        action: "DELETE_WAYPOINT",
+        entityType: "WAYPOINT",
+        entityId: id,
+        details: { missionId: waypoint.missionId, name: waypoint.name },
+      });
+    }
   },
 
   async reorder(missionId: string, waypointIds: string[]) {

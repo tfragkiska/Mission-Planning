@@ -1,6 +1,6 @@
 import { prisma } from "../../infra/database";
 import { NotFoundError } from "../../shared/errors";
-import { emitMissionUpdate } from "../../infra/socket";
+import { emitMissionUpdate, emitActivity } from "../../infra/socket";
 
 interface CreateWeatherInput {
   stationId: string;
@@ -35,6 +35,7 @@ export const weatherService = {
       },
     });
     try { emitMissionUpdate(missionId, "weather:changed", { missionId }); } catch {}
+    try { emitActivity(missionId, { type: "weather_added", message: `added weather report (${input.type})` }); } catch {}
     return report;
   },
 

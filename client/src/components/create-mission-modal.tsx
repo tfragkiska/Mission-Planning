@@ -48,14 +48,14 @@ export default function CreateMissionModal({ onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4"
       role="dialog"
       aria-modal="true"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <form
         onSubmit={handleSubmit}
-        className="glass-panel bg-military-900/90 border border-military-700/50 p-8 rounded-xl w-full max-w-md shadow-2xl animate-fade-in"
+        className="glass-panel bg-military-900/90 border border-military-700/50 p-6 sm:p-8 rounded-t-xl sm:rounded-xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl animate-fade-in"
       >
         {/* Header */}
         <div className="mb-6">
@@ -79,7 +79,7 @@ export default function CreateMissionModal({ onClose }: Props) {
           <button
             type="button"
             onClick={() => setUseTemplate(false)}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md border transition-all duration-200 ${
+            className={`px-4 py-1.5 text-sm font-medium rounded-md border transition-all duration-200 min-h-[44px] ${
               !useTemplate
                 ? "bg-command-500 border-command-400 text-white shadow-glow-blue"
                 : "bg-military-800 border-military-600 text-military-400 hover:border-military-500 hover:text-military-300"
@@ -90,7 +90,7 @@ export default function CreateMissionModal({ onClose }: Props) {
           <button
             type="button"
             onClick={() => setUseTemplate(true)}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md border transition-all duration-200 ${
+            className={`px-4 py-1.5 text-sm font-medium rounded-md border transition-all duration-200 min-h-[44px] ${
               useTemplate
                 ? "bg-command-500 border-command-400 text-white shadow-glow-blue"
                 : "bg-military-800 border-military-600 text-military-400 hover:border-military-500 hover:text-military-300"
@@ -109,7 +109,7 @@ export default function CreateMissionModal({ onClose }: Props) {
             <select
               value={selectedTemplate}
               onChange={(e) => setSelectedTemplate(e.target.value)}
-              className="w-full px-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors"
+              className="w-full px-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors min-h-[44px]"
               required
             >
               <option value="">Select a template...</option>
@@ -135,7 +135,7 @@ export default function CreateMissionModal({ onClose }: Props) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. OPERATION NIGHTHAWK"
-            className="w-full px-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 placeholder:text-military-600 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors"
+            className="w-full px-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 placeholder:text-military-600 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors min-h-[44px]"
             required
           />
         </div>
@@ -152,7 +152,7 @@ export default function CreateMissionModal({ onClose }: Props) {
             id="mission-type"
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full px-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors"
+            className="w-full px-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors min-h-[44px]"
           >
             <option value="TRAINING">Training</option>
             <option value="OPERATIONAL">Operational</option>
@@ -171,7 +171,7 @@ export default function CreateMissionModal({ onClose }: Props) {
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
-              className="w-full pl-8 pr-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors"
+              className="w-full pl-8 pr-3 py-2.5 bg-military-800 border border-military-600 rounded-lg text-gray-100 focus:outline-none focus:border-l-2 focus:border-l-accent-400 focus:border-t-military-600 focus:border-r-military-600 focus:border-b-military-600 transition-colors min-h-[44px]"
             >
               <option value="LOW">Low</option>
               <option value="MEDIUM">Medium</option>
@@ -185,17 +185,17 @@ export default function CreateMissionModal({ onClose }: Props) {
         <div className="h-px bg-military-700/50 mb-5" />
 
         {/* Actions */}
-        <div className="flex gap-3 justify-end">
+        <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2.5 text-sm font-medium text-military-400 hover:text-military-300 border border-transparent hover:border-military-600 rounded-lg transition-all duration-200"
+            className="px-5 py-2.5 text-sm font-medium text-military-400 hover:text-military-300 border border-transparent hover:border-military-600 rounded-lg transition-all duration-200 min-h-[44px]"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-6 py-2.5 bg-command-500 hover:bg-command-600 hover:shadow-glow-blue text-white rounded-lg font-semibold text-sm uppercase tracking-wider transition-all duration-200"
+            className="px-6 py-2.5 bg-command-500 hover:bg-command-600 hover:shadow-glow-blue text-white rounded-lg font-semibold text-sm uppercase tracking-wider transition-all duration-200 min-h-[44px]"
           >
             Create Mission
           </button>

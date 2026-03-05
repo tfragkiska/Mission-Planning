@@ -74,12 +74,12 @@ export default function DashboardPage() {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-0 sm:px-4">
         {/* Header Section */}
-        <div className="relative mb-8">
+        <div className="relative mb-6 sm:mb-8">
           <div className="absolute inset-0 tactical-grid opacity-20 rounded-xl" />
-          <div className="relative glass-panel rounded-xl border border-military-700/50 px-8 py-6">
-            <div className="flex items-center justify-between">
+          <div className="relative glass-panel rounded-xl border border-military-700/50 px-4 sm:px-8 py-4 sm:py-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <div className="flex items-center gap-3 mb-1">
                   <div className="w-2 h-2 rounded-full bg-tactical-500 animate-pulse-slow shadow-glow-green" />
@@ -87,24 +87,25 @@ export default function DashboardPage() {
                     System Active
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold tracking-tight text-white">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
                   Mission Operations Center
                 </h1>
                 <p className="text-sm text-military-400 mt-1 font-mono">
                   {missions.length} missions registered // {filtered.length} displayed
                 </p>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <DashboardViewToggle view={view} onChange={setView} />
                 {user?.role === "PLANNER" && (
                   <button
                     onClick={() => setShowCreate(true)}
-                    className="group relative px-5 py-2.5 bg-command-500 hover:bg-command-600 rounded-lg font-semibold text-sm transition-all duration-200 hover:shadow-glow-blue flex items-center gap-2"
+                    className="group relative px-4 sm:px-5 py-2.5 bg-command-500 hover:bg-command-600 rounded-lg font-semibold text-sm transition-all duration-200 hover:shadow-glow-blue flex items-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
-                    New Mission
+                    <span className="hidden sm:inline">New Mission</span>
+                    <span className="sm:hidden">New</span>
                   </button>
                 )}
               </div>

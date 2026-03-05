@@ -1,5 +1,5 @@
 import { useAuthStore } from "../stores/auth-store";
-import type { User, Mission, Waypoint, Threat, WeatherReport, DeconflictionResult, Aircraft, CrewMember, MissionVersion } from "./types";
+import type { User, Mission, Waypoint, Threat, WeatherReport, DeconflictionResult, Aircraft, CrewMember, MissionVersion, Notification, AuditLogEntry } from "./types";
 
 const BASE_URL = "/api";
 
@@ -157,5 +157,47 @@ export const api = {
       request<DeconflictionResult>(`/missions/${missionId}/deconfliction/${id}/resolve`, { method: "POST" }),
     status: (missionId: string) =>
       request<{ hasCritical: boolean; canApprove: boolean }>(`/missions/${missionId}/deconfliction/status`),
+  },
+  audit: {
+    list: (filters?: {
+      userId?: string;
+      entityType?: string;
+      action?: string;
+      startDate?: string;
+      endDate?: string;
+      page?: number;
+      limit?: number;
+    }) => {
+      const params = new URLSearchParams();
+      if (filters?.userId) params.set("userId", filters.userId);
+      if (filters?.entityType) params.set("entityType", filters.entityType);
+      if (filters?.action) params.set("action", filters.action);
+      if (filters?.startDate) params.set("startDate", filters.startDate);
+      if (filters?.endDate) params.set("endDate", filters.endDate);
+      if (filters?.page) params.set("page", String(filters.page));
+      if (filters?.limit) params.set("limit", String(filters.limit));
+      const query = params.toString();
+      return request<{
+        logs: AuditLogEntry[];
+        total: number;
+        limit: number;
+        offset: number;
+      }>(`/audit${query ? `?${query}` : ""}`);
+    },
+    forMission: (missionId: string) =>
+      request<AuditLogEntry[]>(`/audit/mission/${missionId}`),
+  },
+  notifications: {
+    list: (filters?: { unread?: boolean; limit?: number }) => {
+      const params = new URLSearchParams();
+      if (filters?.unread) params.set("unread", "true");
+      if (filters?.limit) params.set("limit", String(filters.limit));
+      const query = params.toString();
+      return request<Notification[]>(`/notifications${query ? `?${query}` : ""}`);
+    },
+    markRead: (id: string) =>
+      request<Notification>(`/notifications/${id}/read`, { method: "PATCH" }),
+    markAllRead: () =>
+      request<void>("/notifications/read-all", { method: "POST" }),
   },
 };

@@ -7,12 +7,19 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client && npm run build -w server",
+    "lint": "tsc --noEmit -p server/tsconfig.json && tsc --noEmit -p client/tsconfig.json",
+    "test:unit": "npm test -w server",
+    "test:e2e": "playwright test",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:migrate": "npm run migrate -w server",
     "db:seed": "npm run seed -w server",
     "e2e": "playwright test",
-    "e2e:headed": "playwright test --headed"
+    "e2e:headed": "playwright test --headed",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up",
+    "docker:dev": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

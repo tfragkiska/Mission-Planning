@@ -116,3 +116,55 @@ export interface MissionVersion {
   createdAt: string;
   snapshot?: Mission;
 }
+
+export type NotificationType =
+  | "MISSION_STATUS"
+  | "MISSION_ASSIGNED"
+  | "REVIEW_REQUESTED"
+  | "APPROVAL"
+  | "REJECTION"
+  | "DECONFLICTION_ALERT";
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  missionId: string | null;
+  read: boolean;
+  createdAt: string;
+}
+
+export type AuditAction =
+  | "CREATE_MISSION"
+  | "UPDATE_MISSION"
+  | "TRANSITION_STATUS"
+  | "ADD_WAYPOINT"
+  | "DELETE_WAYPOINT"
+  | "ADD_THREAT"
+  | "REMOVE_THREAT"
+  | "ADD_AIRCRAFT"
+  | "REMOVE_AIRCRAFT"
+  | "LOGIN"
+  | "LOGOUT";
+
+export type AuditEntityType =
+  | "MISSION"
+  | "WAYPOINT"
+  | "THREAT"
+  | "AIRCRAFT"
+  | "CREW"
+  | "USER";
+
+export interface AuditLogEntry {
+  id: string;
+  userId: string;
+  user: User;
+  action: AuditAction;
+  entityType: AuditEntityType;
+  entityId: string | null;
+  details: Record<string, unknown> | null;
+  ipAddress: string | null;
+  createdAt: string;
+}

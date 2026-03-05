@@ -5,15 +5,104 @@
 /* ============================================================
    OPORD Mission Planning System - Global Styles
    Military Command Center Aesthetic
+   Supports Dark (night ops) and Light (field/daylight) themes
    ============================================================ */
 
-/* --- Base Layer Overrides --- */
+/* --- Theme CSS Custom Properties --- */
 @layer base {
+  /* Light theme: Field / Daylight — desert sand, khaki, olive */
+  :root {
+    --color-bg-primary: #e8dcc8;       /* sand/parchment */
+    --color-bg-secondary: #d9ccb4;     /* darker sand */
+    --color-bg-tertiary: #cbbfa5;      /* khaki */
+    --color-bg-elevated: #f0e6d4;      /* light sand */
+    --color-bg-input: #f5efe3;         /* off-white sand */
+    --color-text-primary: #2c2a24;     /* dark brown-black */
+    --color-text-secondary: #4a4639;   /* olive brown */
+    --color-text-muted: #6b6555;       /* muted olive */
+    --color-border-primary: rgba(107, 90, 54, 0.35);
+    --color-border-subtle: rgba(107, 90, 54, 0.18);
+    --color-glass-bg: rgba(228, 218, 196, 0.75);
+    --color-glass-border: rgba(107, 90, 54, 0.25);
+    --color-glass-shadow: rgba(80, 60, 20, 0.1);
+    --color-glass-inset: rgba(255, 255, 255, 0.4);
+    --color-glass-dark-bg: rgba(209, 196, 170, 0.85);
+    --color-glass-dark-border: rgba(107, 90, 54, 0.35);
+    --color-glass-dark-shadow: rgba(80, 60, 20, 0.15);
+    --color-glass-dark-inset: rgba(255, 255, 255, 0.3);
+    --color-glass-light-bg: rgba(240, 230, 212, 0.5);
+    --color-glass-light-border: rgba(107, 90, 54, 0.12);
+    --color-grid-line: rgba(86, 108, 60, 0.08);
+    --color-grid-line-dense: rgba(86, 108, 60, 0.1);
+    --color-scan-line: rgba(86, 108, 60, 0.06);
+    --color-card-bg: rgba(228, 218, 196, 0.65);
+    --color-card-border: rgba(107, 90, 54, 0.25);
+    --color-card-shadow: rgba(80, 60, 20, 0.08);
+    --color-card-hover-border: rgba(86, 108, 60, 0.4);
+    --color-card-hover-glow: rgba(86, 108, 60, 0.08);
+    --color-input-bg: rgba(245, 239, 227, 0.7);
+    --color-input-border: rgba(107, 90, 54, 0.3);
+    --color-input-text: #2c2a24;
+    --color-input-placeholder: #9a9282;
+    --color-divider: rgba(86, 108, 60, 0.3);
+    --color-data-readout: #3d6b2e;
+    --color-selection-bg: rgba(86, 108, 60, 0.3);
+    --color-selection-text: #2c2a24;
+    --color-scrollbar-track: #d9ccb4;
+    --color-scrollbar-thumb: #b5a88e;
+    --color-scrollbar-thumb-hover: #9a8e74;
+    --color-focus-ring: rgba(86, 108, 60, 0.5);
+  }
+
+  /* Dark theme: Night Ops — existing dark command center look */
+  .dark {
+    --color-bg-primary: #0d1117;
+    --color-bg-secondary: #1a1c1e;
+    --color-bg-tertiary: #1e2328;
+    --color-bg-elevated: #2d3136;
+    --color-bg-input: rgba(13, 17, 23, 0.6);
+    --color-text-primary: #d1d5db;
+    --color-text-secondary: #9ca3af;
+    --color-text-muted: #6b7280;
+    --color-border-primary: rgba(61, 67, 73, 0.5);
+    --color-border-subtle: rgba(61, 67, 73, 0.3);
+    --color-glass-bg: rgba(30, 35, 40, 0.7);
+    --color-glass-border: rgba(61, 67, 73, 0.5);
+    --color-glass-shadow: rgba(0, 0, 0, 0.3);
+    --color-glass-inset: rgba(255, 255, 255, 0.03);
+    --color-glass-dark-bg: rgba(13, 17, 23, 0.8);
+    --color-glass-dark-border: rgba(45, 49, 54, 0.6);
+    --color-glass-dark-shadow: rgba(0, 0, 0, 0.4);
+    --color-glass-dark-inset: rgba(255, 255, 255, 0.02);
+    --color-glass-light-bg: rgba(61, 67, 73, 0.3);
+    --color-glass-light-border: rgba(107, 114, 128, 0.2);
+    --color-grid-line: rgba(52, 112, 204, 0.03);
+    --color-grid-line-dense: rgba(52, 112, 204, 0.04);
+    --color-scan-line: rgba(74, 154, 74, 0.08);
+    --color-card-bg: rgba(30, 35, 40, 0.6);
+    --color-card-border: rgba(61, 67, 73, 0.4);
+    --color-card-shadow: rgba(0, 0, 0, 0.3);
+    --color-card-hover-border: rgba(52, 112, 204, 0.3);
+    --color-card-hover-glow: rgba(52, 112, 204, 0.1);
+    --color-input-bg: rgba(13, 17, 23, 0.6);
+    --color-input-border: rgba(61, 67, 73, 0.5);
+    --color-input-text: #d1d5db;
+    --color-input-placeholder: #4d555c;
+    --color-divider: rgba(52, 112, 204, 0.3);
+    --color-data-readout: #8fd68f;
+    --color-selection-bg: rgba(45, 90, 45, 0.5);
+    --color-selection-text: #d1d5db;
+    --color-scrollbar-track: #1a1c1e;
+    --color-scrollbar-thumb: #3d4349;
+    --color-scrollbar-thumb-hover: #4d555c;
+    --color-focus-ring: rgba(52, 112, 204, 0.6);
+  }
+
   *,
   *::before,
   *::after {
     scrollbar-width: thin;
-    scrollbar-color: #3d4349 #1a1c1e;
+    scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
   }
 
   *::-webkit-scrollbar {
@@ -22,32 +111,32 @@
   }
 
   *::-webkit-scrollbar-track {
-    background: #1a1c1e;
+    background: var(--color-scrollbar-track);
     border-radius: 0;
   }
 
   *::-webkit-scrollbar-thumb {
-    background: #3d4349;
+    background: var(--color-scrollbar-thumb);
     border-radius: 1px;
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background: #4d555c;
+    background: var(--color-scrollbar-thumb-hover);
   }
 
   *::-webkit-scrollbar-corner {
-    background: #1a1c1e;
+    background: var(--color-scrollbar-track);
   }
 
-  /* Selection styling - military green tint */
+  /* Selection styling */
   ::selection {
-    background-color: rgba(45, 90, 45, 0.5);
-    color: #d1d5db;
+    background-color: var(--color-selection-bg);
+    color: var(--color-selection-text);
   }
 
   ::-moz-selection {
-    background-color: rgba(45, 90, 45, 0.5);
-    color: #d1d5db;
+    background-color: var(--color-selection-bg);
+    color: var(--color-selection-text);
   }
 
   /* Smooth transitions on interactive elements */
@@ -65,13 +154,35 @@
     font-family: "Inter", system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #0d1117;
-    color: #d1d5db;
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    -webkit-tap-highlight-color: transparent;
+    /* Safe area insets for notched phones */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 
-  /* Focus ring - command blue */
+  /* Ensure minimum touch target sizes on mobile */
+  @media (pointer: coarse) {
+    button,
+    a,
+    select,
+    [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    input,
+    textarea {
+      min-height: 44px;
+    }
+  }
+
+  /* Focus ring */
   *:focus-visible {
-    outline: 1px solid rgba(52, 112, 204, 0.6);
+    outline: 1px solid var(--color-focus-ring);
     outline-offset: 1px;
   }
 }
@@ -80,42 +191,42 @@
 @layer components {
   /* Glass Panel - frosted glass effect for cards and overlays */
   .glass-panel {
-    background: rgba(30, 35, 40, 0.7);
+    background: var(--color-glass-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(61, 67, 73, 0.5);
+    border: 1px solid var(--color-glass-border);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.03),
-      0 4px 16px rgba(0, 0, 0, 0.3);
+      inset 0 1px 0 var(--color-glass-inset),
+      0 4px 16px var(--color-glass-shadow);
   }
 
   .glass-panel-dark {
-    background: rgba(13, 17, 23, 0.8);
+    background: var(--color-glass-dark-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(45, 49, 54, 0.6);
+    border: 1px solid var(--color-glass-dark-border);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.02),
-      0 8px 24px rgba(0, 0, 0, 0.4);
+      inset 0 1px 0 var(--color-glass-dark-inset),
+      0 8px 24px var(--color-glass-dark-shadow);
   }
 
   .glass-panel-light {
-    background: rgba(61, 67, 73, 0.3);
+    background: var(--color-glass-light-bg);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(107, 114, 128, 0.2);
+    border: 1px solid var(--color-glass-light-border);
   }
 
   /* Tactical Grid Background Pattern */
   .tactical-grid {
     background-image:
       linear-gradient(
-        rgba(52, 112, 204, 0.03) 1px,
+        var(--color-grid-line) 1px,
         transparent 1px
       ),
       linear-gradient(
         90deg,
-        rgba(52, 112, 204, 0.03) 1px,
+        var(--color-grid-line) 1px,
         transparent 1px
       );
     background-size: 24px 24px;
@@ -124,12 +235,12 @@
   .tactical-grid-dense {
     background-image:
       linear-gradient(
-        rgba(52, 112, 204, 0.04) 1px,
+        var(--color-grid-line-dense) 1px,
         transparent 1px
       ),
       linear-gradient(
         90deg,
-        rgba(52, 112, 204, 0.04) 1px,
+        var(--color-grid-line-dense) 1px,
         transparent 1px
       );
     background-size: 12px 12px;
@@ -151,7 +262,7 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(74, 154, 74, 0.08),
+      var(--color-scan-line),
       transparent
     );
     animation: scan-line 4s linear infinite;
@@ -230,7 +341,7 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(52, 112, 204, 0.3),
+      var(--color-divider),
       transparent
     );
   }
@@ -240,34 +351,34 @@
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-size: 0.8125rem;
     letter-spacing: 0.025em;
-    color: #8fd68f;
+    color: var(--color-data-readout);
   }
 
   /* Military-style card */
   .card-military {
-    background: rgba(30, 35, 40, 0.6);
-    border: 1px solid rgba(61, 67, 73, 0.4);
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-card-border);
     border-radius: 2px;
     box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.3),
-      0 4px 12px rgba(0, 0, 0, 0.2);
+      0 1px 3px var(--color-card-shadow),
+      0 4px 12px var(--color-card-shadow);
     transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out;
   }
 
   .card-military:hover {
-    border-color: rgba(52, 112, 204, 0.3);
+    border-color: var(--color-card-hover-border);
     box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.3),
-      0 4px 12px rgba(0, 0, 0, 0.2),
-      0 0 8px rgba(52, 112, 204, 0.1);
+      0 1px 3px var(--color-card-shadow),
+      0 4px 12px var(--color-card-shadow),
+      0 0 8px var(--color-card-hover-glow);
   }
 
   /* Input field styling */
   .input-tactical {
-    background: rgba(13, 17, 23, 0.6);
-    border: 1px solid rgba(61, 67, 73, 0.5);
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-input-border);
     border-radius: 2px;
-    color: #d1d5db;
+    color: var(--color-input-text);
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out;
@@ -280,7 +391,7 @@
   }
 
   .input-tactical::placeholder {
-    color: #4d555c;
+    color: var(--color-input-placeholder);
   }
 }
 

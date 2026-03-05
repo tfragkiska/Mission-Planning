@@ -1,7 +1,7 @@
 import { ThreatCategory, Lethality } from "@prisma/client";
 import { prisma } from "../../infra/database";
 import { NotFoundError } from "../../shared/errors";
-import { emitMissionUpdate } from "../../infra/socket";
+import { emitMissionUpdate, emitActivity } from "../../infra/socket";
 
 interface CreateThreatInput {
   name: string;
@@ -79,6 +79,7 @@ export const threatService = {
       include: { threat: true },
     });
     try { emitMissionUpdate(missionId, "threats:changed", { missionId }); } catch {}
+    try { emitActivity(missionId, { type: "threat_added", message: `added threat to mission` }); } catch {}
     return result;
   },
 
@@ -87,6 +88,7 @@ export const threatService = {
       where: { missionId_threatId: { missionId, threatId } },
     });
     try { emitMissionUpdate(missionId, "threats:changed", { missionId }); } catch {}
+    try { emitActivity(missionId, { type: "threat_removed", message: `removed threat from mission` }); } catch {}
   },
 
   async listByMission(missionId: string) {

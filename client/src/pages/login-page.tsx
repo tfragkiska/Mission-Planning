@@ -27,25 +27,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-military-950 tactical-grid font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-military-950 tactical-grid font-sans px-4 sm:px-6">
       {/* Ambient background glow */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-command-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-command-500/5 rounded-full blur-3xl" />
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="relative glass-panel bg-military-900/60 p-10 rounded-xl w-full max-w-md border border-military-700/40 shadow-2xl animate-fade-in"
+        className="relative glass-panel bg-military-900/60 p-6 sm:p-10 rounded-xl w-full max-w-sm sm:max-w-md border border-military-700/40 shadow-2xl animate-fade-in"
       >
         {/* Animated border glow */}
         <div className="absolute inset-0 rounded-xl border border-tactical-500/10 animate-pulse-slow pointer-events-none" />
 
         {/* Header section */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           {/* Tactical crosshair icon */}
           <div className="flex justify-center mb-4">
             <svg
-              className="w-12 h-12 text-tactical-500"
+              className="w-10 h-10 sm:w-12 sm:h-12 text-tactical-500"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -70,7 +70,7 @@ export default function LoginPage() {
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-military-600 to-transparent" />
           </div>
 
-          <h1 className="text-4xl font-bold tracking-[0.2em] text-gray-100 mb-1">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-[0.2em] text-gray-100 mb-1">
             OPORD
           </h1>
           <p className="text-xs font-mono tracking-[0.35em] text-military-400 uppercase">

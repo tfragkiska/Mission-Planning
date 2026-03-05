@@ -1,7 +1,7 @@
 import { ConflictType, ConflictSeverity, ConflictResolution, MissionStatus, Prisma } from "@prisma/client";
 import { prisma } from "../../infra/database";
 import { NotFoundError, ValidationError } from "../../shared/errors";
-import { emitMissionUpdate } from "../../infra/socket";
+import { emitMissionUpdate, emitActivity } from "../../infra/socket";
 
 export const deconflictionService = {
   async runCheck(missionId: string) {
@@ -184,6 +184,7 @@ export const deconflictionService = {
     }
 
     try { emitMissionUpdate(missionId, "deconfliction:changed", { missionId }); } catch {}
+    try { emitActivity(missionId, { type: "deconfliction_run", message: `ran deconfliction check — ${results.length} conflict(s) found` }); } catch {}
     return results;
   },
 

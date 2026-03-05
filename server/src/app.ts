@@ -15,6 +15,8 @@ import { deconflictionRouter } from "./modules/deconfliction/routes";
 import { aircraftRouter } from "./modules/mission/aircraft-routes";
 import { airspaceRouter } from "./modules/airspace/routes";
 import { threatFeedRouter } from "./modules/threat/feed-routes";
+import { notificationRouter } from "./modules/notification/routes";
+import { auditRouter } from "./modules/audit/routes";
 
 const app = express();
 const httpServer = createServer(app);
@@ -43,6 +45,8 @@ app.use("/api/missions", weatherRouter);
 app.use("/api/missions", deconflictionRouter);
 app.use("/api/missions", aircraftRouter);
 app.use("/api/airspaces", airspaceRouter);
+app.use("/api/notifications", notificationRouter);
+app.use("/api/audit", auditRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {

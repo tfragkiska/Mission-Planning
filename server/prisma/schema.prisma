@@ -56,8 +56,10 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  createdMissions  Mission[] @relation("CreatedBy")
-  approvedMissions Mission[] @relation("ApprovedBy")
+  createdMissions  Mission[]       @relation("CreatedBy")
+  approvedMissions Mission[]       @relation("ApprovedBy")
+  notifications    Notification[]
+  auditLogs        AuditLog[]
 
   @@map("users")
 }
@@ -281,4 +283,32 @@ model MissionVersion {
 
   @@unique([missionId, version])
   @@map("mission_versions")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  type      String   // MISSION_STATUS, MISSION_ASSIGNED, REVIEW_REQUESTED, APPROVAL, REJECTION, DECONFLICTION_ALERT
+  title     String
+  message   String
+  missionId String?  @map("mission_id")
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("notifications")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  action     String   // CREATE_MISSION, UPDATE_MISSION, TRANSITION_STATUS, ADD_WAYPOINT, DELETE_WAYPOINT, ADD_THREAT, REMOVE_THREAT, ADD_AIRCRAFT, REMOVE_AIRCRAFT, LOGIN, LOGOUT
+  entityType String   @map("entity_type") // MISSION, WAYPOINT, THREAT, AIRCRAFT, CREW, USER
+  entityId   String?  @map("entity_id")
+  details    Json?
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("audit_logs")
 }

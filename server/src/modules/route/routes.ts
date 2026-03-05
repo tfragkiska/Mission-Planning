@@ -77,7 +77,7 @@ waypointRouter.post(
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const data = createWaypointSchema.parse(req.body);
-      const waypoint = await waypointService.create(req.params.missionId, data);
+      const waypoint = await waypointService.create(req.params.missionId, data, req.user?.userId);
       res.status(201).json(waypoint);
     } catch (err) {
       next(err);
@@ -160,7 +160,7 @@ waypointRouter.delete(
   "/:missionId/waypoints/:id",
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
-      await waypointService.delete(req.params.id);
+      await waypointService.delete(req.params.id, req.user?.userId);
       res.status(204).send();
     } catch (err) {
       next(err);
