@@ -1,4 +1,5 @@
-import { MissionStatus, MissionType, Priority, Role } from "@prisma/client";
+import crypto from "crypto";
+import { MissionStatus, MissionType, Priority, Role, Prisma } from "@prisma/client";
 import { prisma } from "../../infra/database";
 import { NotFoundError, ForbiddenError, ValidationError } from "../../shared/errors";
 import { versionService } from "./version-service";
@@ -139,9 +140,19 @@ export const missionService = {
     return mission;
   },
 
-  async list(filters?: { status?: MissionStatus; createdById?: string }) {
+  async list(filters?: { status?: MissionStatus; createdById?: string; assignedTo?: string }) {
+    const where: Prisma.MissionWhereInput = {};
+    if (filters?.status) where.status = filters.status;
+    if (filters?.createdById) where.createdById = filters.createdById;
+    if (filters?.assignedTo) {
+      // Find the user to match crew by name
+      const user = await prisma.user.findUnique({ where: { id: filters.assignedTo } });
+      if (user) {
+        where.crewMembers = { some: { name: { equals: user.name, mode: "insensitive" } } };
+      }
+    }
     return prisma.mission.findMany({
-      where: filters,
+      where,
       include: missionIncludes,
       orderBy: { updatedAt: "desc" },
     });
@@ -257,5 +268,86 @@ export const missionService = {
     // Fire-and-forget notifications for the transition
     notifyTransition(mission.name, id, mission.status, target, userId, mission.createdById, comments);
     return transitioned;
+  },
+
+  async enableSharing(missionId: string, userId: string) {
+    const mission = await prisma.mission.findUnique({ where: { id: missionId } });
+    if (!mission) throw new NotFoundError("Mission");
+    if (mission.createdById !== userId) {
+      // Allow commanders too
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user || user.role !== Role.COMMANDER) {
+        throw new ForbiddenError("Only the mission creator or a commander can manage sharing");
+      }
+    }
+
+    const shareToken = crypto.randomUUID();
+    const updated = await prisma.mission.update({
+      where: { id: missionId },
+      data: { shareToken, shareEnabled: true },
+    });
+
+    auditService.logAction({
+      userId,
+      action: "ENABLE_SHARING",
+      entityType: "MISSION",
+      entityId: missionId,
+      details: { shareToken },
+    });
+
+    return { shareToken: updated.shareToken!, shareEnabled: true };
+  },
+
+  async disableSharing(missionId: string, userId: string) {
+    const mission = await prisma.mission.findUnique({ where: { id: missionId } });
+    if (!mission) throw new NotFoundError("Mission");
+    if (mission.createdById !== userId) {
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user || user.role !== Role.COMMANDER) {
+        throw new ForbiddenError("Only the mission creator or a commander can manage sharing");
+      }
+    }
+
+    await prisma.mission.update({
+      where: { id: missionId },
+      data: { shareToken: null, shareEnabled: false },
+    });
+
+    auditService.logAction({
+      userId,
+      action: "DISABLE_SHARING",
+      entityType: "MISSION",
+      entityId: missionId,
+      details: {},
+    });
+
+    return { shareEnabled: false };
+  },
+
+  async getByShareToken(token: string) {
+    const mission = await prisma.mission.findUnique({
+      where: { shareToken: token },
+      include: {
+        createdBy: { select: { id: true, name: true, email: true, role: true } },
+        waypoints: { orderBy: { sequenceOrder: "asc" as const } },
+        missionThreats: { include: { threat: true } },
+        weatherReports: true,
+        aircraft: true,
+        crewMembers: true,
+      },
+    });
+    if (!mission || !mission.shareEnabled) {
+      throw new NotFoundError("Shared mission");
+    }
+    return mission;
+  },
+
+  async getShareStatus(missionId: string) {
+    const mission = await prisma.mission.findUnique({
+      where: { id: missionId },
+      select: { shareToken: true, shareEnabled: true },
+    });
+    if (!mission) throw new NotFoundError("Mission");
+    return { shareToken: mission.shareToken, shareEnabled: mission.shareEnabled };
   },
 };

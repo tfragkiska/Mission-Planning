@@ -39,7 +39,13 @@ export const api = {
     me: () => request<User>("/auth/me"),
   },
   missions: {
-    list: () => request<Mission[]>("/missions"),
+    list: (filters?: { status?: string; assignedTo?: string }) => {
+      const params = new URLSearchParams();
+      if (filters?.status) params.set("status", filters.status);
+      if (filters?.assignedTo) params.set("assignedTo", filters.assignedTo);
+      const query = params.toString();
+      return request<Mission[]>(`/missions${query ? `?${query}` : ""}`);
+    },
     get: (id: string) => request<Mission>(`/missions/${id}`),
     create: (data: { name: string; type: string; priority?: string; scheduledStart?: string; scheduledEnd?: string }) =>
       request<Mission>("/missions", {
@@ -68,6 +74,19 @@ export const api = {
       request<Array<{ id: string; name: string; templateName: string; templateDescription: string | null; type: string; priority: string; _count: { waypoints: number; aircraft: number } }>>("/missions/templates/list"),
     createFromTemplate: (templateId: string, name: string) =>
       request<Mission>("/missions/templates/create", { method: "POST", body: JSON.stringify({ templateId, name }) }),
+    getBriefingData: (missionId: string, template?: string) => {
+      const params = template ? `?template=${template}` : "";
+      return request<any>(`/missions/${missionId}/briefing-data${params}`);
+    },
+    getShareStatus: (id: string) =>
+      request<{ shareToken: string | null; shareEnabled: boolean }>(`/missions/${id}/share`),
+    enableSharing: (id: string) =>
+      request<{ shareToken: string; shareUrl: string }>(`/missions/${id}/share`, { method: "POST" }),
+    disableSharing: (id: string) =>
+      request<{ shareEnabled: boolean }>(`/missions/${id}/share`, { method: "DELETE" }),
+  },
+  shared: {
+    get: (token: string) => request<Mission>(`/shared/${token}`),
   },
   waypoints: {
     list: (missionId: string) =>
@@ -186,6 +205,86 @@ export const api = {
     },
     forMission: (missionId: string) =>
       request<AuditLogEntry[]>(`/audit/mission/${missionId}`),
+  },
+  exports: {
+    download: async (missionId: string, format: string): Promise<Blob> => {
+      const token = useAuthStore.getState().token;
+      const res = await fetch(`${BASE_URL}/missions/${missionId}/export/${format}`, {
+        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      });
+      if (res.status === 401) {
+        useAuthStore.getState().logout();
+        throw new Error("Unauthorized");
+      }
+      if (!res.ok) {
+        throw new Error(`Export failed: ${res.status}`);
+      }
+      return res.blob();
+    },
+    bulkCSV: async (missionIds: string[]): Promise<Blob> => {
+      const token = useAuthStore.getState().token;
+      const res = await fetch(`${BASE_URL}/missions/export/bulk-csv`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ missionIds }),
+      });
+      if (res.status === 401) {
+        useAuthStore.getState().logout();
+        throw new Error("Unauthorized");
+      }
+      if (!res.ok) {
+        throw new Error(`Bulk export failed: ${res.status}`);
+      }
+      return res.blob();
+    },
+  },
+  search: {
+    global: (query: string, options?: { types?: string; limit?: number }) => {
+      const params = new URLSearchParams();
+      params.set("q", query);
+      if (options?.types) params.set("types", options.types);
+      if (options?.limit) params.set("limit", String(options.limit));
+      return request<{
+        missions: Array<{
+          id: string;
+          name: string;
+          type: string;
+          status: string;
+          priority: string;
+          createdBy: { id: string; name: string };
+          score: number;
+        }>;
+        waypoints: Array<{
+          id: string;
+          name: string | null;
+          lat: number;
+          lon: number;
+          type: string;
+          missionId: string;
+          missionName: string;
+          score: number;
+        }>;
+        threats: Array<{
+          id: string;
+          name: string;
+          category: string;
+          lethality: string;
+          active: boolean;
+          score: number;
+        }>;
+        users: Array<{
+          id: string;
+          name: string;
+          email: string;
+          role: string;
+          score: number;
+        }>;
+        totalCount: number;
+      }>(`/search?${params.toString()}`);
+    },
   },
   notifications: {
     list: (filters?: { unread?: boolean; limit?: number }) => {

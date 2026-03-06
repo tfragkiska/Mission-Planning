@@ -7,7 +7,7 @@ interface MissionState {
   currentMission: Mission | null;
   loading: boolean;
   error: string | null;
-  fetchMissions: () => Promise<void>;
+  fetchMissions: (filters?: { status?: string; assignedTo?: string }) => Promise<void>;
   fetchMission: (id: string) => Promise<void>;
   createMission: (data: { name: string; type: string; priority?: string }) => Promise<Mission>;
   transitionMission: (id: string, status: string, comments?: string) => Promise<void>;
@@ -19,10 +19,10 @@ export const useMissionStore = create<MissionState>((set, get) => ({
   loading: false,
   error: null,
 
-  fetchMissions: async () => {
+  fetchMissions: async (filters?: { status?: string; assignedTo?: string }) => {
     set({ loading: true, error: null });
     try {
-      const missions = await api.missions.list();
+      const missions = await api.missions.list(filters);
       set({ missions, loading: false });
     } catch (err) {
       set({ error: err instanceof Error ? err.message : "Failed to fetch", loading: false });

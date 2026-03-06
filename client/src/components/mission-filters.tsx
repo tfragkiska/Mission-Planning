@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { useDebounce } from "../hooks/use-debounce";
+
 export interface MissionFilters {
   search: string;
   status: string;
@@ -23,11 +26,24 @@ const SORT_OPTIONS = [
 ];
 
 export default function MissionFilters({ filters, onChange }: Props) {
+  const [searchInput, setSearchInput] = useState(filters.search);
+  const debouncedSearch = useDebounce(searchInput, 300);
+
+  useEffect(() => {
+    if (debouncedSearch !== filters.search) {
+      onChange({ ...filters, search: debouncedSearch });
+    }
+  }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const update = (key: keyof MissionFilters, value: string) => {
+    if (key === "search") {
+      setSearchInput(value);
+      return;
+    }
     onChange({ ...filters, [key]: value });
   };
 
-  const hasActiveFilters = filters.status !== "ALL" || filters.type !== "ALL" || filters.priority !== "ALL" || filters.search !== "";
+  const hasActiveFilters = filters.status !== "ALL" || filters.type !== "ALL" || filters.priority !== "ALL" || searchInput !== "";
 
   const selectClasses = `bg-military-700/80 border border-military-600/50 rounded-lg px-3 py-2 text-sm
     text-military-300 focus:outline-none focus:border-command-500/50 focus:ring-1 focus:ring-command-500/20
@@ -54,8 +70,8 @@ export default function MissionFilters({ filters, onChange }: Props) {
           <input
             type="text"
             placeholder="Search missions..."
-            value={filters.search}
-            onChange={(e) => update("search", e.target.value)}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             className="w-full bg-military-700/80 border border-military-600/50 rounded-lg pl-9 pr-3 py-2 text-sm
               placeholder-military-500 text-white min-h-[44px]
               focus:outline-none focus:border-command-500/50 focus:ring-1 focus:ring-command-500/20

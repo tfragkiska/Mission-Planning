@@ -1,0 +1,128 @@
+{
+  "nav": {
+    "opord": "OPORD",
+    "missionPlanning": "Mission Planning",
+    "signOut": "Sign Out",
+    "auditLog": "Audit Log",
+    "theme": "Theme",
+    "toggleMenu": "Toggle menu"
+  },
+  "login": {
+    "authorizedAccessOnly": "Authorized Access Only",
+    "missionPlanningSystem": "Mission Planning System",
+    "email": "Email",
+    "password": "Password",
+    "authenticate": "Authenticate",
+    "authenticating": "Authenticating...",
+    "demoCredentials": "// Demo Credentials //",
+    "emailPlaceholder": "operator@mission.mil",
+    "passwordPlaceholder": "Enter credentials",
+    "loginFailed": "Login failed"
+  },
+  "dashboard": {
+    "missionOperationsCenter": "Mission Operations Center",
+    "systemActive": "System Active",
+    "newMission": "New Mission",
+    "new": "New",
+    "grid": "Grid",
+    "timeline": "Timeline",
+    "filters": "Filters",
+    "search": "Search missions...",
+    "missionsRegistered": "{{count}} missions registered",
+    "missionsDisplayed": "{{count}} displayed",
+    "loadingMissions": "Loading missions...",
+    "noMissionsMatch": "No missions match current filters",
+    "noData": "--"
+  },
+  "status": {
+    "DRAFT": "Draft",
+    "PLANNED": "Planned",
+    "UNDER_REVIEW": "Under Review",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected",
+    "BRIEFED": "Briefed",
+    "EXECUTING": "Executing",
+    "DEBRIEFED": "Debriefed",
+    "ALL": "All Statuses"
+  },
+  "type": {
+    "TRAINING": "Training",
+    "OPERATIONAL": "Operational",
+    "COMBAT": "Combat",
+    "RECONNAISSANCE": "Reconnaissance",
+    "ALL": "All Types"
+  },
+  "priority": {
+    "LOW": "Low",
+    "MEDIUM": "Medium",
+    "HIGH": "High",
+    "CRITICAL": "Critical",
+    "ALL": "All Priorities"
+  },
+  "sort": {
+    "newest": "Newest First",
+    "oldest": "Oldest First",
+    "name": "Name",
+    "priority": "Priority",
+    "status": "Status"
+  },
+  "mission": {
+    "markAsPlanned": "Mark as Planned",
+    "submitForReview": "Submit for Review",
+    "approve": "Approve",
+    "reject": "Reject",
+    "clone": "Clone",
+    "saveAsTemplate": "Save as Template",
+    "downloadBriefing": "Download Briefing",
+    "exportMap": "Export Map"
+  },
+  "panels": {
+    "waypoints": "Waypoints",
+    "aircraftCrew": "Aircraft & Crew",
+    "threats": "Threats",
+    "weather": "Weather",
+    "deconfliction": "Deconfliction",
+    "airspaces": "Airspaces",
+    "altitudeProfile": "Altitude Profile",
+    "versionHistory": "Version History",
+    "activityFeed": "Activity Feed"
+  },
+  "createModal": {
+    "newMission": "New Mission",
+    "missionName": "Mission Name",
+    "type": "Type",
+    "priority": "Priority",
+    "template": "Template",
+    "create": "Create",
+    "cancel": "Cancel"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "noNotifications": "No notifications",
+    "markAllRead": "Mark all as read"
+  },
+  "audit": {
+    "title": "Audit Log",
+    "noEntries": "No audit entries found",
+    "action": "Action",
+    "user": "User",
+    "timestamp": "Timestamp",
+    "details": "Details"
+  },
+  "common": {
+    "loading": "Loading...",
+    "noData": "No data available",
+    "delete": "Delete",
+    "add": "Add",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "error": "Error",
+    "success": "Success"
+  }
+}

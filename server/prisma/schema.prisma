@@ -78,6 +78,8 @@ model Mission {
   isTemplate          Boolean       @default(false) @map("is_template")
   templateName        String?       @map("template_name")
   templateDescription String?       @map("template_description")
+  shareToken          String?       @unique @map("share_token")
+  shareEnabled        Boolean       @default(false) @map("share_enabled")
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")
 

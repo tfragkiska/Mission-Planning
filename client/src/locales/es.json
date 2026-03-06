@@ -1,0 +1,128 @@
+{
+  "nav": {
+    "opord": "OPORD",
+    "missionPlanning": "Planificacion de Mision",
+    "signOut": "Cerrar Sesion",
+    "auditLog": "Registro de Auditoria",
+    "theme": "Tema",
+    "toggleMenu": "Alternar menu"
+  },
+  "login": {
+    "authorizedAccessOnly": "Solo Acceso Autorizado",
+    "missionPlanningSystem": "Sistema de Planificacion de Mision",
+    "email": "Correo Electronico",
+    "password": "Contrasena",
+    "authenticate": "Autenticar",
+    "authenticating": "Autenticando...",
+    "demoCredentials": "// Credenciales de Demostracion //",
+    "emailPlaceholder": "operador@mision.mil",
+    "passwordPlaceholder": "Ingrese credenciales",
+    "loginFailed": "Error de autenticacion"
+  },
+  "dashboard": {
+    "missionOperationsCenter": "Centro de Operaciones de Mision",
+    "systemActive": "Sistema Activo",
+    "newMission": "Nueva Mision",
+    "new": "Nueva",
+    "grid": "Cuadricula",
+    "timeline": "Linea de Tiempo",
+    "filters": "Filtros",
+    "search": "Buscar misiones...",
+    "missionsRegistered": "{{count}} misiones registradas",
+    "missionsDisplayed": "{{count}} mostradas",
+    "loadingMissions": "Cargando misiones...",
+    "noMissionsMatch": "Ninguna mision coincide con los filtros actuales",
+    "noData": "--"
+  },
+  "status": {
+    "DRAFT": "Borrador",
+    "PLANNED": "Planificada",
+    "UNDER_REVIEW": "En Revision",
+    "APPROVED": "Aprobada",
+    "REJECTED": "Rechazada",
+    "BRIEFED": "Informada",
+    "EXECUTING": "En Ejecucion",
+    "DEBRIEFED": "Debriefing Completado",
+    "ALL": "Todos los Estados"
+  },
+  "type": {
+    "TRAINING": "Entrenamiento",
+    "OPERATIONAL": "Operacional",
+    "COMBAT": "Combate",
+    "RECONNAISSANCE": "Reconocimiento",
+    "ALL": "Todos los Tipos"
+  },
+  "priority": {
+    "LOW": "Baja",
+    "MEDIUM": "Media",
+    "HIGH": "Alta",
+    "CRITICAL": "Critica",
+    "ALL": "Todas las Prioridades"
+  },
+  "sort": {
+    "newest": "Mas Reciente",
+    "oldest": "Mas Antigua",
+    "name": "Nombre",
+    "priority": "Prioridad",
+    "status": "Estado"
+  },
+  "mission": {
+    "markAsPlanned": "Marcar como Planificada",
+    "submitForReview": "Enviar a Revision",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "clone": "Clonar",
+    "saveAsTemplate": "Guardar como Plantilla",
+    "downloadBriefing": "Descargar Briefing",
+    "exportMap": "Exportar Mapa"
+  },
+  "panels": {
+    "waypoints": "Puntos de Ruta",
+    "aircraftCrew": "Aeronave y Tripulacion",
+    "threats": "Amenazas",
+    "weather": "Meteorologia",
+    "deconfliction": "Desconfliccion",
+    "airspaces": "Espacios Aereos",
+    "altitudeProfile": "Perfil de Altitud",
+    "versionHistory": "Historial de Versiones",
+    "activityFeed": "Registro de Actividad"
+  },
+  "createModal": {
+    "newMission": "Nueva Mision",
+    "missionName": "Nombre de Mision",
+    "type": "Tipo",
+    "priority": "Prioridad",
+    "template": "Plantilla",
+    "create": "Crear",
+    "cancel": "Cancelar"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "noNotifications": "Sin notificaciones",
+    "markAllRead": "Marcar todo como leido"
+  },
+  "audit": {
+    "title": "Registro de Auditoria",
+    "noEntries": "No se encontraron registros de auditoria",
+    "action": "Accion",
+    "user": "Usuario",
+    "timestamp": "Fecha y Hora",
+    "details": "Detalles"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "noData": "Sin datos disponibles",
+    "delete": "Eliminar",
+    "add": "Agregar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "back": "Atras",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "error": "Error",
+    "success": "Exito"
+  }
+}

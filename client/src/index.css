@@ -430,3 +430,47 @@
     border-color: rgba(212, 148, 46, 0.4);
   }
 }
+
+/* ============================================================
+   RTL (Right-to-Left) Language Support
+   ============================================================ */
+
+[dir="rtl"] {
+  /* Flip gradients for RTL */
+  .bg-gradient-to-r {
+    background-image: linear-gradient(to left, var(--tw-gradient-stops));
+  }
+
+  /* Flip border-left accents to border-right */
+  .border-l-2 {
+    border-left-width: 0;
+    border-right-width: 2px;
+  }
+
+  .border-l-command-500\/50 {
+    border-left-color: transparent;
+    border-right-color: rgb(52 112 204 / 0.5);
+  }
+
+  .border-l-command-400 {
+    border-left-color: transparent;
+    border-right-color: rgb(96 147 217);
+  }
+
+  /* Ensure proper text alignment */
+  input,
+  textarea,
+  select {
+    text-align: right;
+  }
+
+  /* Flip flex row items for nav */
+  .flex-row-reverse {
+    flex-direction: row;
+  }
+
+  /* Scan line and decorative elements */
+  .scan-line::after {
+    animation-direction: reverse;
+  }
+}

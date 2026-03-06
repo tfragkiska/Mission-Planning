@@ -12,16 +12,24 @@ test.describe('Mission CRUD', () => {
     // After creation we're on the mission page - go back to dashboard
     await page.goto('/dashboard');
 
-    const missionCard = page.getByText(missionName);
-    await missionCard.waitFor({ state: 'visible', timeout: 10000 });
-    await expect(missionCard).toBeVisible();
+    // Use search to find the specific mission
+    const searchInput = page.getByPlaceholder(/search/i);
+    if (await searchInput.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await searchInput.fill(missionName);
+      // Wait for debounce (300ms) + render
+      await page.waitForTimeout(1000);
+    }
+
+    // Find the mission card and scroll it into view
+    const missionCard = page.getByText(missionName).first();
+    await missionCard.scrollIntoViewIfNeeded({ timeout: 10000 });
+    await expect(missionCard).toBeVisible({ timeout: 10000 });
   });
 
   test('mission page loads after creation', async ({ page }) => {
     const missionName = await createMission(page);
 
     await expect(page).toHaveURL(/\/missions\//);
-    // The heading with mission name should be visible (error boundary catches map failures)
     await expect(page.getByRole('heading', { name: missionName })).toBeVisible();
   });
 

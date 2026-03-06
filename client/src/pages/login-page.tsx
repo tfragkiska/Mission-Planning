@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { useAuthStore } from "../stores/auth-store";
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,7 +22,7 @@ export default function LoginPage() {
       setAuth(token, user);
       navigate("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(err instanceof Error ? err.message : t("login.loginFailed"));
     } finally {
       setLoading(false);
     }
@@ -65,16 +67,16 @@ export default function LoginPage() {
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-military-600 to-transparent" />
             <span className="text-[10px] font-mono tracking-[0.3em] text-military-500 uppercase">
-              Authorized Access Only
+              {t("login.authorizedAccessOnly")}
             </span>
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-military-600 to-transparent" />
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-bold tracking-[0.2em] text-gray-100 mb-1">
-            OPORD
+            {t("nav.opord")}
           </h1>
           <p className="text-xs font-mono tracking-[0.35em] text-military-400 uppercase">
-            Mission Planning System
+            {t("login.missionPlanningSystem")}
           </p>
 
           {/* Decorative line below title */}
@@ -103,7 +105,7 @@ export default function LoginPage() {
             htmlFor="email"
             className="block text-xs font-mono font-semibold tracking-wider text-military-400 uppercase mb-2"
           >
-            Email
+            {t("login.email")}
           </label>
           <input
             id="email"
@@ -111,7 +113,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2.5 bg-military-800/60 border border-military-700/50 border-l-2 border-l-command-500/50 rounded-lg text-gray-100 placeholder-military-600 focus:outline-none focus:border-command-500/40 focus:border-l-command-400 focus:bg-military-800/80 transition-all duration-200"
-            placeholder="operator@mission.mil"
+            placeholder={t("login.emailPlaceholder")}
             required
           />
         </div>
@@ -122,7 +124,7 @@ export default function LoginPage() {
             htmlFor="password"
             className="block text-xs font-mono font-semibold tracking-wider text-military-400 uppercase mb-2"
           >
-            Password
+            {t("login.password")}
           </label>
           <input
             id="password"
@@ -130,7 +132,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-2.5 bg-military-800/60 border border-military-700/50 border-l-2 border-l-command-500/50 rounded-lg text-gray-100 placeholder-military-600 focus:outline-none focus:border-command-500/40 focus:border-l-command-400 focus:bg-military-800/80 transition-all duration-200"
-            placeholder="Enter credentials"
+            placeholder={t("login.passwordPlaceholder")}
             required
           />
         </div>
@@ -147,17 +149,17 @@ export default function LoginPage() {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-              Authenticating...
+              {t("login.authenticating")}
             </span>
           ) : (
-            "Authenticate"
+            t("login.authenticate")
           )}
         </button>
 
         {/* Classification marking style demo credentials */}
         <div className="mt-6 pt-4 border-t border-military-700/30">
           <p className="text-[10px] font-mono tracking-[0.25em] text-military-500 text-center uppercase">
-            // Demo Credentials //
+            {t("login.demoCredentials")}
           </p>
           <p className="text-[11px] font-mono text-military-500 text-center mt-1">
             planner@mission.mil / password123

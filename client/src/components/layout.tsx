@@ -1,9 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuthStore } from "../stores/auth-store";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import OfflineIndicator from "./offline-indicator";
 import ThemeToggle from "./theme-toggle";
 import NotificationBell from "./notification-bell";
+import LanguageSwitcher from "./language-switcher";
+import ShortcutHelp from "./shortcut-help";
+import CommandPalette from "./command-palette";
+import GlobalSearch from "./global-search";
+import { useKeyboardShortcuts } from "../hooks/use-keyboard-shortcuts";
 
 const roleBadgeStyles: Record<string, string> = {
   planner: "bg-command-500/20 text-command-400 border-command-500/40",
@@ -12,10 +18,60 @@ const roleBadgeStyles: Record<string, string> = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation();
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showShortcutHelp, setShowShortcutHelp] = useState(false);
+  const [showCommandPalette, setShowCommandPalette] = useState(false);
+
+  const toggleHelp = useCallback(() => setShowShortcutHelp((v) => !v), []);
+  const closeHelp = useCallback(() => setShowShortcutHelp(false), []);
+  const togglePalette = useCallback(() => setShowCommandPalette((v) => !v), []);
+  const closePalette = useCallback(() => setShowCommandPalette(false), []);
+
+  useKeyboardShortcuts([
+    {
+      key: "?",
+      handler: () => {
+        if (showCommandPalette) return;
+        toggleHelp();
+      },
+    },
+    {
+      key: "Ctrl+/",
+      handler: () => {
+        if (showCommandPalette) return;
+        toggleHelp();
+      },
+    },
+    {
+      key: "Ctrl+K",
+      handler: () => {
+        if (showShortcutHelp) return;
+        togglePalette();
+      },
+    },
+    {
+      key: "G>D",
+      handler: () => navigate("/dashboard"),
+      sequence: true,
+    },
+    {
+      key: "G>A",
+      handler: () => navigate("/audit"),
+      sequence: true,
+    },
+    {
+      key: "Escape",
+      handler: () => {
+        if (showCommandPalette) closePalette();
+        else if (showShortcutHelp) closeHelp();
+        else setMobileMenuOpen(false);
+      },
+    },
+  ]);
 
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -61,10 +117,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </svg>
             <div className="flex flex-col">
               <h1 className="text-sm sm:text-lg font-bold tracking-wider text-gray-100 group-hover:text-white transition-colors">
-                OPORD
+                {t("nav.opord")}
               </h1>
               <span className="hidden sm:block text-[10px] font-mono tracking-widest text-military-400 uppercase leading-none">
-                Mission Planning
+                {t("nav.missionPlanning")}
               </span>
             </div>
           </div>
@@ -89,6 +145,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Desktop right side */}
         <div className="hidden md:flex items-center gap-5">
+          {/* Global search */}
+          <GlobalSearch />
+
           {/* Audit Log link - visible to COMMANDER and PLANNER */}
           {user && (user.role === "COMMANDER" || user.role === "PLANNER") && (
             <button
@@ -102,12 +161,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <line x1="16" y1="17" x2="8" y2="17" />
                 <polyline points="10 9 9 9 8 9" />
               </svg>
-              Audit Log
+              {t("nav.auditLog")}
             </button>
           )}
 
           {/* Notification bell */}
           <NotificationBell />
+
+          {/* Language switcher */}
+          <LanguageSwitcher />
 
           {/* Theme toggle */}
           <ThemeToggle />
@@ -142,7 +204,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
-            Sign Out
+            {t("nav.signOut")}
           </button>
         </div>
 
@@ -150,7 +212,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-military-400 hover:text-white hover:bg-military-700/50 transition-colors"
-          aria-label="Toggle menu"
+          aria-label={t("nav.toggleMenu")}
         >
           {mobileMenuOpen ? (
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -188,7 +250,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-4">
             <NotificationBell />
             <div className="flex items-center gap-2">
-              <span className="text-xs text-military-500 uppercase tracking-wider font-mono">Theme</span>
+              <span className="text-xs text-military-500 uppercase tracking-wider font-mono">{t("nav.theme")}</span>
               <ThemeToggle />
             </div>
           </div>
@@ -223,7 +285,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <line x1="16" y1="17" x2="8" y2="17" />
                 <polyline points="10 9 9 9 8 9" />
               </svg>
-              Audit Log
+              {t("nav.auditLog")}
             </button>
           )}
 
@@ -240,7 +302,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
-            Sign Out
+            {t("nav.signOut")}
           </button>
         </div>
       )}
@@ -248,6 +310,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className="p-3 sm:p-6 tactical-grid min-h-[calc(100vh-3.5rem)]">
         {children}
       </main>
+
+      {/* Shortcut hint */}
+      <div className="fixed bottom-3 right-3 z-30 hidden sm:flex items-center gap-1.5 text-military-600 hover:text-military-400 transition-colors cursor-pointer select-none" onClick={toggleHelp}>
+        <span className="text-[10px] font-mono tracking-wide">Press</span>
+        <kbd className="px-1.5 py-0.5 rounded bg-military-800/80 border border-military-700/60 text-[10px] font-mono">?</kbd>
+        <span className="text-[10px] font-mono tracking-wide">for shortcuts</span>
+      </div>
+
+      {/* Modals */}
+      {showShortcutHelp && <ShortcutHelp onClose={closeHelp} />}
+      {showCommandPalette && <CommandPalette onClose={closePalette} />}
     </div>
   );
 }

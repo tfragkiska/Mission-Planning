@@ -1,3 +1,4 @@
+import React from "react";
 import type { Waypoint } from "../lib/types";
 
 interface Props {
@@ -6,7 +7,7 @@ interface Props {
   onDelete?: (id: string) => void;
 }
 
-export default function WaypointPanel({ waypoints, editable, onDelete }: Props) {
+function WaypointPanelInner({ waypoints, editable, onDelete }: Props) {
   return (
     <div className="glass-panel border border-military-700/50 rounded-xl p-4">
       <div className="flex items-center justify-between mb-3 pb-2 border-b border-military-700/50">
@@ -60,3 +61,5 @@ export default function WaypointPanel({ waypoints, editable, onDelete }: Props) 
     </div>
   );
 }
+
+export default React.memo(WaypointPanelInner);

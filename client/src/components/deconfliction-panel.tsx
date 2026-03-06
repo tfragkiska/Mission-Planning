@@ -1,3 +1,4 @@
+import React from "react";
 import type { DeconflictionResult, ConflictSeverity } from "../lib/types";
 
 interface Props {
@@ -29,7 +30,7 @@ const severityStyles: Record<ConflictSeverity, { bg: string; border: string; tex
   },
 };
 
-export default function DeconflictionPanel({ results, editable, onRunCheck, onResolve, loading }: Props) {
+function DeconflictionPanelInner({ results, editable, onRunCheck, onResolve, loading }: Props) {
   const criticalCount = results.filter((r) => r.severity === "CRITICAL" && r.resolution === "UNRESOLVED").length;
   const warningCount = results.filter((r) => r.severity === "WARNING" && r.resolution === "UNRESOLVED").length;
 
@@ -114,3 +115,5 @@ export default function DeconflictionPanel({ results, editable, onRunCheck, onRe
     </div>
   );
 }
+
+export default React.memo(DeconflictionPanelInner);

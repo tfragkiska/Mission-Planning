@@ -1,7 +1,10 @@
 import { useState } from "react";
 import maplibregl from "maplibre-gl";
 import TerrainToggle from "./terrain-toggle";
+import MapPresetPanel from "./map-preset-panel";
 import { toggleMeasurement, isMeasurementActive, clearMeasurement } from "../map/measurement-tool";
+import { BASEMAP_STYLES } from "../map/map-styles";
+import type { MapLayerPreset, MapLayerVisibility, MapStyleId } from "../lib/map-preset-types";
 
 interface Props {
   map: maplibregl.Map | null;
@@ -11,6 +14,10 @@ interface Props {
   onToggleThreatLayer: () => void;
   onToggleCorridor: () => void;
   onToggleLabels: () => void;
+  currentLayers: MapLayerVisibility;
+  currentMapStyle: MapStyleId;
+  onApplyPreset: (preset: MapLayerPreset) => void;
+  onChangeBasemap: (styleId: MapStyleId) => void;
 }
 
 export default function MapControls({
@@ -21,6 +28,10 @@ export default function MapControls({
   onToggleThreatLayer,
   onToggleCorridor,
   onToggleLabels,
+  currentLayers,
+  currentMapStyle,
+  onApplyPreset,
+  onChangeBasemap,
 }: Props) {
   const [measuring, setMeasuring] = useState(isMeasurementActive());
 
@@ -41,6 +52,32 @@ export default function MapControls({
         <p className="text-[10px] font-bold uppercase tracking-widest text-military-500 px-1 pb-1 border-b border-military-700/50">
           Map Controls
         </p>
+
+        <MapPresetPanel
+          currentLayers={currentLayers}
+          currentMapStyle={currentMapStyle}
+          onApplyPreset={onApplyPreset}
+        />
+
+        {/* Basemap style switcher */}
+        <div className="flex gap-1">
+          {BASEMAP_STYLES.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => onChangeBasemap(s.id)}
+              className={`flex-1 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all duration-200 border ${
+                currentMapStyle === s.id
+                  ? "bg-command-500/20 text-command-400 border-command-500/40"
+                  : "glass-panel text-military-400 border-military-700/50 hover:text-gray-100 hover:border-military-500"
+              }`}
+              title={`Switch to ${s.name} basemap`}
+            >
+              {s.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="border-t border-military-700/30 pt-1.5 mt-0.5" />
 
         <TerrainToggle map={map} />
 

@@ -14,7 +14,7 @@ test.describe('Authentication', () => {
     await login(page, users.planner);
 
     await expect(page).toHaveURL(/\/dashboard/);
-    await expect(page.getByText('Alex Planner')).toBeVisible();
+    await expect(page.locator('nav').getByText('Alex Planner')).toBeVisible();
   });
 
   test('nav displays user name after login', async ({ page }) => {

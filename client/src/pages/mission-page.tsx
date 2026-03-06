@@ -20,13 +20,19 @@ import { updateAirspaceLayers } from "../map/airspace-layer";
 import { updateThreatLayers, removeThreatLayers } from "../map/threat-layer";
 import { updateRouteCorridor, removeRouteCorridor } from "../map/route-corridor";
 import { updateRouteLabels, removeRouteLabels } from "../map/route-labels";
+import { switchBasemapStyle } from "../map/map-styles";
 import type { Airspace } from "../lib/airspace-types";
+import type { MapLayerPreset, MapLayerVisibility, MapStyleId } from "../lib/map-preset-types";
+import { useMapPresetStore } from "../stores/map-preset-store";
 import { useMissionStore } from "../stores/mission-store";
 import { useWaypointStore } from "../stores/waypoint-store";
 import { useAuthStore } from "../stores/auth-store";
 import { api } from "../lib/api";
-import { exportMapAsPng } from "../map/map-export";
+import ExportMenu from "../components/export-menu";
+import ShareDialog from "../components/share-dialog";
 import { useMissionSocket } from "../hooks/use-mission-socket";
+import { useKeyboardShortcuts } from "../hooks/use-keyboard-shortcuts";
+import { toggleMeasurement } from "../map/measurement-tool";
 import type { MissionStatus, Threat, WeatherReport, DeconflictionResult, Aircraft, CrewMember } from "../lib/types";
 
 const NEXT_STATUS: Partial<Record<MissionStatus, { label: string; status: MissionStatus; roles: string[] }>> = {
@@ -76,12 +82,64 @@ export default function MissionPage() {
   const [weatherReports, setWeatherReports] = useState<WeatherReport[]>([]);
   const [deconflictionResults, setDeconflictionResults] = useState<DeconflictionResult[]>([]);
   const [deconflictionLoading, setDeconflictionLoading] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mapInstance, setMapInstance] = useState<any>(null);
   const [airspaces, setAirspaces] = useState<Airspace[]>([]);
   const [visibleAirspaceIds, setVisibleAirspaceIds] = useState<Set<string>>(new Set());
   const [threatLayerVisible, setThreatLayerVisible] = useState(true);
   const [corridorVisible, setCorridorVisible] = useState(true);
   const [labelsVisible, setLabelsVisible] = useState(true);
+  const [currentMapStyle, setCurrentMapStyle] = useState<MapStyleId>("dark");
+  const clearActivePreset = useMapPresetStore((s) => s.clearActivePreset);
+
+  // Mission page keyboard shortcuts
+  useKeyboardShortcuts([
+    {
+      key: "Ctrl+S",
+      handler: () => {
+        if (!id) return;
+        const token = useAuthStore.getState().token;
+        fetch(`/api/missions/${id}/briefing`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((res) => res.blob())
+          .then((blob) => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `mission-briefing-${id}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+          })
+          .catch(() => {});
+      },
+    },
+    {
+      key: "Ctrl+E",
+      handler: () => {
+        if (mapInstance && currentMission) {
+          // Dynamically import to avoid issues if exportMapAsPng is not available
+          import("../map/map-export").then(({ exportMapAsPng }) => {
+            exportMapAsPng(mapInstance, currentMission.name);
+          });
+        }
+      },
+    },
+    {
+      key: "M",
+      handler: () => {
+        if (mapInstance) toggleMeasurement(mapInstance);
+      },
+    },
+    {
+      key: "T",
+      handler: () => {
+        // Dispatch a click on the terrain toggle button
+        const terrainBtn = document.querySelector<HTMLButtonElement>('button[title="Toggle terrain elevation overlay"]');
+        if (terrainBtn) terrainBtn.click();
+      },
+    },
+  ]);
 
   const refetchMission = useCallback(() => { if (id) fetchMission(id); }, [id, fetchMission]);
   const refetchWaypoints = useCallback(() => { if (id) fetchWaypoints(id); }, [id, fetchWaypoints]);
@@ -170,6 +228,71 @@ export default function MissionPage() {
     }
   }, [currentMission]);
 
+  const currentLayers: MapLayerVisibility = {
+    terrain: false,
+    threatRings: threatLayerVisible,
+    routeCorridor: corridorVisible,
+    routeLabels: labelsVisible,
+    airspaces: visibleAirspaceIds.size > 0,
+    hillshade: false,
+    satellite: currentMapStyle === "satellite",
+  };
+
+  const reapplyDataLayers = useCallback((
+    map: any,
+    layers: { threats: boolean; corridor: boolean; labels: boolean },
+  ) => {
+    if (layers.threats && missionThreats.length > 0) {
+      updateThreatLayers(map, missionThreats);
+    }
+    if (layers.corridor && waypoints.length >= 2) {
+      updateRouteCorridor(map, waypoints, missionThreats);
+    }
+    if (layers.labels && waypoints.length >= 2) {
+      updateRouteLabels(map, waypoints);
+    }
+    if (airspaces.length > 0) {
+      updateAirspaceLayers(map, airspaces, visibleAirspaceIds);
+    }
+  }, [missionThreats, waypoints, airspaces, visibleAirspaceIds]);
+
+  const handleApplyPreset = useCallback((preset: MapLayerPreset) => {
+    setThreatLayerVisible(preset.layers.threatRings);
+    setCorridorVisible(preset.layers.routeCorridor);
+    setLabelsVisible(preset.layers.routeLabels);
+
+    if (preset.mapStyle !== currentMapStyle && mapInstance) {
+      setCurrentMapStyle(preset.mapStyle);
+      switchBasemapStyle(mapInstance, preset.mapStyle, () => {
+        reapplyDataLayers(mapInstance, {
+          threats: preset.layers.threatRings,
+          corridor: preset.layers.routeCorridor,
+          labels: preset.layers.routeLabels,
+        });
+      });
+    }
+
+    if (preset.zoom && mapInstance) {
+      mapInstance.setZoom(preset.zoom);
+    }
+    if (preset.center && mapInstance) {
+      mapInstance.setCenter(preset.center);
+    }
+  }, [currentMapStyle, mapInstance, reapplyDataLayers]);
+
+  const handleChangeBasemap = useCallback((styleId: MapStyleId) => {
+    if (!mapInstance || styleId === currentMapStyle) return;
+    setCurrentMapStyle(styleId);
+    clearActivePreset();
+    switchBasemapStyle(mapInstance, styleId, () => {
+      reapplyDataLayers(mapInstance, {
+        threats: threatLayerVisible,
+        corridor: corridorVisible,
+        labels: labelsVisible,
+      });
+    });
+  }, [mapInstance, currentMapStyle, threatLayerVisible, corridorVisible, labelsVisible, reapplyDataLayers, clearActivePreset]);
+
   const handleMapClick = useCallback(
     (lat: number, lon: number) => {
       if (id && currentMission?.status === "DRAFT" && user?.role === "PLANNER") {
@@ -256,6 +379,25 @@ export default function MissionPage() {
     await api.crew.remove(id, crewId);
     setMissionCrew((prev) => prev.filter((c) => c.id !== crewId));
   }, [id]);
+
+  const handleToggleAirspaceVisibility = useCallback((airspaceId: string, visible: boolean) => {
+    setVisibleAirspaceIds((prev) => {
+      const next = new Set(prev);
+      if (visible) next.add(airspaceId);
+      else next.delete(airspaceId);
+      return next;
+    });
+  }, []);
+
+  const handleCreateAirspace = useCallback(async (data: Parameters<typeof api.airspaces.create>[0]) => {
+    const created = await api.airspaces.create(data);
+    setAirspaces((prev) => [...prev, created as Airspace]);
+  }, []);
+
+  const handleDeleteAirspace = useCallback(async (airspaceId: string) => {
+    await api.airspaces.delete(airspaceId);
+    setAirspaces((prev) => prev.filter((a) => a.id !== airspaceId));
+  }, []);
 
   const handleClone = async () => {
     if (!id) return;
@@ -358,19 +500,32 @@ export default function MissionPage() {
               </button>
             )}
             <button
+              onClick={() => navigate(`/missions/${id}/briefing`)}
+              className="glass-panel px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-military-300 hover:text-gray-100 hover:border-military-500 border border-military-700/50 transition-all duration-200"
+            >
+              <span className="hidden sm:inline">Preview Briefing</span>
+              <span className="sm:hidden">Preview</span>
+            </button>
+            <button
               onClick={handleDownloadBriefing}
               className="glass-panel px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-military-300 hover:text-gray-100 hover:border-military-500 border border-military-700/50 transition-all duration-200"
             >
               <span className="hidden sm:inline">Download Briefing</span>
               <span className="sm:hidden">Briefing</span>
             </button>
-            <button
-              onClick={() => mapInstance && exportMapAsPng(mapInstance, currentMission.name)}
-              className="glass-panel px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-military-300 hover:text-gray-100 hover:border-military-500 border border-military-700/50 transition-all duration-200"
-            >
-              <span className="hidden sm:inline">Export Map</span>
-              <span className="sm:hidden">Map</span>
-            </button>
+            <ExportMenu
+              missionId={id || ""}
+              missionName={currentMission.name}
+              mapInstance={mapInstance}
+            />
+            {(user?.role === "COMMANDER" || currentMission.createdBy?.id === user?.id) && (
+              <button
+                onClick={() => setShareDialogOpen(true)}
+                className="glass-panel px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-military-300 hover:text-gray-100 hover:border-military-500 border border-military-700/50 transition-all duration-200"
+              >
+                Share
+              </button>
+            )}
 
             <span className="flex-1" />
 
@@ -446,6 +601,10 @@ export default function MissionPage() {
               onToggleThreatLayer={() => setThreatLayerVisible((v) => !v)}
               onToggleCorridor={() => setCorridorVisible((v) => !v)}
               onToggleLabels={() => setLabelsVisible((v) => !v)}
+              currentLayers={currentLayers}
+              currentMapStyle={currentMapStyle}
+              onApplyPreset={handleApplyPreset}
+              onChangeBasemap={handleChangeBasemap}
             />
           </div>
           <div className="lg:col-span-1 space-y-4 lg:max-h-[600px] overflow-y-auto pr-0 lg:pr-1 scrollbar-thin scrollbar-thumb-military-700 scrollbar-track-transparent">
@@ -488,22 +647,9 @@ export default function MissionPage() {
             <AirspacePanel
               airspaces={airspaces}
               editable={editable}
-              onToggleVisibility={(airspaceId, visible) => {
-                setVisibleAirspaceIds((prev) => {
-                  const next = new Set(prev);
-                  if (visible) next.add(airspaceId);
-                  else next.delete(airspaceId);
-                  return next;
-                });
-              }}
-              onCreateAirspace={async (data) => {
-                const created = await api.airspaces.create(data);
-                setAirspaces((prev) => [...prev, created as Airspace]);
-              }}
-              onDeleteAirspace={async (airspaceId) => {
-                await api.airspaces.delete(airspaceId);
-                setAirspaces((prev) => prev.filter((a) => a.id !== airspaceId));
-              }}
+              onToggleVisibility={handleToggleAirspaceVisibility}
+              onCreateAirspace={handleCreateAirspace}
+              onDeleteAirspace={handleDeleteAirspace}
             />
             <AltitudeProfile waypoints={waypoints} />
             <VersionHistoryPanel missionId={id!} />
@@ -511,6 +657,13 @@ export default function MissionPage() {
           </div>
         </div>
       </div>
+      {id && (
+        <ShareDialog
+          missionId={id}
+          open={shareDialogOpen}
+          onClose={() => setShareDialogOpen(false)}
+        />
+      )}
     </Layout>
   );
 }

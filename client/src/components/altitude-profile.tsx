@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import type { Waypoint } from "../lib/types";
 
 interface Props {
@@ -16,7 +16,7 @@ function haversineDistanceNm(lat1: number, lon1: number, lat2: number, lon2: num
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-export default function AltitudeProfile({ waypoints }: Props) {
+function AltitudeProfileInner({ waypoints }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -177,3 +177,5 @@ export default function AltitudeProfile({ waypoints }: Props) {
     </div>
   );
 }
+
+export default React.memo(AltitudeProfileInner);

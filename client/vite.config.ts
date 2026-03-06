@@ -94,6 +94,20 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    sourcemap: true,
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-map": ["maplibre-gl"],
+          "vendor-zustand": ["zustand"],
+          "vendor-socket": ["socket.io-client"],
+        },
+      },
+    },
+  },
   server: {
     port: 5173,
     proxy: {

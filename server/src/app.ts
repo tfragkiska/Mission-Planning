@@ -13,10 +13,13 @@ import { threatRouter, missionThreatRouter } from "./modules/threat/routes";
 import { weatherRouter } from "./modules/weather/routes";
 import { deconflictionRouter } from "./modules/deconfliction/routes";
 import { aircraftRouter } from "./modules/mission/aircraft-routes";
+import { exportRouter } from "./modules/mission/export-routes";
 import { airspaceRouter } from "./modules/airspace/routes";
 import { threatFeedRouter } from "./modules/threat/feed-routes";
 import { notificationRouter } from "./modules/notification/routes";
 import { auditRouter } from "./modules/audit/routes";
+import { shareRouter, publicShareRouter } from "./modules/mission/share-routes";
+import { searchRouter } from "./modules/search/routes";
 
 const app = express();
 const httpServer = createServer(app);
@@ -44,9 +47,13 @@ app.use("/api/missions", missionThreatRouter);
 app.use("/api/missions", weatherRouter);
 app.use("/api/missions", deconflictionRouter);
 app.use("/api/missions", aircraftRouter);
+app.use("/api/missions", exportRouter);
 app.use("/api/airspaces", airspaceRouter);
 app.use("/api/notifications", notificationRouter);
 app.use("/api/audit", auditRouter);
+app.use("/api/missions", shareRouter);
+app.use("/api/shared", publicShareRouter);
+app.use("/api/search", searchRouter);
 
 // Health check
 app.get("/api/health", (_req, res) => {

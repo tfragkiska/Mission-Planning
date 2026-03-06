@@ -29,7 +29,17 @@ missionRouter.use(authenticate);
  */
 missionRouter.get("/", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
-    const missions = await missionService.list();
+    const { status, assignedTo } = req.query as Record<string, string>;
+    const filters: Record<string, string> = {};
+    if (status) filters.status = status;
+    if (assignedTo === "me") {
+      filters.assignedTo = req.user!.userId;
+    } else if (assignedTo) {
+      filters.assignedTo = assignedTo;
+    }
+    const missions = await missionService.list(
+      Object.keys(filters).length > 0 ? filters as any : undefined,
+    );
     res.json(missions);
   } catch (err) {
     next(err);
@@ -300,13 +310,47 @@ missionRouter.post(
  *       404:
  *         description: Mission not found
  */
-// Briefing PDF download
+// Briefing PDF download — supports ?template=opord|quick|crew
 missionRouter.get("/:id/briefing", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
-    const pdf = await briefingService.generatePdf(req.params.id);
+    const templateId = req.query.template as string | undefined;
+    const pdf = await briefingService.generatePdf(req.params.id, templateId);
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename="mission-briefing-${req.params.id}.pdf"`);
     res.send(pdf);
+  } catch (err) { next(err); }
+});
+
+/**
+ * @swagger
+ * /missions/{id}/briefing-data:
+ *   get:
+ *     summary: Get structured briefing data as JSON for preview
+ *     tags: [Missions]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string, format: uuid }
+ *       - in: query
+ *         name: template
+ *         required: false
+ *         schema: { type: string, enum: [opord, quick, crew] }
+ *     responses:
+ *       200:
+ *         description: Structured briefing data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: Mission not found
+ */
+missionRouter.get("/:id/briefing-data", async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  try {
+    const templateId = req.query.template as string | undefined;
+    const data = await briefingService.getBriefingData(req.params.id, templateId);
+    res.json(data);
   } catch (err) { next(err); }
 });
 
