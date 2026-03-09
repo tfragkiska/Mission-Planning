@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       target: deps
     container_name: mission-planning-app-dev
-    command: npm run dev
+    command: sh -c "npx -w server prisma generate && npx -w server prisma migrate deploy && npm run dev"
     ports:
       - "3001:3001"
       - "5173:5173"
