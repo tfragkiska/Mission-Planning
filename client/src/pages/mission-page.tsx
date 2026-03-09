@@ -309,6 +309,13 @@ export default function MissionPage() {
     [id, updateWaypoint],
   );
 
+  const handleUpdateWaypoint = useCallback(
+    (waypointId: string, data: Record<string, unknown>) => {
+      if (id) updateWaypoint(id, waypointId, data);
+    },
+    [id, updateWaypoint],
+  );
+
   const handleDelete = useCallback(
     (waypointId: string) => {
       if (id) deleteWaypoint(id, waypointId);
@@ -612,6 +619,7 @@ export default function MissionPage() {
               waypoints={waypoints}
               editable={editable}
               onDelete={handleDelete}
+              onUpdate={handleUpdateWaypoint}
             />
             <AircraftCrewPanel
               missionId={id || ""}
