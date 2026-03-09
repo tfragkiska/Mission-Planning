@@ -62,7 +62,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-200 border ${
           activePresetId
             ? "bg-command-500/20 text-command-400 border-command-500/40 shadow-glow-blue"
-            : "glass-panel text-military-300 border-military-700/50 hover:text-gray-100 hover:border-military-500"
+            : "glass-panel text-[var(--color-text-primary)] border-[var(--color-border-primary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-primary)]"
         }`}
         title="Map layer presets"
       >
@@ -73,8 +73,8 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-72 glass-panel border border-military-700/50 rounded-xl p-3 shadow-2xl z-50 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-military-700 scrollbar-track-transparent">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-military-500 px-1 pb-2 border-b border-military-700/50 mb-2">
+        <div className="absolute top-full left-0 mt-2 w-72 glass-panel border border-[var(--color-border-primary)] rounded-xl p-3 shadow-2xl z-50 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--color-scrollbar-thumb)] scrollbar-track-transparent">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)] px-1 pb-2 border-b border-[var(--color-border-primary)] mb-2">
             Layer Presets
           </p>
 
@@ -87,7 +87,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
                 className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 border ${
                   activePresetId === preset.id
                     ? "bg-command-500/15 border-command-500/40 text-command-400"
-                    : "border-transparent hover:bg-military-700/50 hover:border-military-600/50 text-military-300"
+                    : "border-transparent hover:bg-[var(--color-bg-elevated)]/50 hover:border-[var(--color-border-primary)] text-[var(--color-text-primary)]"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
@@ -96,7 +96,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
                     <span className="w-2 h-2 rounded-full bg-command-400 shadow-glow-blue" />
                   )}
                 </div>
-                <p className="text-[10px] text-military-500 leading-snug mb-1.5">{preset.description}</p>
+                <p className="text-[10px] text-[var(--color-text-muted)] leading-snug mb-1.5">{preset.description}</p>
                 <div className="flex gap-1 flex-wrap">
                   {(Object.keys(preset.layers) as (keyof MapLayerVisibility)[]).map((key) => {
                     const icon = LAYER_ICONS[key];
@@ -105,7 +105,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
                       <span
                         key={key}
                         className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                          active ? `${icon.color} bg-military-700/80` : "text-military-600 bg-military-800/50"
+                          active ? `${icon.color} bg-[var(--color-bg-elevated)]/80` : "text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)]/50"
                         }`}
                       >
                         {icon.label}
@@ -120,7 +120,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
           {/* Custom presets */}
           {customPresets.length > 0 && (
             <>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-military-500 px-1 pb-2 border-b border-military-700/50 mb-2">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)] px-1 pb-2 border-b border-[var(--color-border-primary)] mb-2">
                 Custom Presets
               </p>
               <div className="space-y-1 mb-3">
@@ -131,7 +131,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
                     className={`w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200 border group ${
                       activePresetId === preset.id
                         ? "bg-command-500/15 border-command-500/40 text-command-400"
-                        : "border-transparent hover:bg-military-700/50 hover:border-military-600/50 text-military-300"
+                        : "border-transparent hover:bg-[var(--color-bg-elevated)]/50 hover:border-[var(--color-border-primary)] text-[var(--color-text-primary)]"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
@@ -150,7 +150,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
                       </div>
                     </div>
                     {preset.description && (
-                      <p className="text-[10px] text-military-500 leading-snug mb-1.5">{preset.description}</p>
+                      <p className="text-[10px] text-[var(--color-text-muted)] leading-snug mb-1.5">{preset.description}</p>
                     )}
                     <div className="flex gap-1 flex-wrap">
                       {(Object.keys(preset.layers) as (keyof MapLayerVisibility)[]).map((key) => {
@@ -160,7 +160,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
                           <span
                             key={key}
                             className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                              active ? `${icon.color} bg-military-700/80` : "text-military-600 bg-military-800/50"
+                              active ? `${icon.color} bg-[var(--color-bg-elevated)]/80` : "text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)]/50"
                             }`}
                           >
                             {icon.label}
@@ -175,7 +175,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
           )}
 
           {/* Save current config */}
-          <div className="border-t border-military-700/50 pt-2">
+          <div className="border-t border-[var(--color-border-primary)] pt-2">
             {showSaveForm ? (
               <div className="space-y-2">
                 <input
@@ -183,7 +183,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
                   value={saveName}
                   onChange={(e) => setSaveName(e.target.value)}
                   placeholder="Preset name"
-                  className="w-full px-3 py-2 bg-military-800/80 border border-military-600/50 rounded-lg text-xs text-gray-200 placeholder-military-500 focus:outline-none focus:border-command-500/50"
+                  className="w-full px-3 py-2 bg-[var(--color-bg-tertiary)]/80 border border-[var(--color-border-primary)] rounded-lg text-xs text-[var(--color-text-primary)] placeholder-[var(--color-input-placeholder)] focus:outline-none focus:border-command-500/50"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleSave();
@@ -195,7 +195,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
                   value={saveDescription}
                   onChange={(e) => setSaveDescription(e.target.value)}
                   placeholder="Description (optional)"
-                  className="w-full px-3 py-2 bg-military-800/80 border border-military-600/50 rounded-lg text-xs text-gray-200 placeholder-military-500 focus:outline-none focus:border-command-500/50"
+                  className="w-full px-3 py-2 bg-[var(--color-bg-tertiary)]/80 border border-[var(--color-border-primary)] rounded-lg text-xs text-[var(--color-text-primary)] placeholder-[var(--color-input-placeholder)] focus:outline-none focus:border-command-500/50"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleSave();
                     if (e.key === "Escape") setShowSaveForm(false);
@@ -215,7 +215,7 @@ export default function MapPresetPanel({ currentLayers, currentMapStyle, onApply
                       setSaveName("");
                       setSaveDescription("");
                     }}
-                    className="px-3 py-2 text-military-400 border border-military-700/50 rounded-lg text-xs font-bold uppercase tracking-wide hover:text-military-200 transition-all"
+                    className="px-3 py-2 text-[var(--color-text-secondary)] border border-[var(--color-border-primary)] rounded-lg text-xs font-bold uppercase tracking-wide hover:text-[var(--color-text-primary)] transition-all"
                   >
                     Cancel
                   </button>

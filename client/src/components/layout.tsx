@@ -84,12 +84,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   const roleKey = user?.role?.toLowerCase() ?? "";
-  const badgeStyle = roleBadgeStyles[roleKey] ?? "bg-military-700 text-military-400 border-military-600";
+  const badgeStyle = roleBadgeStyles[roleKey] ?? "bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)] border-[var(--color-border-primary)]";
 
   return (
-    <div className="min-h-screen bg-military-950 font-sans">
+    <div className="min-h-screen bg-[var(--color-bg-primary)] font-sans">
       <OfflineIndicator />
-      <nav className="relative glass-panel bg-military-900/80 border-b border-military-700/50 px-4 sm:px-6 py-3 flex items-center justify-between">
+      <nav className="relative z-50 glass-panel bg-[var(--color-bg-secondary)]/80 border-b border-[var(--color-border-primary)] px-4 sm:px-6 py-3 flex items-center justify-between">
         {/* Bottom border glow */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-tactical-500/30 to-transparent" />
 
@@ -116,22 +116,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <line x1="18" y1="12" x2="22" y2="12" />
             </svg>
             <div className="flex flex-col">
-              <h1 className="text-sm sm:text-lg font-bold tracking-wider text-gray-100 group-hover:text-white transition-colors">
+              <h1 className="text-sm sm:text-lg font-bold tracking-wider text-[var(--color-text-primary)] group-hover:text-[var(--color-text-primary)] transition-colors">
                 {t("nav.opord")}
               </h1>
-              <span className="hidden sm:block text-[10px] font-mono tracking-widest text-military-400 uppercase leading-none">
+              <span className="hidden sm:block text-[10px] font-mono tracking-widest text-[var(--color-text-secondary)] uppercase leading-none">
                 {t("nav.missionPlanning")}
               </span>
             </div>
           </div>
 
           {/* Vertical separator - hidden on mobile */}
-          <div className="hidden md:block h-8 w-px bg-military-700/50" />
+          <div className="hidden md:block h-8 w-px bg-[var(--color-bg-elevated)]/50" />
 
           {/* User info and role badge - hidden on mobile, shown in mobile menu */}
           {user && (
             <div className="hidden md:flex items-center gap-3">
-              <span className="text-sm text-military-300 font-medium">
+              <span className="text-sm text-[var(--color-text-primary)] font-medium">
                 {user.name}
               </span>
               <span
@@ -152,7 +152,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {user && (user.role === "COMMANDER" || user.role === "PLANNER") && (
             <button
               onClick={() => navigate("/audit")}
-              className="text-sm font-medium text-military-400 hover:text-tactical-400 transition-colors duration-200 flex items-center gap-1.5"
+              className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-tactical-400 transition-colors duration-200 flex items-center gap-1.5"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -175,10 +175,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <ThemeToggle />
 
           {/* Vertical separator */}
-          <div className="h-6 w-px bg-military-700/50" />
+          <div className="h-6 w-px bg-[var(--color-bg-elevated)]/50" />
 
           {/* Status bar with current time */}
-          <div className="hidden sm:flex items-center gap-2 text-military-500">
+          <div className="hidden sm:flex items-center gap-2 text-[var(--color-text-muted)]">
             <div className="w-1.5 h-1.5 rounded-full bg-tactical-500 animate-pulse-slow" />
             <span className="text-xs font-mono tracking-wider">
               {currentTime.toLocaleTimeString("en-US", {
@@ -192,12 +192,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Vertical separator */}
-          <div className="hidden sm:block h-6 w-px bg-military-700/50" />
+          <div className="hidden sm:block h-6 w-px bg-[var(--color-bg-elevated)]/50" />
 
           {/* Sign out */}
           <button
             onClick={handleLogout}
-            className="text-sm font-medium text-military-400 hover:text-accent-400 transition-colors duration-200 flex items-center gap-1.5"
+            className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-accent-400 transition-colors duration-200 flex items-center gap-1.5"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -211,7 +211,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Mobile hamburger button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-military-400 hover:text-white hover:bg-military-700/50 transition-colors"
+          className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-elevated)]/50 transition-colors"
           aria-label={t("nav.toggleMenu")}
         >
           {mobileMenuOpen ? (
@@ -231,11 +231,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile slide-out menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden glass-panel bg-military-900/95 border-b border-military-700/50 px-4 py-4 space-y-4 animate-fade-in">
+        <div className="md:hidden glass-panel bg-[var(--color-bg-secondary)]/95 border-b border-[var(--color-border-primary)] px-4 py-4 space-y-4 animate-fade-in">
           {/* User info */}
           {user && (
-            <div className="flex items-center gap-3 pb-3 border-b border-military-700/30">
-              <span className="text-sm text-military-300 font-medium">
+            <div className="flex items-center gap-3 pb-3 border-b border-[var(--color-border-subtle)]">
+              <span className="text-sm text-[var(--color-text-primary)] font-medium">
                 {user.name}
               </span>
               <span
@@ -250,13 +250,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-4">
             <NotificationBell />
             <div className="flex items-center gap-2">
-              <span className="text-xs text-military-500 uppercase tracking-wider font-mono">{t("nav.theme")}</span>
+              <span className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider font-mono">{t("nav.theme")}</span>
               <ThemeToggle />
             </div>
           </div>
 
           {/* Time */}
-          <div className="flex items-center gap-2 text-military-500">
+          <div className="flex items-center gap-2 text-[var(--color-text-muted)]">
             <div className="w-1.5 h-1.5 rounded-full bg-tactical-500 animate-pulse-slow" />
             <span className="text-xs font-mono tracking-wider">
               {currentTime.toLocaleTimeString("en-US", {
@@ -276,7 +276,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 setMobileMenuOpen(false);
                 navigate("/audit");
               }}
-              className="w-full text-sm font-medium text-military-400 hover:text-tactical-400 transition-colors duration-200 flex items-center gap-1.5 py-2"
+              className="w-full text-sm font-medium text-[var(--color-text-secondary)] hover:text-tactical-400 transition-colors duration-200 flex items-center gap-1.5 py-2"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -295,7 +295,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               setMobileMenuOpen(false);
               handleLogout();
             }}
-            className="w-full text-sm font-medium text-military-400 hover:text-accent-400 transition-colors duration-200 flex items-center gap-1.5 py-2"
+            className="w-full text-sm font-medium text-[var(--color-text-secondary)] hover:text-accent-400 transition-colors duration-200 flex items-center gap-1.5 py-2"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -312,9 +312,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </main>
 
       {/* Shortcut hint */}
-      <div className="fixed bottom-3 right-3 z-30 hidden sm:flex items-center gap-1.5 text-military-600 hover:text-military-400 transition-colors cursor-pointer select-none" onClick={toggleHelp}>
+      <div className="fixed bottom-3 right-3 z-30 hidden sm:flex items-center gap-1.5 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] transition-colors cursor-pointer select-none" onClick={toggleHelp}>
         <span className="text-[10px] font-mono tracking-wide">Press</span>
-        <kbd className="px-1.5 py-0.5 rounded bg-military-800/80 border border-military-700/60 text-[10px] font-mono">?</kbd>
+        <kbd className="px-1.5 py-0.5 rounded bg-[var(--color-bg-tertiary)]/80 border border-[var(--color-border-primary)] text-[10px] font-mono">?</kbd>
         <span className="text-[10px] font-mono tracking-wide">for shortcuts</span>
       </div>
 

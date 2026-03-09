@@ -10,6 +10,23 @@ export default {
         tactical: ['"Inter"', "system-ui", "sans-serif"],
       },
       colors: {
+        // Theme-aware semantic colors (auto-adapt to light/dark)
+        surface: {
+          primary: 'var(--color-bg-primary)',
+          secondary: 'var(--color-bg-secondary)',
+          tertiary: 'var(--color-bg-tertiary)',
+          elevated: 'var(--color-bg-elevated)',
+          input: 'var(--color-bg-input)',
+        },
+        content: {
+          primary: 'var(--color-text-primary)',
+          secondary: 'var(--color-text-secondary)',
+          muted: 'var(--color-text-muted)',
+        },
+        border: {
+          primary: 'var(--color-border-primary)',
+          subtle: 'var(--color-border-subtle)',
+        },
         military: {
           950: "#0d1117",
           900: "#1a1c1e",

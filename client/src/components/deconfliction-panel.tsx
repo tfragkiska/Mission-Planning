@@ -35,17 +35,17 @@ function DeconflictionPanelInner({ results, editable, onRunCheck, onResolve, loa
   const warningCount = results.filter((r) => r.severity === "WARNING" && r.resolution === "UNRESOLVED").length;
 
   return (
-    <div className="glass-panel border border-military-700/50 rounded-xl p-4">
-      <div className="flex items-center justify-between mb-3 pb-2 border-b border-military-700/50">
+    <div className="glass-panel border border-[var(--color-border-primary)] rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--color-border-primary)]">
         <div className="flex items-center gap-2">
           <span className="text-accent-400 text-sm font-bold">{"//"}</span>
-          <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Deconfliction</h3>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)]">Deconfliction</h3>
         </div>
         {editable && (
           <button
             onClick={onRunCheck}
             disabled={loading}
-            className="px-4 py-1.5 text-xs font-bold uppercase tracking-wide bg-command-500 hover:bg-command-400 disabled:bg-command-600/30 disabled:text-command-400/50 rounded-lg text-white transition-all duration-200 shadow-glow-blue"
+            className="px-4 py-1.5 text-xs font-bold uppercase tracking-wide bg-command-500 hover:bg-command-400 disabled:bg-command-600/30 disabled:text-command-400/50 rounded-lg text-[var(--color-text-primary)] transition-all duration-200 shadow-glow-blue"
           >
             {loading ? (
               <span className="flex items-center gap-1.5">
@@ -78,7 +78,7 @@ function DeconflictionPanelInner({ results, editable, onRunCheck, onResolve, loa
       )}
 
       {results.length === 0 ? (
-        <p className="text-sm text-military-500 italic">No deconfliction results. Run a check to detect conflicts.</p>
+        <p className="text-sm text-[var(--color-text-muted)] italic">No deconfliction results. Run a check to detect conflicts.</p>
       ) : (
         <div className="space-y-2 max-h-60 overflow-y-auto">
           {results.map((r) => {
@@ -88,14 +88,14 @@ function DeconflictionPanelInner({ results, editable, onRunCheck, onResolve, loa
             return (
               <div
                 key={r.id}
-                className={`${isResolved ? "bg-military-800/40 border-military-700/30 opacity-60" : `${style.bg} ${style.border}`} border rounded-lg px-3 py-2.5 text-sm transition-all duration-200 ${isUnresolvedCritical ? "animate-pulse-slow" : ""}`}
+                className={`${isResolved ? "bg-[var(--color-bg-tertiary)]/40 border-[var(--color-border-subtle)] opacity-60" : `${style.bg} ${style.border}`} border rounded-lg px-3 py-2.5 text-sm transition-all duration-200 ${isUnresolvedCritical ? "animate-pulse-slow" : ""}`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className={`px-1.5 py-0 rounded text-xs font-bold border ${isResolved ? "bg-military-700 text-military-500 border-military-600" : style.badge}`}>
+                    <span className={`px-1.5 py-0 rounded text-xs font-bold border ${isResolved ? "bg-[var(--color-bg-elevated)] text-[var(--color-text-muted)] border-[var(--color-border-primary)]" : style.badge}`}>
                       {r.severity}
                     </span>
-                    <span className={`text-xs ${isResolved ? "text-military-500" : "text-military-300"}`}>{r.conflictType}</span>
+                    <span className={`text-xs ${isResolved ? "text-[var(--color-text-muted)]" : "text-[var(--color-text-primary)]"}`}>{r.conflictType}</span>
                   </div>
                   {r.resolution === "UNRESOLVED" && editable && (
                     <button onClick={() => onResolve(r.id)} className="text-xs text-tactical-500 hover:text-tactical-500 font-semibold transition-colors">
@@ -106,7 +106,7 @@ function DeconflictionPanelInner({ results, editable, onRunCheck, onResolve, loa
                     <span className="text-xs text-tactical-500/60 font-mono">RESOLVED</span>
                   )}
                 </div>
-                <p className={`text-sm mt-1.5 ${isResolved ? "text-military-500" : "text-military-300"}`}>{r.description}</p>
+                <p className={`text-sm mt-1.5 ${isResolved ? "text-[var(--color-text-muted)]" : "text-[var(--color-text-primary)]"}`}>{r.description}</p>
               </div>
             );
           })}

@@ -18,8 +18,8 @@ export class MapErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="w-full h-full rounded-lg bg-military-800 flex items-center justify-center">
-          <p className="text-military-400 text-sm">Map unavailable (WebGL not supported)</p>
+        <div className="w-full h-full rounded-lg bg-[var(--color-bg-tertiary)] flex items-center justify-center">
+          <p className="text-[var(--color-text-secondary)] text-sm">Map unavailable (WebGL not supported)</p>
         </div>
       );
     }

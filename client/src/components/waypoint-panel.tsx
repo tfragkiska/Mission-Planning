@@ -9,18 +9,18 @@ interface Props {
 
 function WaypointPanelInner({ waypoints, editable, onDelete }: Props) {
   return (
-    <div className="glass-panel border border-military-700/50 rounded-xl p-4">
-      <div className="flex items-center justify-between mb-3 pb-2 border-b border-military-700/50">
+    <div className="glass-panel border border-[var(--color-border-primary)] rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--color-border-primary)]">
         <div className="flex items-center gap-2">
           <span className="text-tactical-500 text-sm font-bold">{"//"}</span>
-          <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Waypoints</h3>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)]">Waypoints</h3>
         </div>
         <span className="bg-tactical-700/40 text-tactical-500 text-xs font-bold px-2 py-0.5 rounded-full min-w-[1.5rem] text-center">
           {waypoints.length}
         </span>
       </div>
       {waypoints.length === 0 ? (
-        <p className="text-sm text-military-500 italic">
+        <p className="text-sm text-[var(--color-text-muted)] italic">
           {editable ? "Click on the map to add waypoints" : "No waypoints"}
         </p>
       ) : (
@@ -28,16 +28,16 @@ function WaypointPanelInner({ waypoints, editable, onDelete }: Props) {
           {waypoints.map((wp, i) => (
             <div
               key={wp.id}
-              className="flex items-center justify-between bg-military-800/60 hover:bg-military-700/60 rounded-lg px-3 py-2 text-sm transition-colors duration-150 group"
+              className="flex items-center justify-between bg-[var(--color-bg-tertiary)]/60 hover:bg-[var(--color-bg-elevated)]/60 rounded-lg px-3 py-2 text-sm transition-colors duration-150 group"
             >
               <div className="flex items-center gap-2.5">
                 <span className="flex items-center justify-center w-6 h-6 rounded-md bg-command-600/20 text-command-400 text-xs font-bold">
                   {i + 1}
                 </span>
                 <div>
-                  <span className="font-medium text-gray-200">{wp.name || `Waypoint ${i + 1}`}</span>
+                  <span className="font-medium text-[var(--color-text-primary)]">{wp.name || `Waypoint ${i + 1}`}</span>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-military-400 font-mono text-xs">
+                    <span className="text-[var(--color-text-secondary)] font-mono text-xs">
                       {wp.lat.toFixed(4)}, {wp.lon.toFixed(4)}
                     </span>
                     {wp.altitude && (

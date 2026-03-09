@@ -153,7 +153,7 @@ export default function DashboardPlanner({ missions, loading }: Props) {
       {/* Header */}
       <div className="relative mb-6 sm:mb-8">
         <div className="absolute inset-0 tactical-grid opacity-20 rounded-xl" />
-        <div className="relative glass-panel rounded-xl border border-military-700/50 px-4 sm:px-8 py-4 sm:py-6">
+        <div className="relative glass-panel rounded-xl border border-[var(--color-border-primary)] px-4 sm:px-8 py-4 sm:py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 mb-1">
@@ -162,10 +162,10 @@ export default function DashboardPlanner({ missions, loading }: Props) {
                   Planner Console
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--color-text-primary)]">
                 Mission Planning Center
               </h1>
-              <p className="text-sm text-military-400 mt-1 font-mono">
+              <p className="text-sm text-[var(--color-text-secondary)] mt-1 font-mono">
                 {myMissions.length} missions created // {filtered.length} displayed
               </p>
             </div>
@@ -209,18 +209,18 @@ export default function DashboardPlanner({ missions, loading }: Props) {
 
         <button
           onClick={() => setFilters((f) => ({ ...f, status: "DRAFT" }))}
-          className="glass-panel rounded-xl border border-military-600/30 border-t-2 border-t-military-400 px-5 py-4 text-left transition-all duration-200 hover:border-military-500/60 group"
+          className="glass-panel rounded-xl border border-[var(--color-border-subtle)] border-t-2 border-t-military-400 px-5 py-4 text-left transition-all duration-200 hover:border-[var(--color-border-primary)] group"
         >
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-military-400 font-mono mb-1">
+              <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-secondary)] font-mono mb-1">
                 Draft Missions
               </div>
-              <div className="text-3xl font-bold font-mono text-white">
+              <div className="text-3xl font-bold font-mono text-[var(--color-text-primary)]">
                 {draftCount}
               </div>
             </div>
-            <svg className="w-6 h-6 text-military-500/50 group-hover:text-military-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-6 h-6 text-[var(--color-text-muted)]/50 group-hover:text-[var(--color-text-secondary)] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
             </svg>
           </div>
@@ -231,7 +231,7 @@ export default function DashboardPlanner({ missions, loading }: Props) {
 
       {/* Recent Activity */}
       {recentActivity.length > 0 && (
-        <div className="glass-panel rounded-xl border border-military-700/30 p-5 mb-6">
+        <div className="glass-panel rounded-xl border border-[var(--color-border-subtle)] p-5 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-command-500 animate-pulse-slow" />
             <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-command-400">
@@ -242,21 +242,21 @@ export default function DashboardPlanner({ missions, loading }: Props) {
             {recentActivity.map((entry) => (
               <div
                 key={entry.id}
-                className="flex items-center justify-between py-2 border-b border-military-700/30 last:border-0 cursor-pointer hover:bg-military-800/30 rounded px-2 -mx-2 transition-colors"
+                className="flex items-center justify-between py-2 border-b border-[var(--color-border-subtle)] last:border-0 cursor-pointer hover:bg-[var(--color-bg-tertiary)]/30 rounded px-2 -mx-2 transition-colors"
                 onClick={() => entry.entityId && navigate(`/missions/${entry.entityId}`)}
               >
                 <div className="flex items-center gap-3">
                   <div className="w-1 h-1 rounded-full bg-command-400" />
-                  <span className="text-sm text-military-300">
+                  <span className="text-sm text-[var(--color-text-primary)]">
                     {actionLabels[entry.action] || entry.action}
                   </span>
                   {entry.details && typeof entry.details === "object" && "name" in entry.details && (
-                    <span className="text-xs text-military-500 font-mono">
+                    <span className="text-xs text-[var(--color-text-muted)] font-mono">
                       {String(entry.details.name)}
                     </span>
                   )}
                 </div>
-                <span className="text-xs text-military-500 font-mono">
+                <span className="text-xs text-[var(--color-text-muted)] font-mono">
                   {new Date(entry.createdAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -274,7 +274,7 @@ export default function DashboardPlanner({ missions, loading }: Props) {
 
       {loading && (
         <div className="flex items-center justify-center py-16">
-          <div className="flex items-center gap-3 text-military-400">
+          <div className="flex items-center gap-3 text-[var(--color-text-secondary)]">
             <div className="w-2 h-2 rounded-full bg-command-500 animate-pulse-slow" />
             <span className="font-mono text-sm tracking-wide">{t("dashboard.loadingMissions")}</span>
           </div>
@@ -282,29 +282,29 @@ export default function DashboardPlanner({ missions, loading }: Props) {
       )}
 
       {!loading && filtered.length === 0 && (
-        <div className="glass-panel rounded-xl border border-military-700/30 py-16 text-center">
-          <div className="text-military-500 text-4xl mb-3">--</div>
-          <p className="text-military-400 font-mono text-sm">{t("dashboard.noMissionsMatch")}</p>
+        <div className="glass-panel rounded-xl border border-[var(--color-border-subtle)] py-16 text-center">
+          <div className="text-[var(--color-text-muted)] text-4xl mb-3">--</div>
+          <p className="text-[var(--color-text-secondary)] font-mono text-sm">{t("dashboard.noMissionsMatch")}</p>
         </div>
       )}
 
       {/* Bulk Export Bar */}
       {selectedIds.size > 0 && (
         <div className="glass-panel rounded-xl border border-command-600/40 px-4 py-3 mb-4 flex items-center justify-between animate-fade-in">
-          <span className="text-sm text-military-300 font-mono">
+          <span className="text-sm text-[var(--color-text-primary)] font-mono">
             {selectedIds.size} mission{selectedIds.size !== 1 ? "s" : ""} selected
           </span>
           <div className="flex items-center gap-3">
             <button
               onClick={clearSelection}
-              className="px-3 py-1.5 text-xs font-medium text-military-400 hover:text-white border border-military-600 rounded-lg transition-colors"
+              className="px-3 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-[var(--color-border-primary)] rounded-lg transition-colors"
             >
               Clear
             </button>
             <button
               onClick={handleBulkExport}
               disabled={bulkExporting}
-              className="px-4 py-1.5 text-xs font-bold uppercase tracking-wide bg-command-500 hover:bg-command-400 rounded-lg text-white transition-all duration-200 shadow-glow-blue disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-1.5 text-xs font-bold uppercase tracking-wide bg-command-500 hover:bg-command-400 rounded-lg text-[var(--color-text-primary)] transition-all duration-200 shadow-glow-blue disabled:opacity-50 flex items-center gap-2"
             >
               {bulkExporting && (
                 <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />

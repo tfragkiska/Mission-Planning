@@ -153,21 +153,21 @@ function AltitudeProfileInner({ waypoints }: Props) {
 
   if (waypoints.length < 2) {
     return (
-      <div className="glass-panel border border-military-700/50 rounded-xl p-4">
-        <div className="flex items-center gap-2 mb-2 pb-2 border-b border-military-700/50">
+      <div className="glass-panel border border-[var(--color-border-primary)] rounded-xl p-4">
+        <div className="flex items-center gap-2 mb-2 pb-2 border-b border-[var(--color-border-primary)]">
           <span className="text-command-400 text-sm font-bold">{"//"}</span>
-          <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Altitude Profile</h3>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)]">Altitude Profile</h3>
         </div>
-        <p className="text-military-500 text-sm italic">Add at least 2 waypoints to see altitude profile.</p>
+        <p className="text-[var(--color-text-muted)] text-sm italic">Add at least 2 waypoints to see altitude profile.</p>
       </div>
     );
   }
 
   return (
-    <div className="glass-panel border border-military-700/50 rounded-xl p-4">
-      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-military-700/50">
+    <div className="glass-panel border border-[var(--color-border-primary)] rounded-xl p-4">
+      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[var(--color-border-primary)]">
         <span className="text-command-400 text-sm font-bold">{"//"}</span>
-        <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Altitude Profile</h3>
+        <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)]">Altitude Profile</h3>
       </div>
       <canvas
         ref={canvasRef}

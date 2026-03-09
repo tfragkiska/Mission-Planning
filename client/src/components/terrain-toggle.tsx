@@ -22,7 +22,7 @@ export default function TerrainToggle({ map }: Props) {
       className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-200 border ${
         enabled
           ? "bg-command-500/20 text-command-400 border-command-500/40 shadow-glow-blue"
-          : "glass-panel text-military-300 border-military-700/50 hover:text-gray-100 hover:border-military-500"
+          : "glass-panel text-[var(--color-text-primary)] border-[var(--color-border-primary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-primary)]"
       } disabled:opacity-50 disabled:cursor-not-allowed`}
       title="Toggle terrain elevation overlay"
     >

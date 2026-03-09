@@ -5,13 +5,13 @@ interface Props {
 
 export default function DashboardViewToggle({ view, onChange }: Props) {
   return (
-    <div className="flex glass-panel rounded-lg p-1 border border-military-700/30">
+    <div className="flex glass-panel rounded-lg p-1 border border-[var(--color-border-subtle)]">
       <button
         onClick={() => onChange("grid")}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
           view === "grid"
-            ? "bg-command-500 text-white shadow-glow-blue"
-            : "text-military-400 hover:text-military-300"
+            ? "bg-command-500 text-[var(--color-text-primary)] shadow-glow-blue"
+            : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
         }`}
       >
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -23,8 +23,8 @@ export default function DashboardViewToggle({ view, onChange }: Props) {
         onClick={() => onChange("timeline")}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
           view === "timeline"
-            ? "bg-command-500 text-white shadow-glow-blue"
-            : "text-military-400 hover:text-military-300"
+            ? "bg-command-500 text-[var(--color-text-primary)] shadow-glow-blue"
+            : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
         }`}
       >
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -75,7 +75,7 @@ export default function ExportMenu({ missionId, missionName, mapInstance }: Expo
     <div ref={menuRef} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="glass-panel px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-military-300 hover:text-gray-100 hover:border-military-500 border border-military-700/50 transition-all duration-200 flex items-center gap-1.5"
+        className="glass-panel px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-primary)] border border-[var(--color-border-primary)] transition-all duration-200 flex items-center gap-1.5"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -87,12 +87,12 @@ export default function ExportMenu({ missionId, missionName, mapInstance }: Expo
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 z-50 glass-panel border border-military-600/60 rounded-lg shadow-xl shadow-black/40 py-1 min-w-[220px] animate-fade-in">
+        <div className="absolute right-0 bottom-full mb-1 z-50 glass-panel border border-[var(--color-border-primary)] rounded-lg shadow-xl shadow-black/40 py-1 min-w-[220px] animate-fade-in">
           {options.map((opt) => (
             <button
               key={opt.key}
               onClick={() => handleExport(opt.key)}
-              className="w-full text-left px-4 py-2.5 text-sm text-military-300 hover:text-white hover:bg-military-700/50 transition-colors flex items-center gap-3"
+              className="w-full text-left px-4 py-2.5 text-sm text-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-elevated)]/50 transition-colors flex items-center gap-3"
             >
               <span className="text-[10px] font-bold font-mono tracking-wider text-tactical-500 w-7">
                 {opt.icon}

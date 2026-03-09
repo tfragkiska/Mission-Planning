@@ -79,8 +79,30 @@ export default function MissionMap({ waypoints, threats, editable, onMapClick, o
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
 
+    // Detect co-located waypoints (same lat/lon) and offset them
+    const coordCounts = new Map<string, number>();
+    waypoints.forEach((wp) => {
+      const key = `${wp.lat.toFixed(5)},${wp.lon.toFixed(5)}`;
+      coordCounts.set(key, (coordCounts.get(key) || 0) + 1);
+    });
+    const coordIndex = new Map<string, number>();
+
     // Add markers for each waypoint
     waypoints.forEach((wp, i) => {
+      const coordKey = `${wp.lat.toFixed(5)},${wp.lon.toFixed(5)}`;
+      const totalAtCoord = coordCounts.get(coordKey) || 1;
+      const indexAtCoord = coordIndex.get(coordKey) || 0;
+      coordIndex.set(coordKey, indexAtCoord + 1);
+
+      // Offset co-located markers so both are visible
+      let offsetX = 0;
+      let offsetY = 0;
+      if (totalAtCoord > 1) {
+        const spacing = 18;
+        offsetX = (indexAtCoord - (totalAtCoord - 1) / 2) * spacing;
+        offsetY = indexAtCoord === 0 ? -spacing : spacing;
+      }
+
       const el = document.createElement("div");
       el.className = "waypoint-marker";
       el.style.cssText = `
@@ -94,6 +116,7 @@ export default function MissionMap({ waypoints, threats, editable, onMapClick, o
       const marker = new maplibregl.Marker({
         element: el,
         draggable: editable,
+        offset: [offsetX, offsetY],
       })
         .setLngLat([wp.lon, wp.lat])
         .setPopup(
@@ -156,7 +179,10 @@ export default function MissionMap({ waypoints, threats, editable, onMapClick, o
     if (waypoints.length > 0) {
       const bounds = new maplibregl.LngLatBounds();
       waypoints.forEach((wp) => bounds.extend([wp.lon, wp.lat]));
-      map.fitBounds(bounds, { padding: 80, maxZoom: 12 });
+      map.fitBounds(bounds, {
+        padding: { top: 80, bottom: 100, left: 240, right: 80 },
+        maxZoom: 12,
+      });
     }
   }, [waypoints, editable]);
 

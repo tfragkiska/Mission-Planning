@@ -66,7 +66,7 @@ export default function ThemeToggle() {
 
   return (
     <div
-      className="flex items-center rounded-tactical border border-military-700/50 dark:border-military-700/50 overflow-hidden"
+      className="flex items-center rounded-tactical border border-[var(--color-border-primary)] overflow-hidden"
       role="radiogroup"
       aria-label="Theme selection"
     >
@@ -86,8 +86,8 @@ export default function ThemeToggle() {
               transition-all duration-150
               ${
                 isActive
-                  ? "bg-tactical-800/60 dark:bg-tactical-800/60 text-tactical-400 dark:text-tactical-400"
-                  : "text-military-500 dark:text-military-500 hover:text-military-300 dark:hover:text-military-300 hover:bg-military-800/40 dark:hover:bg-military-800/40"
+                  ? "bg-tactical-800/60 text-tactical-400"
+                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]/40"
               }
             `}
           >

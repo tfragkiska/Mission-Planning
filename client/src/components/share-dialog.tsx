@@ -80,12 +80,12 @@ export default function ShareDialog({ missionId, open, onClose }: ShareDialogPro
       />
 
       {/* Dialog */}
-      <div className="relative bg-military-800 border border-military-700/50 rounded-xl shadow-2xl w-full max-w-md mx-4 p-6 animate-fade-in">
+      <div className="relative bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] rounded-xl shadow-2xl w-full max-w-md mx-4 p-6 animate-fade-in">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-gray-100 tracking-tight">Share Mission</h2>
+          <h2 className="text-lg font-bold text-[var(--color-text-primary)] tracking-tight">Share Mission</h2>
           <button
             onClick={onClose}
-            className="text-military-400 hover:text-gray-100 transition-colors text-xl leading-none"
+            className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors text-xl leading-none"
             aria-label="Close"
           >
             x
@@ -107,8 +107,8 @@ export default function ShareDialog({ missionId, open, onClose }: ShareDialogPro
         {/* Toggle */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <p className="text-sm font-medium text-gray-200">Enable sharing</p>
-            <p className="text-xs text-military-400 mt-0.5">
+            <p className="text-sm font-medium text-[var(--color-text-primary)]">Enable sharing</p>
+            <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
               Generate a read-only link for this mission
             </p>
           </div>
@@ -116,7 +116,7 @@ export default function ShareDialog({ missionId, open, onClose }: ShareDialogPro
             onClick={handleToggle}
             disabled={loading}
             className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
-              shareEnabled ? "bg-command-500" : "bg-military-600"
+              shareEnabled ? "bg-command-500" : "bg-[var(--color-border-primary)]"
             } ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           >
             <span
@@ -131,7 +131,7 @@ export default function ShareDialog({ missionId, open, onClose }: ShareDialogPro
         {shareEnabled && shareToken && (
           <div className="space-y-3">
             <div>
-              <label className="text-xs text-military-400 uppercase tracking-wide font-semibold mb-1 block">
+              <label className="text-xs text-[var(--color-text-secondary)] uppercase tracking-wide font-semibold mb-1 block">
                 Shareable Link
               </label>
               <div className="flex gap-2">
@@ -139,15 +139,15 @@ export default function ShareDialog({ missionId, open, onClose }: ShareDialogPro
                   type="text"
                   readOnly
                   value={shareUrl}
-                  className="flex-1 bg-military-900 border border-military-700 rounded-lg px-3 py-2 text-xs font-mono text-gray-300 focus:outline-none select-all"
+                  className="flex-1 bg-[var(--color-bg-secondary)] border border-[var(--color-border-primary)] rounded-lg px-3 py-2 text-xs font-mono text-[var(--color-text-primary)] focus:outline-none select-all"
                   onClick={(e) => (e.target as HTMLInputElement).select()}
                 />
                 <button
                   onClick={handleCopy}
                   className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-200 ${
                     copied
-                      ? "bg-tactical-600 text-white"
-                      : "bg-command-500 hover:bg-command-400 text-white"
+                      ? "bg-tactical-600 text-[var(--color-text-primary)]"
+                      : "bg-command-500 hover:bg-command-400 text-[var(--color-text-primary)]"
                   }`}
                 >
                   {copied ? "Copied" : "Copy"}
@@ -161,7 +161,7 @@ export default function ShareDialog({ missionId, open, onClose }: ShareDialogPro
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-military-300 hover:text-gray-100 bg-military-700 hover:bg-military-600 border border-military-600/50 transition-all duration-200"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] bg-[var(--color-bg-elevated)] hover:bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)] transition-all duration-200"
           >
             Done
           </button>

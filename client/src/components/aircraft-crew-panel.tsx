@@ -17,9 +17,9 @@ const ROLE_COLORS: Record<string, string> = {
   "Co-Pilot": "bg-command-600/15 text-command-400 border-command-600/25",
   WSO: "bg-accent-600/20 text-accent-400 border-accent-600/30",
   Navigator: "bg-tactical-600/20 text-tactical-500 border-tactical-600/30",
-  "Crew Chief": "bg-military-600 text-military-300 border-military-500",
+  "Crew Chief": "bg-[var(--color-border-primary)] text-[var(--color-text-primary)] border-[var(--color-border-primary)]",
   Gunner: "bg-danger-600/20 text-danger-500 border-danger-600/30",
-  Loadmaster: "bg-military-600 text-military-300 border-military-500",
+  Loadmaster: "bg-[var(--color-border-primary)] text-[var(--color-text-primary)] border-[var(--color-border-primary)]",
 };
 
 export default function AircraftCrewPanel({
@@ -50,11 +50,11 @@ export default function AircraftCrewPanel({
   }
 
   return (
-    <div className="glass-panel border border-military-700/50 rounded-xl p-4">
-      <div className="flex items-center justify-between mb-3 pb-2 border-b border-military-700/50">
+    <div className="glass-panel border border-[var(--color-border-primary)] rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--color-border-primary)]">
         <div className="flex items-center gap-2">
           <span className="text-command-400 text-sm font-bold">{"//"}</span>
-          <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Aircraft & Crew</h3>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)]">Aircraft & Crew</h3>
         </div>
       </div>
 
@@ -62,7 +62,7 @@ export default function AircraftCrewPanel({
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-military-400">Aircraft</h4>
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-secondary)]">Aircraft</h4>
             <span className="bg-command-600/20 text-command-400 text-xs font-bold px-1.5 py-0 rounded-full min-w-[1.25rem] text-center">
               {aircraft.length}
             </span>
@@ -75,31 +75,31 @@ export default function AircraftCrewPanel({
         </div>
 
         {showAddAircraft && (
-          <form onSubmit={handleAddAircraft} className="mb-3 space-y-2 bg-military-800/60 rounded-lg p-3 border border-military-700/50">
+          <form onSubmit={handleAddAircraft} className="mb-3 space-y-2 bg-[var(--color-bg-tertiary)]/60 rounded-lg p-3 border border-[var(--color-border-primary)]">
             <input value={acType} onChange={(e) => setAcType(e.target.value)} placeholder="Type (e.g., F-16C)" required
-              className="w-full px-3 py-1.5 text-sm bg-military-700 border border-military-600 rounded-lg text-gray-100 focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all" />
+              className="w-full px-3 py-1.5 text-sm bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)] rounded-lg text-[var(--color-text-primary)] focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all" />
             <input value={tailNum} onChange={(e) => setTailNum(e.target.value)} placeholder="Tail # (e.g., 88-0421)" required
-              className="w-full px-3 py-1.5 text-sm bg-military-700 border border-military-600 rounded-lg text-gray-100 font-mono focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all" />
+              className="w-full px-3 py-1.5 text-sm bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)] rounded-lg text-[var(--color-text-primary)] font-mono focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all" />
             <input value={callsign} onChange={(e) => setCallsign(e.target.value)} placeholder="Callsign (e.g., Viper 1)" required
-              className="w-full px-3 py-1.5 text-sm bg-military-700 border border-military-600 rounded-lg text-gray-100 focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all" />
-            <button type="submit" className="px-4 py-1.5 text-xs font-bold uppercase tracking-wide bg-command-500 hover:bg-command-400 rounded-lg text-white transition-colors">Add Aircraft</button>
+              className="w-full px-3 py-1.5 text-sm bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)] rounded-lg text-[var(--color-text-primary)] focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all" />
+            <button type="submit" className="px-4 py-1.5 text-xs font-bold uppercase tracking-wide bg-command-500 hover:bg-command-400 rounded-lg text-[var(--color-text-primary)] transition-colors">Add Aircraft</button>
           </form>
         )}
 
         {aircraft.length === 0 ? (
-          <p className="text-xs text-military-500 italic">No aircraft assigned</p>
+          <p className="text-xs text-[var(--color-text-muted)] italic">No aircraft assigned</p>
         ) : (
           <div className="space-y-1.5">
             {aircraft.map((ac) => (
-              <div key={ac.id} className="flex items-center justify-between bg-military-800/60 hover:bg-military-700/60 rounded-lg px-3 py-2 text-sm transition-colors duration-150 group">
+              <div key={ac.id} className="flex items-center justify-between bg-[var(--color-bg-tertiary)]/60 hover:bg-[var(--color-bg-elevated)]/60 rounded-lg px-3 py-2 text-sm transition-colors duration-150 group">
                 <div className="flex items-center gap-2.5">
                   <div>
-                    <span className="font-bold text-gray-100">{ac.callsign}</span>
+                    <span className="font-bold text-[var(--color-text-primary)]">{ac.callsign}</span>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="px-1.5 py-0 rounded text-xs font-semibold bg-tactical-700/30 text-tactical-500 border border-tactical-600/20">
                         {ac.type}
                       </span>
-                      <span className="text-military-400 font-mono text-xs">{ac.tailNumber}</span>
+                      <span className="text-[var(--color-text-secondary)] font-mono text-xs">{ac.tailNumber}</span>
                     </div>
                   </div>
                 </div>
@@ -116,7 +116,7 @@ export default function AircraftCrewPanel({
       <div>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-military-400">Crew</h4>
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-secondary)]">Crew</h4>
             <span className="bg-accent-600/20 text-accent-400 text-xs font-bold px-1.5 py-0 rounded-full min-w-[1.25rem] text-center">
               {crewMembers.length}
             </span>
@@ -129,11 +129,11 @@ export default function AircraftCrewPanel({
         </div>
 
         {showAddCrew && (
-          <form onSubmit={handleAddCrew} className="mb-3 space-y-2 bg-military-800/60 rounded-lg p-3 border border-military-700/50">
+          <form onSubmit={handleAddCrew} className="mb-3 space-y-2 bg-[var(--color-bg-tertiary)]/60 rounded-lg p-3 border border-[var(--color-border-primary)]">
             <input value={crewName} onChange={(e) => setCrewName(e.target.value)} placeholder="Name" required
-              className="w-full px-3 py-1.5 text-sm bg-military-700 border border-military-600 rounded-lg text-gray-100 focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all" />
+              className="w-full px-3 py-1.5 text-sm bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)] rounded-lg text-[var(--color-text-primary)] focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all" />
             <select value={crewRole} onChange={(e) => setCrewRole(e.target.value)}
-              className="w-full px-3 py-1.5 text-sm bg-military-700 border border-military-600 rounded-lg text-gray-100 focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all">
+              className="w-full px-3 py-1.5 text-sm bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)] rounded-lg text-[var(--color-text-primary)] focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all">
               <option>Pilot</option>
               <option>Co-Pilot</option>
               <option>WSO</option>
@@ -144,26 +144,26 @@ export default function AircraftCrewPanel({
             </select>
             {aircraft.length > 0 && (
               <select value={crewAircraftId} onChange={(e) => setCrewAircraftId(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm bg-military-700 border border-military-600 rounded-lg text-gray-100 focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all">
+                className="w-full px-3 py-1.5 text-sm bg-[var(--color-bg-elevated)] border border-[var(--color-border-primary)] rounded-lg text-[var(--color-text-primary)] focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all">
                 <option value="">Unassigned</option>
                 {aircraft.map((ac) => (
                   <option key={ac.id} value={ac.id}>{ac.callsign}</option>
                 ))}
               </select>
             )}
-            <button type="submit" className="px-4 py-1.5 text-xs font-bold uppercase tracking-wide bg-command-500 hover:bg-command-400 rounded-lg text-white transition-colors">Add Crew</button>
+            <button type="submit" className="px-4 py-1.5 text-xs font-bold uppercase tracking-wide bg-command-500 hover:bg-command-400 rounded-lg text-[var(--color-text-primary)] transition-colors">Add Crew</button>
           </form>
         )}
 
         {crewMembers.length === 0 ? (
-          <p className="text-xs text-military-500 italic">No crew assigned</p>
+          <p className="text-xs text-[var(--color-text-muted)] italic">No crew assigned</p>
         ) : (
           <div className="space-y-1.5">
             {crewMembers.map((cm) => (
-              <div key={cm.id} className="flex items-center justify-between bg-military-800/60 hover:bg-military-700/60 rounded-lg px-3 py-2 text-sm transition-colors duration-150 group">
+              <div key={cm.id} className="flex items-center justify-between bg-[var(--color-bg-tertiary)]/60 hover:bg-[var(--color-bg-elevated)]/60 rounded-lg px-3 py-2 text-sm transition-colors duration-150 group">
                 <div className="flex items-center gap-2.5">
-                  <span className="font-medium text-gray-200">{cm.name}</span>
-                  <span className={`px-1.5 py-0 rounded text-xs font-semibold border ${ROLE_COLORS[cm.role] || "bg-military-600 text-military-300 border-military-500"}`}>
+                  <span className="font-medium text-[var(--color-text-primary)]">{cm.name}</span>
+                  <span className={`px-1.5 py-0 rounded text-xs font-semibold border ${ROLE_COLORS[cm.role] || "bg-[var(--color-border-primary)] text-[var(--color-text-primary)] border-[var(--color-border-primary)]"}`}>
                     {cm.role}
                   </span>
                 </div>

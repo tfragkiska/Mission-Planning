@@ -172,14 +172,14 @@ export default function CommandPalette({ onClose }: Props) {
 
       {/* Panel */}
       <div
-        className="relative glass-panel bg-military-900/95 border border-military-700/60 rounded-2xl shadow-2xl w-full max-w-xl animate-fade-in overflow-hidden"
+        className="relative glass-panel bg-[var(--color-bg-secondary)]/95 border border-[var(--color-border-primary)] rounded-2xl shadow-2xl w-full max-w-xl animate-fade-in overflow-hidden"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
         {/* Search input */}
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-military-700/50">
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-[var(--color-border-primary)]">
           <svg
-            className="w-5 h-5 text-military-500 flex-shrink-0"
+            className="w-5 h-5 text-[var(--color-text-muted)] flex-shrink-0"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -195,9 +195,9 @@ export default function CommandPalette({ onClose }: Props) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search missions, actions, pages..."
-            className="flex-1 bg-transparent text-sm text-gray-100 placeholder-military-500 outline-none font-mono"
+            className="flex-1 bg-transparent text-sm text-[var(--color-text-primary)] placeholder-[var(--color-input-placeholder)] outline-none font-mono"
           />
-          <kbd className="px-1.5 py-0.5 rounded bg-military-800 border border-military-600/60 text-military-500 text-[10px] font-mono">
+          <kbd className="px-1.5 py-0.5 rounded bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] text-[var(--color-text-muted)] text-[10px] font-mono">
             Esc
           </kbd>
         </div>
@@ -206,14 +206,14 @@ export default function CommandPalette({ onClose }: Props) {
         <div ref={listRef} className="max-h-[50vh] overflow-y-auto py-2">
           {flatItems.length === 0 && (
             <div className="px-5 py-8 text-center">
-              <p className="text-military-500 text-sm font-mono">No results found</p>
+              <p className="text-[var(--color-text-muted)] text-sm font-mono">No results found</p>
             </div>
           )}
 
           {grouped.map((group) => (
             <div key={group.category}>
               <div className="px-5 pt-3 pb-1">
-                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-military-500">
+                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--color-text-muted)]">
                   {CATEGORY_LABELS[group.category] || group.category}
                 </span>
               </div>
@@ -228,12 +228,12 @@ export default function CommandPalette({ onClose }: Props) {
                     onMouseEnter={() => setSelectedIndex(idx)}
                     className={`w-full flex items-center gap-3 px-5 py-2.5 text-left text-sm transition-colors duration-75 ${
                       isSelected
-                        ? "bg-command-500/20 text-gray-100"
-                        : "text-military-300 hover:bg-military-800/50"
+                        ? "bg-command-500/20 text-[var(--color-text-primary)]"
+                        : "text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]/50"
                     }`}
                   >
                     {item.category === "mission" && (
-                      <svg className="w-4 h-4 text-military-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <svg className="w-4 h-4 text-[var(--color-text-muted)] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                         <circle cx="12" cy="12" r="6" />
                         <circle cx="12" cy="12" r="2" />
                         <line x1="12" y1="2" x2="12" y2="6" />
@@ -241,18 +241,18 @@ export default function CommandPalette({ onClose }: Props) {
                       </svg>
                     )}
                     {item.category === "navigation" && (
-                      <svg className="w-4 h-4 text-military-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <svg className="w-4 h-4 text-[var(--color-text-muted)] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                         <polyline points="9 18 15 12 9 6" />
                       </svg>
                     )}
                     {item.category === "action" && (
-                      <svg className="w-4 h-4 text-military-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <svg className="w-4 h-4 text-[var(--color-text-muted)] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                         <path d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     )}
                     <span className="flex-1 truncate">{item.label}</span>
                     {isSelected && (
-                      <kbd className="px-1.5 py-0.5 rounded bg-military-800 border border-military-600/60 text-military-500 text-[10px] font-mono">
+                      <kbd className="px-1.5 py-0.5 rounded bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] text-[var(--color-text-muted)] text-[10px] font-mono">
                         Enter
                       </kbd>
                     )}
@@ -264,18 +264,18 @@ export default function CommandPalette({ onClose }: Props) {
         </div>
 
         {/* Footer */}
-        <div className="border-t border-military-700/50 px-5 py-2.5 flex items-center gap-4">
-          <span className="inline-flex items-center gap-1 text-[10px] text-military-500 font-mono">
-            <kbd className="px-1 py-0.5 rounded bg-military-800 border border-military-600/60 text-[10px]">&uarr;</kbd>
-            <kbd className="px-1 py-0.5 rounded bg-military-800 border border-military-600/60 text-[10px]">&darr;</kbd>
+        <div className="border-t border-[var(--color-border-primary)] px-5 py-2.5 flex items-center gap-4">
+          <span className="inline-flex items-center gap-1 text-[10px] text-[var(--color-text-muted)] font-mono">
+            <kbd className="px-1 py-0.5 rounded bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] text-[10px]">&uarr;</kbd>
+            <kbd className="px-1 py-0.5 rounded bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] text-[10px]">&darr;</kbd>
             navigate
           </span>
-          <span className="inline-flex items-center gap-1 text-[10px] text-military-500 font-mono">
-            <kbd className="px-1 py-0.5 rounded bg-military-800 border border-military-600/60 text-[10px]">Enter</kbd>
+          <span className="inline-flex items-center gap-1 text-[10px] text-[var(--color-text-muted)] font-mono">
+            <kbd className="px-1 py-0.5 rounded bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] text-[10px]">Enter</kbd>
             select
           </span>
-          <span className="inline-flex items-center gap-1 text-[10px] text-military-500 font-mono">
-            <kbd className="px-1 py-0.5 rounded bg-military-800 border border-military-600/60 text-[10px]">Esc</kbd>
+          <span className="inline-flex items-center gap-1 text-[10px] text-[var(--color-text-muted)] font-mono">
+            <kbd className="px-1 py-0.5 rounded bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] text-[10px]">Esc</kbd>
             close
           </span>
         </div>

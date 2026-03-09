@@ -44,24 +44,24 @@ export default function AirspacePanel({ airspaces, onToggleVisibility, onCreateA
   };
 
   return (
-    <div className="glass-panel border border-military-700/50 rounded-xl p-4">
-      <div className="flex items-center justify-between mb-3 pb-2 border-b border-military-700/50">
+    <div className="glass-panel border border-[var(--color-border-primary)] rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3 pb-2 border-b border-[var(--color-border-primary)]">
         <div className="flex items-center gap-2">
           <span className="text-purple-400 text-sm font-bold">{"//"}</span>
-          <h3 className="text-xs font-bold uppercase tracking-widest text-military-300">Airspaces</h3>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)]">Airspaces</h3>
         </div>
-        <span className="bg-military-700 text-military-400 text-xs font-bold px-2 py-0.5 rounded-full min-w-[1.5rem] text-center">
+        <span className="bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)] text-xs font-bold px-2 py-0.5 rounded-full min-w-[1.5rem] text-center">
           {airspaces.length}
         </span>
       </div>
 
       {airspaces.length === 0 && (
-        <p className="text-military-500 text-sm italic">No airspace zones defined.</p>
+        <p className="text-[var(--color-text-muted)] text-sm italic">No airspace zones defined.</p>
       )}
 
       <div className="space-y-1.5">
         {airspaces.map((a) => (
-          <div key={a.id} className="flex items-center justify-between bg-military-800/60 hover:bg-military-700/60 rounded-lg px-3 py-2 transition-colors duration-150 group"
+          <div key={a.id} className="flex items-center justify-between bg-[var(--color-bg-tertiary)]/60 hover:bg-[var(--color-bg-elevated)]/60 rounded-lg px-3 py-2 transition-colors duration-150 group"
             style={{ borderLeft: `3px solid ${AIRSPACE_COLORS[a.type] || "#666"}` }}
           >
             <div className="flex items-center gap-2.5">
@@ -69,16 +69,16 @@ export default function AirspacePanel({ airspaces, onToggleVisibility, onCreateA
                 type="checkbox"
                 checked={visibleIds.has(a.id)}
                 onChange={() => handleToggle(a.id)}
-                className="rounded border-military-600 bg-military-700 text-command-500 focus:ring-command-500 focus:ring-offset-0"
+                className="rounded border-[var(--color-border-primary)] bg-[var(--color-bg-elevated)] text-command-500 focus:ring-command-500 focus:ring-offset-0"
               />
               <div>
-                <span className="text-sm font-medium text-gray-200">{a.name}</span>
+                <span className="text-sm font-medium text-[var(--color-text-primary)]">{a.name}</span>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: AIRSPACE_COLORS[a.type] || "#888" }}>
                     {a.type}
                   </span>
                   {(a.minAltitude || a.maxAltitude) && (
-                    <span className="text-xs text-military-400 font-mono">
+                    <span className="text-xs text-[var(--color-text-secondary)] font-mono">
                       {a.minAltitude || 0}–{a.maxAltitude || "FL999"}ft
                     </span>
                   )}
@@ -107,17 +107,17 @@ export default function AirspacePanel({ airspaces, onToggleVisibility, onCreateA
               + Add Airspace Zone
             </button>
           ) : (
-            <div className="bg-military-800/60 rounded-lg p-3 space-y-2 border border-military-700/50">
+            <div className="bg-[var(--color-bg-tertiary)]/60 rounded-lg p-3 space-y-2 border border-[var(--color-border-primary)]">
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Zone name"
-                className="w-full bg-military-700 rounded-lg px-3 py-1.5 text-sm text-gray-100 border border-military-600 focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
+                className="w-full bg-[var(--color-bg-elevated)] rounded-lg px-3 py-1.5 text-sm text-[var(--color-text-primary)] border border-[var(--color-border-primary)] focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
               />
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as Airspace["type"])}
-                className="w-full bg-military-700 rounded-lg px-3 py-1.5 text-sm text-gray-100 border border-military-600 focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
+                className="w-full bg-[var(--color-bg-elevated)] rounded-lg px-3 py-1.5 text-sm text-[var(--color-text-primary)] border border-[var(--color-border-primary)] focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
               >
                 {Object.keys(AIRSPACE_COLORS).map((t) => (
                   <option key={t} value={t}>{t}</option>
@@ -129,28 +129,28 @@ export default function AirspacePanel({ airspaces, onToggleVisibility, onCreateA
                   onChange={(e) => setMinAlt(e.target.value)}
                   placeholder="Min alt (ft)"
                   type="number"
-                  className="w-1/2 bg-military-700 rounded-lg px-3 py-1.5 text-sm text-gray-100 font-mono border border-military-600 focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
+                  className="w-1/2 bg-[var(--color-bg-elevated)] rounded-lg px-3 py-1.5 text-sm text-[var(--color-text-primary)] font-mono border border-[var(--color-border-primary)] focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
                 />
                 <input
                   value={maxAlt}
                   onChange={(e) => setMaxAlt(e.target.value)}
                   placeholder="Max alt (ft)"
                   type="number"
-                  className="w-1/2 bg-military-700 rounded-lg px-3 py-1.5 text-sm text-gray-100 font-mono border border-military-600 focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
+                  className="w-1/2 bg-[var(--color-bg-elevated)] rounded-lg px-3 py-1.5 text-sm text-[var(--color-text-primary)] font-mono border border-[var(--color-border-primary)] focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
                 />
               </div>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Notes (optional)"
-                className="w-full bg-military-700 rounded-lg px-3 py-1.5 text-sm text-gray-100 border border-military-600 focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
+                className="w-full bg-[var(--color-bg-elevated)] rounded-lg px-3 py-1.5 text-sm text-[var(--color-text-primary)] border border-[var(--color-border-primary)] focus:border-l-2 focus:border-l-command-500 focus:outline-none transition-all"
                 rows={2}
               />
-              <p className="text-xs text-military-500 italic">Click polygon points on map, then save.</p>
+              <p className="text-xs text-[var(--color-text-muted)] italic">Click polygon points on map, then save.</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="px-4 py-1.5 bg-military-700 hover:bg-military-600 rounded-lg text-sm text-military-300 transition-colors"
+                  className="px-4 py-1.5 bg-[var(--color-bg-elevated)] hover:bg-[var(--color-bg-elevated)] rounded-lg text-sm text-[var(--color-text-primary)] transition-colors"
                 >
                   Cancel
                 </button>

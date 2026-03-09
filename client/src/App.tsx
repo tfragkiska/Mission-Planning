@@ -11,14 +11,14 @@ const SharedMissionPage = React.lazy(() => import("./pages/shared-mission-page")
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen bg-military-900 flex items-center justify-center">
+    <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center">
       <div className="text-center">
         <div className="relative w-16 h-16 mx-auto mb-6">
-          <div className="absolute inset-0 border-2 border-military-700 rounded-full" />
+          <div className="absolute inset-0 border-2 border-[var(--color-border-primary)] rounded-full" />
           <div className="absolute inset-0 border-2 border-t-tactical-500 rounded-full animate-spin" />
           <div className="absolute inset-2 border-2 border-t-command-500 border-transparent rounded-full animate-spin" style={{ animationDirection: "reverse", animationDuration: "0.8s" }} />
         </div>
-        <p className="text-military-400 font-mono text-xs uppercase tracking-[0.3em]">
+        <p className="text-[var(--color-text-secondary)] font-mono text-xs uppercase tracking-[0.3em]">
           Loading Module
         </p>
         <div className="mt-3 flex items-center justify-center gap-1">

@@ -47,7 +47,7 @@ export default function PresenceIndicator({ users, currentUserId }: Props) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-military-400 text-xs font-mono uppercase tracking-wider mr-1">
+      <span className="text-[var(--color-text-secondary)] text-xs font-mono uppercase tracking-wider mr-1">
         Online
       </span>
       <div className="flex -space-x-2">
@@ -57,27 +57,27 @@ export default function PresenceIndicator({ users, currentUserId }: Props) {
             className="relative group"
           >
             <div
-              className={`w-8 h-8 rounded-full ${getColor(user.userId)} flex items-center justify-center text-xs font-bold text-white ring-2 ring-military-900 cursor-default transition-transform hover:scale-110 hover:z-10`}
+              className={`w-8 h-8 rounded-full ${getColor(user.userId)} flex items-center justify-center text-xs font-bold text-[var(--color-text-primary)] ring-2 ring-[var(--color-bg-primary)] cursor-default transition-transform hover:scale-110 hover:z-10`}
               title={`${user.name} (${ROLE_LABEL[user.role] || user.role})`}
             >
               {getInitials(user.name)}
             </div>
             {/* Online dot */}
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full ring-2 ring-military-900" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full ring-2 ring-[var(--color-bg-primary)]" />
             {/* Tooltip */}
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-military-800 border border-military-600 rounded text-xs text-gray-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-20">
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] rounded text-xs text-[var(--color-text-primary)] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-20">
               {user.name}
-              <span className="text-military-400 ml-1">({ROLE_LABEL[user.role] || user.role})</span>
+              <span className="text-[var(--color-text-secondary)] ml-1">({ROLE_LABEL[user.role] || user.role})</span>
             </div>
           </div>
         ))}
         {overflow > 0 && (
-          <div className="w-8 h-8 rounded-full bg-military-700 flex items-center justify-center text-xs font-bold text-military-300 ring-2 ring-military-900">
+          <div className="w-8 h-8 rounded-full bg-[var(--color-bg-elevated)] flex items-center justify-center text-xs font-bold text-[var(--color-text-primary)] ring-2 ring-[var(--color-bg-primary)]">
             +{overflow}
           </div>
         )}
       </div>
-      <span className="text-military-500 text-xs font-mono">
+      <span className="text-[var(--color-text-muted)] text-xs font-mono">
         {otherUsers.length === 0
           ? "Only you"
           : `${otherUsers.length} other${otherUsers.length !== 1 ? "s" : ""}`}

@@ -34,7 +34,7 @@ export default function LanguageSwitcher() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono font-semibold tracking-wider text-military-400 hover:text-tactical-400 border border-military-700/50 rounded-lg hover:border-tactical-500/40 transition-colors duration-200 uppercase"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono font-semibold tracking-wider text-[var(--color-text-secondary)] hover:text-tactical-400 border border-[var(--color-border-primary)] rounded-lg hover:border-tactical-500/40 transition-colors duration-200 uppercase"
         aria-label="Change language"
       >
         <svg
@@ -54,7 +54,7 @@ export default function LanguageSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute top-full mt-1 end-0 min-w-[140px] glass-panel-dark rounded-lg border border-military-700/50 py-1 z-50 animate-fade-in">
+        <div className="absolute top-full mt-1 end-0 min-w-[140px] glass-panel-dark rounded-lg border border-[var(--color-border-primary)] py-1 z-50 animate-fade-in">
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
@@ -62,11 +62,11 @@ export default function LanguageSwitcher() {
               className={`w-full text-start px-3 py-2 text-sm font-medium transition-colors duration-150 flex items-center justify-between ${
                 lang.code === i18n.language
                   ? "text-tactical-400 bg-tactical-500/10"
-                  : "text-military-300 hover:text-white hover:bg-military-700/50"
+                  : "text-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-elevated)]/50"
               }`}
             >
               <span>{lang.label}</span>
-              <span className="text-xs font-mono text-military-500">{lang.short}</span>
+              <span className="text-xs font-mono text-[var(--color-text-muted)]">{lang.short}</span>
             </button>
           ))}
         </div>

@@ -117,7 +117,7 @@ export default function BriefingPreviewPage() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="w-8 h-8 border-2 border-command-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-military-400 font-mono text-sm tracking-wide">LOADING BRIEFING DATA...</p>
+            <p className="text-[var(--color-text-secondary)] font-mono text-sm tracking-wide">LOADING BRIEFING DATA...</p>
           </div>
         </div>
       </Layout>
@@ -130,7 +130,7 @@ export default function BriefingPreviewPage() {
         <div className="max-w-4xl mx-auto py-8">
           <div className="glass-panel rounded-xl p-6 border border-danger-600/40 text-center">
             <p className="text-danger-500 font-bold mb-2">Failed to load briefing data</p>
-            <p className="text-military-400 text-sm">{error || "Unknown error"}</p>
+            <p className="text-[var(--color-text-secondary)] text-sm">{error || "Unknown error"}</p>
             <Link to={`/missions/${id}`} className="inline-block mt-4 text-command-400 hover:text-command-300 text-sm underline">
               Back to Mission
             </Link>
@@ -144,18 +144,18 @@ export default function BriefingPreviewPage() {
     <Layout>
       {/* Controls bar (hidden in print) */}
       <div className="max-w-5xl mx-auto mb-4 print:hidden">
-        <div className="glass-panel rounded-xl p-4 border border-military-700/50 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <div className="glass-panel rounded-xl p-4 border border-[var(--color-border-primary)] flex flex-col sm:flex-row items-start sm:items-center gap-3">
           <Link to={`/missions/${id}`} className="text-command-400 hover:text-command-300 text-sm font-medium">
             &larr; Back to Mission
           </Link>
 
-          <span className="hidden sm:inline w-px h-5 bg-military-600" />
+          <span className="hidden sm:inline w-px h-5 bg-[var(--color-border-primary)]" />
 
-          <label className="text-military-400 text-sm font-medium">Template:</label>
+          <label className="text-[var(--color-text-secondary)] text-sm font-medium">Template:</label>
           <select
             value={template}
             onChange={(e) => setTemplate(e.target.value as TemplateId)}
-            className="bg-military-800 border border-military-600 text-gray-200 text-sm rounded px-3 py-1.5 focus:outline-none focus:border-command-500"
+            className="bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)] text-[var(--color-text-primary)] text-sm rounded px-3 py-1.5 focus:outline-none focus:border-command-500"
           >
             {TEMPLATE_OPTIONS.map((t) => (
               <option key={t.id} value={t.id}>
@@ -168,13 +168,13 @@ export default function BriefingPreviewPage() {
 
           <button
             onClick={handleDownloadPdf}
-            className="px-4 py-2 bg-command-500 hover:bg-command-400 rounded-lg text-sm font-bold uppercase tracking-wide text-white transition-all duration-200 shadow-lg"
+            className="px-4 py-2 bg-command-500 hover:bg-command-400 rounded-lg text-sm font-bold uppercase tracking-wide text-[var(--color-text-primary)] transition-all duration-200 shadow-lg"
           >
             Download PDF
           </button>
           <button
             onClick={handlePrint}
-            className="glass-panel px-4 py-2 rounded-lg text-sm font-medium text-military-300 hover:text-gray-100 hover:border-military-500 border border-military-700/50 transition-all duration-200"
+            className="glass-panel px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-primary)] border border-[var(--color-border-primary)] transition-all duration-200"
           >
             Print
           </button>

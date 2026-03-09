@@ -54,7 +54,7 @@ export default function OfflineIndicator() {
     <div
       role="status"
       aria-live="polite"
-      className="bg-accent-600/90 backdrop-blur-sm text-white px-4 py-2 text-center text-sm font-mono tracking-wide flex items-center justify-center gap-3 border-b border-accent-500/50"
+      className="bg-accent-600/90 backdrop-blur-sm text-[var(--color-text-primary)] px-4 py-2 text-center text-sm font-mono tracking-wide flex items-center justify-center gap-3 border-b border-accent-500/50"
     >
       <svg
         className="w-4 h-4 flex-shrink-0"

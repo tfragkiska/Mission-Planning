@@ -18,7 +18,7 @@ export default function MissionStats({ missions }: Props) {
   const completed = byStatus["DEBRIEFED"] || 0;
 
   const stats = [
-    { label: "Total Missions", value: total, color: "text-white", borderColor: "border-t-military-400", indicator: "bg-military-400" },
+    { label: "Total Missions", value: total, color: "text-[var(--color-text-primary)]", borderColor: "border-t-military-400", indicator: "bg-military-400" },
     { label: "Active", value: active, color: "text-tactical-500", borderColor: "border-t-tactical-500", indicator: "bg-tactical-500" },
     { label: "Drafts", value: drafts, color: "text-accent-400", borderColor: "border-t-accent-500", indicator: "bg-accent-500" },
     { label: "Under Review", value: underReview, color: "text-accent-600", borderColor: "border-t-accent-600", indicator: "bg-accent-600" },
@@ -30,7 +30,7 @@ export default function MissionStats({ missions }: Props) {
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className={`glass-panel rounded-xl border border-military-700/30 border-t-2 ${stat.borderColor} px-3 sm:px-4 py-3 sm:py-4 text-center transition-all duration-200 hover:border-military-600/50`}
+          className={`glass-panel rounded-xl border border-[var(--color-border-subtle)] border-t-2 ${stat.borderColor} px-3 sm:px-4 py-3 sm:py-4 text-center transition-all duration-200 hover:border-[var(--color-border-primary)]`}
         >
           <div className="flex justify-center mb-2">
             <div className={`w-1.5 h-1.5 rounded-full ${stat.indicator} animate-pulse-slow`} />
@@ -38,7 +38,7 @@ export default function MissionStats({ missions }: Props) {
           <div className={`text-2xl sm:text-3xl font-bold font-mono tracking-tight ${stat.color}`}>
             {stat.value}
           </div>
-          <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-military-400 mt-1.5 font-medium">
+          <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-[var(--color-text-secondary)] mt-1.5 font-medium">
             {stat.label}
           </div>
         </div>

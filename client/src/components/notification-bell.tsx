@@ -23,7 +23,7 @@ const typeColors: Record<string, string> = {
 
 function NotificationIcon({ type }: { type: string }) {
   const iconType = typeIcons[type] || "bell";
-  const color = typeColors[type] || "text-military-400";
+  const color = typeColors[type] || "text-[var(--color-text-secondary)]";
 
   switch (iconType) {
     case "check-circle":
@@ -99,24 +99,24 @@ function NotificationItem({
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-colors duration-150 hover:bg-military-700/50 border-b border-military-700/30 last:border-b-0 ${
+      className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-colors duration-150 hover:bg-[var(--color-bg-elevated)]/50 border-b border-[var(--color-border-subtle)] last:border-b-0 ${
         notification.read ? "opacity-60" : ""
       }`}
     >
       <NotificationIcon type={notification.type} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <span className={`text-sm font-semibold truncate ${notification.read ? "text-military-400" : "text-gray-100"}`}>
+          <span className={`text-sm font-semibold truncate ${notification.read ? "text-[var(--color-text-secondary)]" : "text-[var(--color-text-primary)]"}`}>
             {notification.title}
           </span>
           {!notification.read && (
             <span className="w-2 h-2 rounded-full bg-tactical-500 flex-shrink-0" />
           )}
         </div>
-        <p className="text-xs text-military-400 mt-0.5 line-clamp-2">
+        <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 line-clamp-2">
           {notification.message}
         </p>
-        <span className="text-[10px] font-mono text-military-500 mt-1 block">
+        <span className="text-[10px] font-mono text-[var(--color-text-muted)] mt-1 block">
           {formatTimeAgo(notification.createdAt)}
         </span>
       </div>
@@ -182,7 +182,7 @@ export default function NotificationBell() {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative text-military-400 hover:text-tactical-400 transition-colors duration-200 p-1"
+        className="relative text-[var(--color-text-secondary)] hover:text-tactical-400 transition-colors duration-200 p-1"
         aria-label="Notifications"
       >
         <svg
@@ -199,7 +199,7 @@ export default function NotificationBell() {
         </svg>
         {/* Unread badge */}
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-accent-500 rounded-full border-2 border-military-900">
+          <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-[var(--color-text-primary)] bg-accent-500 rounded-full border-2 border-[var(--color-bg-primary)]">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
@@ -209,12 +209,12 @@ export default function NotificationBell() {
       {isOpen && (
         <div
           ref={panelRef}
-          className="absolute right-0 top-full mt-2 w-96 max-h-[480px] flex flex-col glass-panel bg-military-900/95 border border-military-700/60 rounded-lg shadow-2xl shadow-black/50 z-50 overflow-hidden"
+          className="absolute right-0 top-full mt-2 w-96 max-h-[480px] flex flex-col glass-panel bg-[var(--color-bg-secondary)]/95 border border-[var(--color-border-primary)] rounded-lg shadow-2xl shadow-black/50 z-50 overflow-hidden"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-military-700/50">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border-primary)]">
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold text-gray-100 tracking-wide uppercase">
+              <h3 className="text-sm font-bold text-[var(--color-text-primary)] tracking-wide uppercase">
                 Notifications
               </h3>
               {unreadCount > 0 && (
@@ -236,7 +236,7 @@ export default function NotificationBell() {
           {/* Notification list */}
           <div className="flex-1 overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-military-500">
+              <div className="flex flex-col items-center justify-center py-12 text-[var(--color-text-muted)]">
                 <svg
                   className="w-10 h-10 mb-3 opacity-50"
                   viewBox="0 0 24 24"

@@ -112,7 +112,7 @@ export default function DashboardCommander({ missions, loading }: Props) {
   }, [missions]);
 
   const statusColors: Record<string, string> = {
-    DRAFT: "bg-military-600",
+    DRAFT: "bg-[var(--color-border-primary)]",
     PLANNED: "bg-command-500",
     UNDER_REVIEW: "bg-accent-500",
     APPROVED: "bg-tactical-500",
@@ -149,7 +149,7 @@ export default function DashboardCommander({ missions, loading }: Props) {
     {
       label: "Total",
       value: missions.length,
-      color: "text-white",
+      color: "text-[var(--color-text-primary)]",
       borderColor: "border-t-military-400",
       indicator: "bg-military-400",
     },
@@ -160,7 +160,7 @@ export default function DashboardCommander({ missions, loading }: Props) {
       {/* Header */}
       <div className="relative mb-6 sm:mb-8">
         <div className="absolute inset-0 tactical-grid opacity-20 rounded-xl" />
-        <div className="relative glass-panel rounded-xl border border-military-700/50 px-4 sm:px-8 py-4 sm:py-6">
+        <div className="relative glass-panel rounded-xl border border-[var(--color-border-primary)] px-4 sm:px-8 py-4 sm:py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 mb-1">
@@ -169,10 +169,10 @@ export default function DashboardCommander({ missions, loading }: Props) {
                   Commander Overview
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--color-text-primary)]">
                 Command Operations Center
               </h1>
-              <p className="text-sm text-military-400 mt-1 font-mono">
+              <p className="text-sm text-[var(--color-text-secondary)] mt-1 font-mono">
                 {missions.length} total missions // {pendingReview.length} awaiting review
               </p>
             </div>
@@ -186,7 +186,7 @@ export default function DashboardCommander({ missions, loading }: Props) {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className={`glass-panel rounded-xl border border-military-700/30 border-t-2 ${stat.borderColor} px-3 sm:px-4 py-3 sm:py-4 text-center transition-all duration-200 hover:border-military-600/50`}
+            className={`glass-panel rounded-xl border border-[var(--color-border-subtle)] border-t-2 ${stat.borderColor} px-3 sm:px-4 py-3 sm:py-4 text-center transition-all duration-200 hover:border-[var(--color-border-primary)]`}
           >
             <div className="flex justify-center mb-2">
               <div className={`w-1.5 h-1.5 rounded-full ${stat.indicator} animate-pulse-slow`} />
@@ -194,7 +194,7 @@ export default function DashboardCommander({ missions, loading }: Props) {
             <div className={`text-2xl sm:text-3xl font-bold font-mono tracking-tight ${stat.color}`}>
               {stat.value}
             </div>
-            <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-military-400 mt-1.5 font-medium">
+            <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-[var(--color-text-secondary)] mt-1.5 font-medium">
               {stat.label}
             </div>
           </div>
@@ -224,24 +224,24 @@ export default function DashboardCommander({ missions, loading }: Props) {
                   className="glass-panel rounded-lg border border-accent-500/20 p-4 cursor-pointer transition-all duration-200 hover:border-accent-500/50 hover:shadow-glow-amber group"
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-semibold text-white group-hover:text-accent-400 transition-colors">
+                    <h3 className="font-semibold text-[var(--color-text-primary)] group-hover:text-accent-400 transition-colors">
                       {mission.name}
                     </h3>
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex-shrink-0 ${
-                      mission.priority === "CRITICAL" ? "bg-danger-500 text-white" :
-                      mission.priority === "HIGH" ? "bg-accent-500 text-white" :
-                      "bg-military-600 text-military-300"
+                      mission.priority === "CRITICAL" ? "bg-danger-500 text-[var(--color-text-primary)]" :
+                      mission.priority === "HIGH" ? "bg-accent-500 text-[var(--color-text-primary)]" :
+                      "bg-[var(--color-border-primary)] text-[var(--color-text-primary)]"
                     }`}>
                       {mission.priority}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-military-400">
+                  <div className="flex items-center gap-3 text-xs text-[var(--color-text-secondary)]">
                     <span>{mission.createdBy.name}</span>
-                    <span className="text-military-600">|</span>
+                    <span className="text-[var(--color-text-muted)]">|</span>
                     <span className="font-mono">{mission.type}</span>
                     {mission.scheduledStart && (
                       <>
-                        <span className="text-military-600">|</span>
+                        <span className="text-[var(--color-text-muted)]">|</span>
                         <span className="font-mono">
                           {new Date(mission.scheduledStart).toLocaleDateString("en-US", {
                             month: "short",
@@ -250,7 +250,7 @@ export default function DashboardCommander({ missions, loading }: Props) {
                         </span>
                       </>
                     )}
-                    <span className="text-military-600">|</span>
+                    <span className="text-[var(--color-text-muted)]">|</span>
                     <span className="font-mono text-tactical-500">WPT {mission.waypoints.length}</span>
                   </div>
                 </div>
@@ -261,18 +261,18 @@ export default function DashboardCommander({ missions, loading }: Props) {
       )}
 
       {/* Status Distribution */}
-      <div className="glass-panel rounded-xl border border-military-700/30 p-5 mb-6">
+      <div className="glass-panel rounded-xl border border-[var(--color-border-subtle)] p-5 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <div className="w-1.5 h-1.5 rounded-full bg-military-400" />
-          <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-military-400">
+          <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-[var(--color-text-secondary)]">
             Status Distribution
           </h2>
         </div>
-        <div className="flex gap-1 h-3 rounded-full overflow-hidden bg-military-800 mb-3">
+        <div className="flex gap-1 h-3 rounded-full overflow-hidden bg-[var(--color-bg-tertiary)] mb-3">
           {Object.entries(statusDistribution).map(([status, count]) => (
             <div
               key={status}
-              className={`${statusColors[status] || "bg-military-600"} transition-all duration-500`}
+              className={`${statusColors[status] || "bg-[var(--color-border-primary)]"} transition-all duration-500`}
               style={{ width: `${(count / missions.length) * 100}%` }}
               title={`${status.replace(/_/g, " ")}: ${count}`}
             />
@@ -283,8 +283,8 @@ export default function DashboardCommander({ missions, loading }: Props) {
             .sort(([, a], [, b]) => b - a)
             .map(([status, count]) => (
               <div key={status} className="flex items-center gap-1.5">
-                <div className={`w-2 h-2 rounded-full ${statusColors[status] || "bg-military-600"}`} />
-                <span className="text-[10px] font-mono text-military-400 uppercase tracking-wider">
+                <div className={`w-2 h-2 rounded-full ${statusColors[status] || "bg-[var(--color-border-primary)]"}`} />
+                <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider">
                   {status.replace(/_/g, " ")} ({count})
                 </span>
               </div>
@@ -294,7 +294,7 @@ export default function DashboardCommander({ missions, loading }: Props) {
 
       {/* Recent Approvals/Rejections */}
       {recentDecisions.length > 0 && (
-        <div className="glass-panel rounded-xl border border-military-700/30 p-5 mb-6">
+        <div className="glass-panel rounded-xl border border-[var(--color-border-subtle)] p-5 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-tactical-500 animate-pulse-slow" />
             <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-tactical-500">
@@ -305,14 +305,14 @@ export default function DashboardCommander({ missions, loading }: Props) {
             {recentDecisions.map((mission) => (
               <div
                 key={mission.id}
-                className="flex items-center justify-between py-2 border-b border-military-700/30 last:border-0 cursor-pointer hover:bg-military-800/30 rounded px-2 -mx-2 transition-colors"
+                className="flex items-center justify-between py-2 border-b border-[var(--color-border-subtle)] last:border-0 cursor-pointer hover:bg-[var(--color-bg-tertiary)]/30 rounded px-2 -mx-2 transition-colors"
                 onClick={() => navigate(`/missions/${mission.id}`)}
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-2 h-2 rounded-full ${
                     mission.status === "APPROVED" ? "bg-tactical-500" : "bg-danger-500"
                   }`} />
-                  <span className="text-sm text-military-300">{mission.name}</span>
+                  <span className="text-sm text-[var(--color-text-primary)]">{mission.name}</span>
                   <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                     mission.status === "APPROVED"
                       ? "bg-tactical-500/20 text-tactical-500"
@@ -323,11 +323,11 @@ export default function DashboardCommander({ missions, loading }: Props) {
                 </div>
                 <div className="flex items-center gap-3">
                   {mission.approvedBy && (
-                    <span className="text-xs text-military-500">
+                    <span className="text-xs text-[var(--color-text-muted)]">
                       by {mission.approvedBy.name}
                     </span>
                   )}
-                  <span className="text-xs text-military-500 font-mono">
+                  <span className="text-xs text-[var(--color-text-muted)] font-mono">
                     {new Date(mission.updatedAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
@@ -347,7 +347,7 @@ export default function DashboardCommander({ missions, loading }: Props) {
 
       {loading && (
         <div className="flex items-center justify-center py-16">
-          <div className="flex items-center gap-3 text-military-400">
+          <div className="flex items-center gap-3 text-[var(--color-text-secondary)]">
             <div className="w-2 h-2 rounded-full bg-accent-500 animate-pulse-slow" />
             <span className="font-mono text-sm tracking-wide">Loading missions...</span>
           </div>
@@ -355,9 +355,9 @@ export default function DashboardCommander({ missions, loading }: Props) {
       )}
 
       {!loading && filtered.length === 0 && (
-        <div className="glass-panel rounded-xl border border-military-700/30 py-16 text-center">
-          <div className="text-military-500 text-4xl mb-3">--</div>
-          <p className="text-military-400 font-mono text-sm">No missions match current filters</p>
+        <div className="glass-panel rounded-xl border border-[var(--color-border-subtle)] py-16 text-center">
+          <div className="text-[var(--color-text-muted)] text-4xl mb-3">--</div>
+          <p className="text-[var(--color-text-secondary)] font-mono text-sm">No missions match current filters</p>
         </div>
       )}
 

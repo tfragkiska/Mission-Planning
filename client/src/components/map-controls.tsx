@@ -48,8 +48,8 @@ export default function MapControls({
 
   return (
     <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-      <div className="glass-panel border border-military-700/50 rounded-xl p-2 flex flex-col gap-1.5">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-military-500 px-1 pb-1 border-b border-military-700/50">
+      <div className="glass-panel border border-[var(--color-border-primary)] rounded-xl p-2 flex flex-col gap-1.5">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-muted)] px-1 pb-1 border-b border-[var(--color-border-primary)]">
           Map Controls
         </p>
 
@@ -68,7 +68,7 @@ export default function MapControls({
               className={`flex-1 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all duration-200 border ${
                 currentMapStyle === s.id
                   ? "bg-command-500/20 text-command-400 border-command-500/40"
-                  : "glass-panel text-military-400 border-military-700/50 hover:text-gray-100 hover:border-military-500"
+                  : "glass-panel text-[var(--color-text-secondary)] border-[var(--color-border-primary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-primary)]"
               }`}
               title={`Switch to ${s.name} basemap`}
             >
@@ -77,7 +77,7 @@ export default function MapControls({
           ))}
         </div>
 
-        <div className="border-t border-military-700/30 pt-1.5 mt-0.5" />
+        <div className="border-t border-[var(--color-border-subtle)] pt-1.5 mt-0.5" />
 
         <TerrainToggle map={map} />
 
@@ -86,7 +86,7 @@ export default function MapControls({
           className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-200 border ${
             threatLayerVisible
               ? "bg-danger-600/20 text-danger-500 border-danger-600/40"
-              : "glass-panel text-military-300 border-military-700/50 hover:text-gray-100 hover:border-military-500"
+              : "glass-panel text-[var(--color-text-primary)] border-[var(--color-border-primary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-primary)]"
           }`}
           title="Toggle threat range rings"
         >
@@ -101,7 +101,7 @@ export default function MapControls({
           className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-200 border ${
             corridorVisible
               ? "bg-command-500/20 text-command-400 border-command-500/40"
-              : "glass-panel text-military-300 border-military-700/50 hover:text-gray-100 hover:border-military-500"
+              : "glass-panel text-[var(--color-text-primary)] border-[var(--color-border-primary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-primary)]"
           }`}
           title="Toggle route corridor (2 NM)"
         >
@@ -116,7 +116,7 @@ export default function MapControls({
           className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-200 border ${
             labelsVisible
               ? "bg-tactical-600/20 text-tactical-500 border-tactical-600/40"
-              : "glass-panel text-military-300 border-military-700/50 hover:text-gray-100 hover:border-military-500"
+              : "glass-panel text-[var(--color-text-primary)] border-[var(--color-border-primary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-primary)]"
           }`}
           title="Toggle distance/bearing labels"
         >
@@ -126,14 +126,14 @@ export default function MapControls({
           Labels
         </button>
 
-        <div className="border-t border-military-700/50 pt-1.5 mt-0.5">
+        <div className="border-t border-[var(--color-border-primary)] pt-1.5 mt-0.5">
           <button
             onClick={handleMeasureToggle}
             disabled={!map}
             className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all duration-200 border ${
               measuring
                 ? "bg-accent-600/20 text-accent-400 border-accent-600/40 shadow-glow-amber"
-                : "glass-panel text-military-300 border-military-700/50 hover:text-gray-100 hover:border-military-500"
+                : "glass-panel text-[var(--color-text-primary)] border-[var(--color-border-primary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-primary)]"
             } disabled:opacity-50 disabled:cursor-not-allowed`}
             title="Click-to-measure distance and bearing"
           >
@@ -145,7 +145,7 @@ export default function MapControls({
           {measuring && (
             <button
               onClick={handleMeasureClear}
-              className="w-full mt-1 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide text-military-400 hover:text-military-200 border border-military-700/50 hover:border-military-600 transition-all duration-200"
+              className="w-full mt-1 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] border border-[var(--color-border-primary)] hover:border-[var(--color-border-primary)] transition-all duration-200"
             >
               Clear Points
             </button>

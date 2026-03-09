@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useSearchStore } from "../stores/search-store";
 
 const statusColors: Record<string, string> = {
-  DRAFT: "bg-military-600 text-military-200",
+  DRAFT: "bg-[var(--color-border-primary)] text-[var(--color-text-primary)]",
   PLANNED: "bg-command-600/30 text-command-300",
   UNDER_REVIEW: "bg-yellow-600/30 text-yellow-300",
   APPROVED: "bg-tactical-600/30 text-tactical-300",
   REJECTED: "bg-accent-600/30 text-accent-300",
   BRIEFED: "bg-blue-600/30 text-blue-300",
   EXECUTING: "bg-green-600/30 text-green-300",
-  DEBRIEFED: "bg-military-500/30 text-military-300",
+  DEBRIEFED: "bg-military-500/30 text-[var(--color-text-primary)]",
 };
 
 const lethalityColors: Record<string, string> = {
@@ -148,7 +148,7 @@ export default function GlobalSearch() {
               toggleOpen();
               setTimeout(() => inputRef.current?.focus(), 50);
             }}
-            className="flex items-center gap-2 text-military-400 hover:text-white transition-colors px-2 py-1.5 rounded-lg hover:bg-military-700/50"
+            className="flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors px-2 py-1.5 rounded-lg hover:bg-[var(--color-bg-elevated)]/50"
             title="Search (Ctrl+K)"
           >
             <svg
@@ -166,9 +166,9 @@ export default function GlobalSearch() {
             <span className="hidden lg:inline text-xs font-mono">Ctrl+K</span>
           </button>
         ) : (
-          <div className="flex items-center gap-2 bg-military-800/80 border border-military-600/50 rounded-lg px-3 py-1.5 w-64 lg:w-80">
+          <div className="flex items-center gap-2 bg-[var(--color-bg-tertiary)]/80 border border-[var(--color-border-primary)] rounded-lg px-3 py-1.5 w-64 lg:w-80">
             <svg
-              className="w-4 h-4 text-military-400 flex-shrink-0"
+              className="w-4 h-4 text-[var(--color-text-secondary)] flex-shrink-0"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -186,7 +186,7 @@ export default function GlobalSearch() {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search missions, waypoints, threats..."
-              className="bg-transparent text-sm text-gray-100 placeholder-military-500 outline-none w-full font-mono"
+              className="bg-transparent text-sm text-[var(--color-text-primary)] placeholder-[var(--color-input-placeholder)] outline-none w-full font-mono"
               autoFocus
             />
             {loading && (
@@ -195,7 +195,7 @@ export default function GlobalSearch() {
             {query && !loading && (
               <button
                 onClick={clearSearch}
-                className="text-military-400 hover:text-white flex-shrink-0"
+                className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] flex-shrink-0"
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -203,7 +203,7 @@ export default function GlobalSearch() {
                 </svg>
               </button>
             )}
-            <span className="text-[10px] font-mono text-military-500 flex-shrink-0 border border-military-600 rounded px-1">ESC</span>
+            <span className="text-[10px] font-mono text-[var(--color-text-muted)] flex-shrink-0 border border-[var(--color-border-primary)] rounded px-1">ESC</span>
           </div>
         )}
       </div>
@@ -212,18 +212,18 @@ export default function GlobalSearch() {
       {showDropdown && (
         <div
           ref={dropdownRef}
-          className="absolute top-full right-0 mt-2 w-96 max-h-[70vh] overflow-y-auto glass-panel bg-military-900/95 border border-military-600/50 rounded-xl shadow-2xl shadow-black/50 backdrop-blur-xl z-50"
+          className="absolute top-full right-0 mt-2 w-96 max-h-[70vh] overflow-y-auto glass-panel bg-[var(--color-bg-secondary)]/95 border border-[var(--color-border-primary)] rounded-xl shadow-2xl shadow-black/50 backdrop-blur-xl z-50"
         >
           {/* Recent searches */}
           {showRecent && (
             <div className="p-3">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-military-500">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-muted)]">
                   Recent Searches
                 </span>
                 <button
                   onClick={clearRecentSearches}
-                  className="text-[10px] font-mono text-military-500 hover:text-military-300 transition-colors"
+                  className="text-[10px] font-mono text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
                 >
                   Clear
                 </button>
@@ -232,9 +232,9 @@ export default function GlobalSearch() {
                 <button
                   key={i}
                   onClick={() => handleRecentClick(recent)}
-                  className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-military-300 hover:text-white hover:bg-military-700/50 rounded-lg transition-colors text-left"
+                  className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-[var(--color-text-primary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-elevated)]/50 rounded-lg transition-colors text-left"
                 >
-                  <svg className="w-3.5 h-3.5 text-military-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <svg className="w-3.5 h-3.5 text-[var(--color-text-muted)] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
@@ -246,7 +246,7 @@ export default function GlobalSearch() {
 
           {/* Loading state */}
           {loading && query.trim() && (
-            <div className="p-6 flex items-center justify-center gap-2 text-military-400">
+            <div className="p-6 flex items-center justify-center gap-2 text-[var(--color-text-secondary)]">
               <div className="w-4 h-4 border-2 border-tactical-500/30 border-t-tactical-500 rounded-full animate-spin" />
               <span className="text-sm font-mono">Searching...</span>
             </div>
@@ -255,13 +255,13 @@ export default function GlobalSearch() {
           {/* No results */}
           {showNoResults && (
             <div className="p-6 text-center">
-              <svg className="w-8 h-8 text-military-600 mx-auto mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <svg className="w-8 h-8 text-[var(--color-text-muted)] mx-auto mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 <line x1="8" y1="11" x2="14" y2="11" />
               </svg>
-              <p className="text-sm text-military-400 font-mono">No results found</p>
-              <p className="text-xs text-military-500 mt-1">Try a different search term</p>
+              <p className="text-sm text-[var(--color-text-secondary)] font-mono">No results found</p>
+              <p className="text-xs text-[var(--color-text-muted)] mt-1">Try a different search term</p>
             </div>
           )}
 
@@ -272,7 +272,7 @@ export default function GlobalSearch() {
               {results.missions.length > 0 && (
                 <div>
                   <div className="px-3 py-1.5">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-military-500">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-muted)]">
                       Missions ({results.missions.length})
                     </span>
                   </div>
@@ -284,8 +284,8 @@ export default function GlobalSearch() {
                         onClick={() => handleNavigate(`/missions/${mission.id}`)}
                         className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-colors ${
                           selectedIndex === idx
-                            ? "bg-tactical-500/20 text-white"
-                            : "hover:bg-military-700/50 text-military-200"
+                            ? "bg-tactical-500/20 text-[var(--color-text-primary)]"
+                            : "hover:bg-[var(--color-bg-elevated)]/50 text-[var(--color-text-primary)]"
                         }`}
                       >
                         <svg className="w-4 h-4 text-command-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -295,11 +295,11 @@ export default function GlobalSearch() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-medium truncate">{mission.name}</span>
-                            <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${statusColors[mission.status] || "bg-military-700 text-military-300"}`}>
+                            <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${statusColors[mission.status] || "bg-[var(--color-bg-elevated)] text-[var(--color-text-primary)]"}`}>
                               {mission.status}
                             </span>
                           </div>
-                          <span className="text-xs text-military-400 font-mono">
+                          <span className="text-xs text-[var(--color-text-secondary)] font-mono">
                             {mission.type} / {mission.priority}
                           </span>
                         </div>
@@ -313,10 +313,10 @@ export default function GlobalSearch() {
               {results.waypoints.length > 0 && (
                 <div>
                   {results.missions.length > 0 && (
-                    <div className="mx-3 my-1 h-px bg-military-700/50" />
+                    <div className="mx-3 my-1 h-px bg-[var(--color-bg-elevated)]/50" />
                   )}
                   <div className="px-3 py-1.5">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-military-500">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-muted)]">
                       Waypoints ({results.waypoints.length})
                     </span>
                   </div>
@@ -328,8 +328,8 @@ export default function GlobalSearch() {
                         onClick={() => handleNavigate(`/missions/${waypoint.missionId}`)}
                         className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-colors ${
                           selectedIndex === idx
-                            ? "bg-tactical-500/20 text-white"
-                            : "hover:bg-military-700/50 text-military-200"
+                            ? "bg-tactical-500/20 text-[var(--color-text-primary)]"
+                            : "hover:bg-[var(--color-bg-elevated)]/50 text-[var(--color-text-primary)]"
                         }`}
                       >
                         <svg className="w-4 h-4 text-tactical-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -340,9 +340,9 @@ export default function GlobalSearch() {
                           <div className="text-sm font-medium truncate">
                             {waypoint.name || `Waypoint (${waypoint.type})`}
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-military-400 font-mono">
+                          <div className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)] font-mono">
                             <span>{waypoint.lat.toFixed(4)}, {waypoint.lon.toFixed(4)}</span>
-                            <span className="text-military-600">|</span>
+                            <span className="text-[var(--color-text-muted)]">|</span>
                             <span className="truncate">{waypoint.missionName}</span>
                           </div>
                         </div>
@@ -356,10 +356,10 @@ export default function GlobalSearch() {
               {results.threats.length > 0 && (
                 <div>
                   {(results.missions.length > 0 || results.waypoints.length > 0) && (
-                    <div className="mx-3 my-1 h-px bg-military-700/50" />
+                    <div className="mx-3 my-1 h-px bg-[var(--color-bg-elevated)]/50" />
                   )}
                   <div className="px-3 py-1.5">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-military-500">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-muted)]">
                       Threats ({results.threats.length})
                     </span>
                   </div>
@@ -371,8 +371,8 @@ export default function GlobalSearch() {
                         onClick={() => handleNavigate(`/dashboard`)}
                         className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-colors ${
                           selectedIndex === idx
-                            ? "bg-tactical-500/20 text-white"
-                            : "hover:bg-military-700/50 text-military-200"
+                            ? "bg-tactical-500/20 text-[var(--color-text-primary)]"
+                            : "hover:bg-[var(--color-bg-elevated)]/50 text-[var(--color-text-primary)]"
                         }`}
                       >
                         <svg className="w-4 h-4 text-accent-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -383,11 +383,11 @@ export default function GlobalSearch() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-medium truncate">{threat.name}</span>
-                            <span className={`text-[10px] font-mono ${lethalityColors[threat.lethality] || "text-military-400"}`}>
+                            <span className={`text-[10px] font-mono ${lethalityColors[threat.lethality] || "text-[var(--color-text-secondary)]"}`}>
                               {threat.lethality}
                             </span>
                           </div>
-                          <span className="text-xs text-military-400 font-mono">
+                          <span className="text-xs text-[var(--color-text-secondary)] font-mono">
                             {threat.category}{!threat.active && " (inactive)"}
                           </span>
                         </div>
@@ -401,10 +401,10 @@ export default function GlobalSearch() {
               {results.users.length > 0 && (
                 <div>
                   {(results.missions.length > 0 || results.waypoints.length > 0 || results.threats.length > 0) && (
-                    <div className="mx-3 my-1 h-px bg-military-700/50" />
+                    <div className="mx-3 my-1 h-px bg-[var(--color-bg-elevated)]/50" />
                   )}
                   <div className="px-3 py-1.5">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-military-500">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[var(--color-text-muted)]">
                       Users ({results.users.length})
                     </span>
                   </div>
@@ -416,22 +416,22 @@ export default function GlobalSearch() {
                         onClick={() => handleNavigate(`/dashboard`)}
                         className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-colors ${
                           selectedIndex === idx
-                            ? "bg-tactical-500/20 text-white"
-                            : "hover:bg-military-700/50 text-military-200"
+                            ? "bg-tactical-500/20 text-[var(--color-text-primary)]"
+                            : "hover:bg-[var(--color-bg-elevated)]/50 text-[var(--color-text-primary)]"
                         }`}
                       >
-                        <svg className="w-4 h-4 text-military-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <svg className="w-4 h-4 text-[var(--color-text-secondary)] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                           <circle cx="12" cy="7" r="4" />
                         </svg>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-medium truncate">{user.name}</span>
-                            <span className={`text-[10px] font-mono ${roleColors[user.role] || "text-military-400"}`}>
+                            <span className={`text-[10px] font-mono ${roleColors[user.role] || "text-[var(--color-text-secondary)]"}`}>
                               {user.role}
                             </span>
                           </div>
-                          <span className="text-xs text-military-400 font-mono truncate">
+                          <span className="text-xs text-[var(--color-text-secondary)] font-mono truncate">
                             {user.email}
                           </span>
                         </div>
@@ -442,8 +442,8 @@ export default function GlobalSearch() {
               )}
 
               {/* Total count footer */}
-              <div className="px-3 py-2 border-t border-military-700/50 mt-1">
-                <span className="text-[10px] font-mono text-military-500">
+              <div className="px-3 py-2 border-t border-[var(--color-border-primary)] mt-1">
+                <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
                   {results.totalCount} result{results.totalCount !== 1 ? "s" : ""} found
                 </span>
               </div>

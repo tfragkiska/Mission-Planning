@@ -35,7 +35,7 @@ const PRIORITY_BORDERS: Record<string, string> = {
 };
 
 const PRIORITY_STYLES: Record<string, string> = {
-  LOW: "text-military-400",
+  LOW: "text-[var(--color-text-secondary)]",
   MEDIUM: "text-command-400",
   HIGH: "text-accent-400",
   CRITICAL: "text-danger-500 font-bold",
@@ -52,8 +52,8 @@ export default function MissionTimeline({ missions }: Props) {
 
   if (missions.length === 0) {
     return (
-      <div className="glass-panel rounded-xl border border-military-700/30 py-16 text-center">
-        <p className="text-military-400 font-mono text-sm">No missions to display.</p>
+      <div className="glass-panel rounded-xl border border-[var(--color-border-subtle)] py-16 text-center">
+        <p className="text-[var(--color-text-secondary)] font-mono text-sm">No missions to display.</p>
       </div>
     );
   }
@@ -82,40 +82,40 @@ export default function MissionTimeline({ missions }: Props) {
               {/* Card */}
               <div
                 onClick={() => navigate(`/missions/${mission.id}`)}
-                className={`group glass-panel rounded-xl border border-military-700/30 px-5 py-4 cursor-pointer
+                className={`group glass-panel rounded-xl border border-[var(--color-border-subtle)] px-5 py-4 cursor-pointer
                   transition-all duration-300 ease-out
-                  hover:border-military-500/50 hover:shadow-lg hover:shadow-black/10
+                  hover:border-[var(--color-border-primary)] hover:shadow-lg hover:shadow-black/10
                   border-l-[3px] ${PRIORITY_BORDERS[mission.priority] || "border-l-military-500"}`}
               >
                 <div className="flex items-center gap-4">
                   {/* Time column */}
                   <div className="flex-shrink-0 w-28 text-right">
-                    <div className="text-xs font-mono text-military-400">{startDate}</div>
+                    <div className="text-xs font-mono text-[var(--color-text-secondary)]">{startDate}</div>
                     {endDate && (
-                      <div className="text-[10px] font-mono text-military-500 mt-0.5">to {endDate}</div>
+                      <div className="text-[10px] font-mono text-[var(--color-text-muted)] mt-0.5">to {endDate}</div>
                     )}
                   </div>
 
                   {/* Separator */}
-                  <div className="w-px h-8 bg-military-700/50 flex-shrink-0" />
+                  <div className="w-px h-8 bg-[var(--color-bg-elevated)]/50 flex-shrink-0" />
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-white group-hover:text-tactical-500 transition-colors truncate">
+                      <span className="font-medium text-[var(--color-text-primary)] group-hover:text-tactical-500 transition-colors truncate">
                         {mission.name}
                       </span>
-                      <span className="px-1.5 py-0.5 rounded bg-military-700/60 text-[9px] font-mono uppercase tracking-wider text-military-400 flex-shrink-0">
+                      <span className="px-1.5 py-0.5 rounded bg-[var(--color-bg-elevated)]/60 text-[9px] font-mono uppercase tracking-wider text-[var(--color-text-secondary)] flex-shrink-0">
                         {mission.type}
                       </span>
                     </div>
-                    <div className="text-[11px] text-military-500 mt-0.5 font-mono">
+                    <div className="text-[11px] text-[var(--color-text-muted)] mt-0.5 font-mono">
                       {mission.status.replace(/_/g, " ")}
                     </div>
                   </div>
 
                   {/* Priority */}
-                  <div className={`text-[10px] font-mono uppercase tracking-wider flex-shrink-0 ${PRIORITY_STYLES[mission.priority] || "text-military-400"}`}>
+                  <div className={`text-[10px] font-mono uppercase tracking-wider flex-shrink-0 ${PRIORITY_STYLES[mission.priority] || "text-[var(--color-text-secondary)]"}`}>
                     {mission.priority}
                   </div>
                 </div>
